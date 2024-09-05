@@ -18,6 +18,12 @@ namespace TGC.MonoGame.TP
         public const string ContentFolderSounds = "Sounds/";
         public const string ContentFolderSpriteFonts = "SpriteFonts/";
         public const string ContentFolderTextures = "Textures/";
+        private Model _model;
+        
+
+        private Matrix _world, _view, _projection;
+        private Random _random;
+        private const int SEED = 0;
 
         /// <summary>
         ///     Constructor del juego.
@@ -26,10 +32,10 @@ namespace TGC.MonoGame.TP
         {
             // Maneja la configuracion y la administracion del dispositivo grafico.
             Graphics = new GraphicsDeviceManager(this);
-            
+
             Graphics.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width - 100;
             Graphics.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height - 100;
-            
+
             // Para que el juego sea pantalla completa se puede usar Graphics IsFullScreen.
             // Carpeta raiz donde va a estar toda la Media.
             Content.RootDirectory = "Content";
@@ -54,19 +60,18 @@ namespace TGC.MonoGame.TP
         {
             // La logica de inicializacion que no depende del contenido se recomienda poner en este metodo.
 
-            // Apago el backface culling.
-            // Esto se hace por un problema en el diseno del modelo del logo de la materia.
-            // Una vez que empiecen su juego, esto no es mas necesario y lo pueden sacar.
             var rasterizerState = new RasterizerState();
-            rasterizerState.CullMode = CullMode.None;
+            rasterizerState.CullMode = CullMode.CullCounterClockwiseFace;
             GraphicsDevice.RasterizerState = rasterizerState;
-            // Seria hasta aca.
+            GraphicsDevice.BlendState = BlendState.Opaque;
 
+            // Configuro las dimensiones de la pantalla.
+            Graphics.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width - 800;
+            Graphics.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height - 500;
+            Graphics.ApplyChanges();
+            // Seria hasta aca.
             // Configuramos nuestras matrices de la escena.
-            World = Matrix.Identity;
-            View = Matrix.CreateLookAt(Vector3.UnitZ * 150, Vector3.Zero, Vector3.Up);
-            Projection =
-                Matrix.CreatePerspectiveFieldOfView(MathHelper.PiOver4, GraphicsDevice.Viewport.AspectRatio, 1, 250);
+            
 
             base.Initialize();
         }
@@ -82,7 +87,7 @@ namespace TGC.MonoGame.TP
             SpriteBatch = new SpriteBatch(GraphicsDevice);
 
             // Cargo el modelo del logo.
-            Model = Content.Load<Model>(ContentFolder3D + "tgc-logo/tgc-logo");
+            _model = Content.Load<Model>(ContentFolder3D + "Plant/Models/Plant.fbx");
 
             // Cargo un efecto basico propio declarado en el Content pipeline.
             // En el juego no pueden usar BasicEffect de MG, deben usar siempre efectos propios.
@@ -90,16 +95,13 @@ namespace TGC.MonoGame.TP
 
             // Asigno el efecto que cargue a cada parte del mesh.
             // Un modelo puede tener mas de 1 mesh internamente.
-            foreach (var mesh in Model.Meshes)
-            {
-                // Un mesh puede tener mas de 1 mesh part (cada 1 puede tener su propio efecto).
-                foreach (var meshPart in mesh.MeshParts)
-                {
-                    meshPart.Effect = Effect;
-                }
-            }
-
             base.LoadContent();
+        }
+
+        private Color RandomColor(Random random)
+        {
+            // Construye un color aleatorio en base a un entero de 32 bits
+            return new Color((uint)random.Next());
         }
 
         /// <summary>
@@ -117,7 +119,7 @@ namespace TGC.MonoGame.TP
                 //Salgo del juego.
                 Exit();
             }
-            
+
             // Basado en el tiempo que paso se va generando una rotacion.
             Rotation += Convert.ToSingle(gameTime.ElapsedGameTime.TotalSeconds);
 
@@ -133,16 +135,24 @@ namespace TGC.MonoGame.TP
         protected override void Draw(GameTime gameTime)
         {
             // Aca deberiamos poner toda la logia de renderizado del juego.
-            GraphicsDevice.Clear(Color.Black);
+            GraphicsDevice.Clear(Color.White); // Cambia el color de fondo a blanco
+            Effect.Parameters["View"].SetValue(_view);
+            Effect.Parameters["Projection"].SetValue(_projection);
+            _random = new Random(SEED);
+            DrawModel(_model, _world, _random);
 
-            // Para dibujar le modelo necesitamos pasarle informacion que el efecto esta esperando.
-            Effect.Parameters["View"].SetValue(View);
-            Effect.Parameters["Projection"].SetValue(Projection);
-            Effect.Parameters["DiffuseColor"].SetValue(Color.DarkBlue.ToVector3());
+            base.Draw(gameTime); // Asegúrate de llamar al método base
+        }
 
-            foreach (var mesh in Model.Meshes)
+        private void DrawModel(Model model, Matrix world, Random random)
+        {
+            var modelMeshesBaseTransforms = new Matrix[model.Bones.Count];
+            model.CopyAbsoluteBoneTransformsTo(modelMeshesBaseTransforms);
+            foreach (var mesh in model.Meshes)
             {
-                Effect.Parameters["World"].SetValue(mesh.ParentBone.Transform * World);
+                var relativeTransform = modelMeshesBaseTransforms[mesh.ParentBone.Index];
+                Effect.Parameters["World"].SetValue(relativeTransform * world);
+                Effect.Parameters["DiffuseColor"].SetValue(RandomColor(_random).ToVector3());
                 mesh.Draw();
             }
         }

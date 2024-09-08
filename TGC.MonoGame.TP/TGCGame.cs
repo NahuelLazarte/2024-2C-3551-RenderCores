@@ -3,6 +3,9 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
+using TGC.MonoGame.TP.Geometries;
+using TGC.MonoGame.TP.Cameras;
+
 namespace TGC.MonoGame.TP
 {
     /// <summary>
@@ -19,17 +22,19 @@ namespace TGC.MonoGame.TP
         public const string ContentFolderSpriteFonts = "SpriteFonts/";
         public const string ContentFolderTextures = "Textures/";
 
+
         /// <summary>
         ///     Constructor del juego.
         /// </summary>
         public TGCGame()
         {
+
             // Maneja la configuracion y la administracion del dispositivo grafico.
             Graphics = new GraphicsDeviceManager(this);
-            
+
             Graphics.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width - 100;
             Graphics.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height - 100;
-            
+
             // Para que el juego sea pantalla completa se puede usar Graphics IsFullScreen.
             // Carpeta raiz donde va a estar toda la Media.
             Content.RootDirectory = "Content";
@@ -39,12 +44,23 @@ namespace TGC.MonoGame.TP
 
         private GraphicsDeviceManager Graphics { get; }
         private SpriteBatch SpriteBatch { get; set; }
-        private Model Model { get; set; }
+
         private Effect Effect { get; set; }
         private float Rotation { get; set; }
         private Matrix World { get; set; }
         private Matrix View { get; set; }
         private Matrix Projection { get; set; }
+
+        //----AGREGADO--
+        private CubePrimitive Box { get; set; }
+        private Camera Camera { get; set; }
+        private float Yaw { get; set; }
+        private float Pitch { get; set; }
+        private float Roll { get; set; }
+        private Vector3 BoxPosition { get; set; }
+        private Vector3 BoxScale { get; set; }
+
+
 
         /// <summary>
         ///     Se llama una sola vez, al principio cuando se ejecuta el ejemplo.
@@ -57,6 +73,10 @@ namespace TGC.MonoGame.TP
             // Apago el backface culling.
             // Esto se hace por un problema en el diseno del modelo del logo de la materia.
             // Una vez que empiecen su juego, esto no es mas necesario y lo pueden sacar.
+
+
+            Camera = new TargetCamera(GraphicsDevice.Viewport.AspectRatio, new Vector3(0, 20, 60), Vector3.Zero);
+
             var rasterizerState = new RasterizerState();
             rasterizerState.CullMode = CullMode.None;
             GraphicsDevice.RasterizerState = rasterizerState;
@@ -67,6 +87,13 @@ namespace TGC.MonoGame.TP
             View = Matrix.CreateLookAt(Vector3.UnitZ * 150, Vector3.Zero, Vector3.Up);
             Projection =
                 Matrix.CreatePerspectiveFieldOfView(MathHelper.PiOver4, GraphicsDevice.Viewport.AspectRatio, 1, 250);
+
+
+            //AGREGADO------------------            
+            Box = new CubePrimitive(GraphicsDevice, 10, Color.DarkCyan, Color.DarkMagenta, Color.DarkGreen,
+                Color.MonoGameOrange, Color.Black, Color.DarkGray);
+            BoxPosition = Vector3.Zero;
+            BoxScale = new Vector3(1.5f, 2.0f, 0.5f); // Escala la caja 
 
             base.Initialize();
         }
@@ -82,7 +109,6 @@ namespace TGC.MonoGame.TP
             SpriteBatch = new SpriteBatch(GraphicsDevice);
 
             // Cargo el modelo del logo.
-            Model = Content.Load<Model>(ContentFolder3D + "tgc-logo/tgc-logo");
 
             // Cargo un efecto basico propio declarado en el Content pipeline.
             // En el juego no pueden usar BasicEffect de MG, deben usar siempre efectos propios.
@@ -90,14 +116,7 @@ namespace TGC.MonoGame.TP
 
             // Asigno el efecto que cargue a cada parte del mesh.
             // Un modelo puede tener mas de 1 mesh internamente.
-            foreach (var mesh in Model.Meshes)
-            {
-                // Un mesh puede tener mas de 1 mesh part (cada 1 puede tener su propio efecto).
-                foreach (var meshPart in mesh.MeshParts)
-                {
-                    meshPart.Effect = Effect;
-                }
-            }
+
 
             base.LoadContent();
         }
@@ -117,7 +136,14 @@ namespace TGC.MonoGame.TP
                 //Salgo del juego.
                 Exit();
             }
-            
+
+            //AGREGADO-----
+
+            var time = Convert.ToSingle(gameTime.ElapsedGameTime.TotalSeconds);
+            Yaw += time * 0.4f;
+            Pitch += time * 0.8f;
+            Roll += time * 0.9f;
+
             // Basado en el tiempo que paso se va generando una rotacion.
             Rotation += Convert.ToSingle(gameTime.ElapsedGameTime.TotalSeconds);
 
@@ -133,18 +159,29 @@ namespace TGC.MonoGame.TP
         protected override void Draw(GameTime gameTime)
         {
             // Aca deberiamos poner toda la logia de renderizado del juego.
-            GraphicsDevice.Clear(Color.Black);
+            //AGREGADO------------------
+            GraphicsDevice.Clear(Color.Orange); // Cambia el color de fondo a naranja
 
             // Para dibujar le modelo necesitamos pasarle informacion que el efecto esta esperando.
             Effect.Parameters["View"].SetValue(View);
             Effect.Parameters["Projection"].SetValue(Projection);
             Effect.Parameters["DiffuseColor"].SetValue(Color.DarkBlue.ToVector3());
 
-            foreach (var mesh in Model.Meshes)
-            {
-                Effect.Parameters["World"].SetValue(mesh.ParentBone.Transform * World);
-                mesh.Draw();
-            }
+
+
+            DrawGeometry(Box, BoxPosition, Yaw, Pitch, Roll);
+        }
+        private void DrawGeometry(GeometricPrimitive geometry, Vector3 position, float yaw, float pitch, float roll)
+        {
+            var effect = geometry.Effect;
+            // Crea la matriz de escala
+            var scaleMatrix = Matrix.CreateScale(BoxScale);
+
+            effect.World = scaleMatrix * Matrix.CreateFromYawPitchRoll(yaw, pitch, roll) * Matrix.CreateTranslation(position);
+            effect.View = Camera.View;
+            effect.Projection = Camera.Projection;
+
+            geometry.Draw(effect);
         }
 
         /// <summary>

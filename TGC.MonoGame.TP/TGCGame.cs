@@ -3,6 +3,7 @@ using System.Numerics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using TGC.MonoGame.TP.Modelos;
 
 using Vector3 = Microsoft.Xna.Framework.Vector3;
 
@@ -54,6 +55,7 @@ namespace TGC.MonoGame.TP
 
         private Model TrukModel{ get; set; }
         private Matrix TrukWorld{ get; set; }
+        private Car car{get;set;}
         
 
         /// <summary>
@@ -67,6 +69,8 @@ namespace TGC.MonoGame.TP
            // Configuramos nuestras matrices de la escena.
             BallWorld = Matrix.CreateScale(0.01f) * Matrix.CreateTranslation(0f, 3.9f, 0f);
             TrukWorld = Matrix.CreateScale(0.8f) * Matrix.CreateTranslation(20f, 3.9f, 0f);
+
+            
 
             World = Matrix.Identity;
             View = Matrix.CreateLookAt(new Vector3(0f, 25f, 100f), Vector3.Zero, Vector3.Up);
@@ -92,6 +96,8 @@ namespace TGC.MonoGame.TP
             BallModel = Content.Load<Model>(ContentFolder3D + "objetos/ball");
             TrukModel = Content.Load<Model>(ContentFolder3D + "objetos/truck");
 
+            car = new Car(Content);
+            car.LoadContent(Effect);
 
             VertexBuffer = new VertexBuffer(GraphicsDevice, typeof(VertexPositionColor), 4, BufferUsage.None);
             var vertices = new VertexPositionColor[]
@@ -143,6 +149,7 @@ namespace TGC.MonoGame.TP
                 Exit();
             }
             
+            car.Update(gameTime);
             // Basado en el tiempo que paso se va generando una rotacion.
 
             base.Update(gameTime);
@@ -170,20 +177,23 @@ namespace TGC.MonoGame.TP
             
             GraphicsDevice.Indices = IndexBuffer;
             GraphicsDevice.SetVertexBuffer(VertexBuffer);
-            
+            /*
             foreach( var passes in Effect.CurrentTechnique.Passes )
             {
                 passes.Apply();
                 GraphicsDevice.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0, 0, 2);
             }
-            
+            */
+
             /* -- */
-            CargarModelo(BallModel, BallWorld, 2);
-            CargarModelo(TrukModel, TrukWorld, 3);
-     
+            
+            //CargarModelo(BallModel, BallWorld, 2);
+            //CargarModelo(TrukModel, TrukWorld, 3);
+
+            car.Draw(gameTime, View,Projection);
+
         }
 
-       
 
         private Color RandomColor(Random random)
         {

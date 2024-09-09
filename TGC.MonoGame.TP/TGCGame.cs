@@ -1,7 +1,10 @@
 ﻿using System;
+using System.Numerics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+
+using Vector3 = Microsoft.Xna.Framework.Vector3;
 
 namespace TGC.MonoGame.TP
 {
@@ -41,10 +44,17 @@ namespace TGC.MonoGame.TP
         private SpriteBatch SpriteBatch { get; set; }
         private Model Model { get; set; }
         private Effect Effect { get; set; }
-        private float Rotation { get; set; }
+        private Model BallModel{ get; set; }
+        private Matrix BallWorld{ get; set; }
         private Matrix World { get; set; }
         private Matrix View { get; set; }
         private Matrix Projection { get; set; }
+        private VertexBuffer VertexBuffer{ get; set;}
+        private IndexBuffer IndexBuffer{ get; set; }
+
+        private Model TrukModel{ get; set; }
+        private Matrix TrukWorld{ get; set; }
+        
 
         /// <summary>
         ///     Se llama una sola vez, al principio cuando se ejecuta el ejemplo.
@@ -54,19 +64,13 @@ namespace TGC.MonoGame.TP
         {
             // La logica de inicializacion que no depende del contenido se recomienda poner en este metodo.
 
-            // Apago el backface culling.
-            // Esto se hace por un problema en el diseno del modelo del logo de la materia.
-            // Una vez que empiecen su juego, esto no es mas necesario y lo pueden sacar.
-            var rasterizerState = new RasterizerState();
-            rasterizerState.CullMode = CullMode.None;
-            GraphicsDevice.RasterizerState = rasterizerState;
-            // Seria hasta aca.
+           // Configuramos nuestras matrices de la escena.
+            BallWorld = Matrix.CreateScale(0.01f) * Matrix.CreateTranslation(0f, 3.9f, 0f);
+            TrukWorld = Matrix.CreateScale(0.8f) * Matrix.CreateTranslation(20f, 3.9f, 0f);
 
-            // Configuramos nuestras matrices de la escena.
             World = Matrix.Identity;
-            View = Matrix.CreateLookAt(Vector3.UnitZ * 150, Vector3.Zero, Vector3.Up);
-            Projection =
-                Matrix.CreatePerspectiveFieldOfView(MathHelper.PiOver4, GraphicsDevice.Viewport.AspectRatio, 1, 250);
+            View = Matrix.CreateLookAt(new Vector3(0f, 25f, 100f), Vector3.Zero, Vector3.Up);
+            Projection = Matrix.CreatePerspectiveFieldOfView(MathHelper.PiOver4, GraphicsDevice.Viewport.AspectRatio, 1f, 1000f);
 
             base.Initialize();
         }
@@ -81,19 +85,40 @@ namespace TGC.MonoGame.TP
             // Aca es donde deberiamos cargar todos los contenido necesarios antes de iniciar el juego.
             SpriteBatch = new SpriteBatch(GraphicsDevice);
 
-            // Cargo el modelo del logo.
-            Model = Content.Load<Model>(ContentFolder3D + "tgc-logo/tgc-logo");
-
             // Cargo un efecto basico propio declarado en el Content pipeline.
             // En el juego no pueden usar BasicEffect de MG, deben usar siempre efectos propios.
             Effect = Content.Load<Effect>(ContentFolderEffects + "BasicShader");
 
-            // Asigno el efecto que cargue a cada parte del mesh.
-            // Un modelo puede tener mas de 1 mesh internamente.
-            foreach (var mesh in Model.Meshes)
+            BallModel = Content.Load<Model>(ContentFolder3D + "objetos/ball");
+            TrukModel = Content.Load<Model>(ContentFolder3D + "objetos/truck");
+
+
+            VertexBuffer = new VertexBuffer(GraphicsDevice, typeof(VertexPositionColor), 4, BufferUsage.None);
+            var vertices = new VertexPositionColor[]
             {
-                // Un mesh puede tener mas de 1 mesh part (cada 1 puede tener su propio efecto).
-                foreach (var meshPart in mesh.MeshParts)
+                new VertexPositionColor(new Vector3(150f, 0f, 150f), Color.Blue),
+                new VertexPositionColor(new Vector3(150f, 0f, -150f), Color.Red),
+                new VertexPositionColor(new Vector3(-150f, 0f, 150f), Color.Green),
+                new VertexPositionColor(new Vector3(-150f, 0f, -150f), Color.Yellow),
+            };
+            VertexBuffer.SetData(vertices);
+
+            IndexBuffer = new IndexBuffer(GraphicsDevice, IndexElementSize.SixteenBits, 6, BufferUsage.None);
+            var indices = new ushort[]{ 0, 1, 2, 1, 3, 2};
+
+            IndexBuffer.SetData(indices);
+
+            foreach( var mesh in BallModel.Meshes )
+            {
+                foreach( var meshPart in mesh.MeshParts )
+                {
+                    meshPart.Effect = Effect;
+                }
+            }
+
+            foreach( var mesh in TrukModel.Meshes )
+            {
+                foreach( var meshPart in mesh.MeshParts )
                 {
                     meshPart.Effect = Effect;
                 }
@@ -119,9 +144,6 @@ namespace TGC.MonoGame.TP
             }
             
             // Basado en el tiempo que paso se va generando una rotacion.
-            Rotation += Convert.ToSingle(gameTime.ElapsedGameTime.TotalSeconds);
-
-            World = Matrix.CreateRotationY(Rotation);
 
             base.Update(gameTime);
         }
@@ -133,16 +155,54 @@ namespace TGC.MonoGame.TP
         protected override void Draw(GameTime gameTime)
         {
             // Aca deberiamos poner toda la logia de renderizado del juego.
-            GraphicsDevice.Clear(Color.Black);
+            GraphicsDevice.Clear(Color.CornflowerBlue);
+            Effect.CurrentTechnique = Effect.Techniques["BasicColorDrawing"];
 
-            // Para dibujar le modelo necesitamos pasarle informacion que el efecto esta esperando.
+            var rasterizerState = new RasterizerState();
+            rasterizerState.CullMode = CullMode.None;
+            GraphicsDevice.RasterizerState = rasterizerState;
+
+            Effect.Parameters["World"].SetValue(World);
             Effect.Parameters["View"].SetValue(View);
             Effect.Parameters["Projection"].SetValue(Projection);
-            Effect.Parameters["DiffuseColor"].SetValue(Color.DarkBlue.ToVector3());
-
-            foreach (var mesh in Model.Meshes)
+            Effect.Parameters["DiffuseColor"].SetValue(Color.Gray.ToVector3());
+            
+            
+            GraphicsDevice.Indices = IndexBuffer;
+            GraphicsDevice.SetVertexBuffer(VertexBuffer);
+            
+            foreach( var passes in Effect.CurrentTechnique.Passes )
             {
-                Effect.Parameters["World"].SetValue(mesh.ParentBone.Transform * World);
+                passes.Apply();
+                GraphicsDevice.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0, 0, 2);
+            }
+            
+            /* -- */
+            CargarModelo(BallModel, BallWorld, 2);
+            CargarModelo(TrukModel, TrukWorld, 3);
+     
+        }
+
+       
+
+        private Color RandomColor(Random random)
+        {
+            return new Color((uint)random.Next());
+        }
+
+        private void CargarModelo(Model _modelo, Matrix _modelWorld, int _seed)
+        {
+            /*Dibujo el modelo del objeto */
+            Random _random = new Random(_seed);
+            var modelMeshesBaseTransforms = new Matrix[_modelo.Bones.Count];
+            _modelo.CopyAbsoluteBoneTransformsTo(modelMeshesBaseTransforms);
+
+            foreach( var mesh in _modelo.Meshes )
+            {
+                var relativeTransform = modelMeshesBaseTransforms[mesh.ParentBone.Index];
+                Effect.Parameters["World"].SetValue(relativeTransform * _modelWorld);
+                Effect.Parameters["DiffuseColor"].SetValue(RandomColor(_random).ToVector3());
+
                 mesh.Draw();
             }
         }

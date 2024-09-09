@@ -24,11 +24,14 @@ float Time = 0;
 struct VertexShaderInput
 {
 	float4 Position : POSITION0;
+	float3 Color : COLOR0;
+	
 };
 
 struct VertexShaderOutput
 {
 	float4 Position : SV_POSITION;
+	float3 Color : COLOR0; 
 };
 
 VertexShaderOutput MainVS(in VertexShaderInput input)
@@ -41,6 +44,9 @@ VertexShaderOutput MainVS(in VertexShaderInput input)
     float4 viewPosition = mul(worldPosition, View);	
 	// View space to Projection space
     output.Position = mul(viewPosition, Projection);
+
+	// Propagamos el color
+	output.Color = input.Color;
 
     return output;
 }

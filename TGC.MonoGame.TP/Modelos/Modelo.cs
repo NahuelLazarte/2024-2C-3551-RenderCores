@@ -21,11 +21,13 @@ namespace TGC.MonoGame.TP.Modelos
         public void SetRotation(Matrix newRotation){rotation = newRotation;}
         public void SetScale(Matrix newScale){scale = newScale;}
         public void SetColor(Vector3 newColor){color = newColor;}
+        public void SetWorld(Matrix newWorld){}
 
         public Vector3 GetPosition(){return position;}
         public Matrix GetRotation(){return rotation;}
         public Matrix GetScale(){return scale;}
         public Vector3 GetColor(){return color;}
+        public Matrix GetWorld(){return World;}
 
         public void LoadContent(Effect effect)
         {
@@ -44,9 +46,7 @@ namespace TGC.MonoGame.TP.Modelos
         {
             color = Color;
             position = Position;
-            rotation = Rotation;
-            
-            
+            rotation = Rotation;            
             //Model = Content.Load<Model>("Models/" + path);// "Models/"  es lo mismo que poner ContentFolder3D
         }
 

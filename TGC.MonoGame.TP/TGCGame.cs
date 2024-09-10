@@ -45,18 +45,17 @@ namespace TGC.MonoGame.TP
         private SpriteBatch SpriteBatch { get; set; }
         private Model Model { get; set; }
         private Effect Effect { get; set; }
-        private Model BallModel{ get; set; }
-        private Matrix BallWorld{ get; set; }
+
+
         private Matrix World { get; set; }
         private Matrix View { get; set; }
         private Matrix Projection { get; set; }
         private VertexBuffer VertexBuffer{ get; set;}
         private IndexBuffer IndexBuffer{ get; set; }
 
-        private Model TrukModel{ get; set; }
-        private Matrix TrukWorld{ get; set; }
         private Car car{get;set;}
           private Car car2{get;set;}
+          private Sphere esfera{get;set;}
         
 
         /// <summary>
@@ -67,11 +66,7 @@ namespace TGC.MonoGame.TP
         {
             // La logica de inicializacion que no depende del contenido se recomienda poner en este metodo.
 
-           // Configuramos nuestras matrices de la escena.
-            BallWorld = Matrix.CreateScale(0.01f) * Matrix.CreateTranslation(0f, 3.9f, 0f);
-            TrukWorld = Matrix.CreateScale(0.8f) * Matrix.CreateTranslation(20f, 3.9f, 0f);
-
-            
+           // Configuramos nuestras matrices de la escena.           
 
             World = Matrix.Identity;
             View = Matrix.CreateLookAt(new Vector3(0f, 25f, 100f), Vector3.Zero, Vector3.Up);
@@ -94,15 +89,17 @@ namespace TGC.MonoGame.TP
             // En el juego no pueden usar BasicEffect de MG, deben usar siempre efectos propios.
             Effect = Content.Load<Effect>(ContentFolderEffects + "BasicShader");
 
-            BallModel = Content.Load<Model>(ContentFolder3D + "objetos/ball");
-            TrukModel = Content.Load<Model>(ContentFolder3D + "objetos/truck");
 
-            car = new Car(Content,new Vector3(-20f, 3.9f, 0f),Matrix.CreateRotationY(0.5f));
-            car2 = new Car(Content,new Vector3(0f, 3.9f, 0f),Matrix.CreateRotationY(0.5f));
+
+            car = new Car(Content,new Vector3(-20f, 3.9f, 0f),Matrix.CreateRotationY(0.5f),new Vector3(0, 1, 0));
+            car2 = new Car(Content,new Vector3(0f, 3.9f, 0f),Matrix.CreateRotationY(0.5f),new Vector3(1, 1, 0));
+
+            esfera = new Sphere(Content,new Vector3(-10f, 3.9f, 0f),Matrix.CreateRotationY(0.5f),new Vector3(0, 1, 0));
 
 
             car.LoadContent(Effect);
             car2.LoadContent(Effect);
+            esfera.LoadContent(Effect);
 
             VertexBuffer = new VertexBuffer(GraphicsDevice, typeof(VertexPositionColor), 4, BufferUsage.None);
             var vertices = new VertexPositionColor[]
@@ -119,21 +116,7 @@ namespace TGC.MonoGame.TP
 
             IndexBuffer.SetData(indices);
 
-            foreach( var mesh in BallModel.Meshes )
-            {
-                foreach( var meshPart in mesh.MeshParts )
-                {
-                    meshPart.Effect = Effect;
-                }
-            }
-
-            foreach( var mesh in TrukModel.Meshes )
-            {
-                foreach( var meshPart in mesh.MeshParts )
-                {
-                    meshPart.Effect = Effect;
-                }
-            }
+            
 
             base.LoadContent();
         }
@@ -154,7 +137,7 @@ namespace TGC.MonoGame.TP
                 Exit();
             }
             
-            //car.setPosition(new Vector3(0f, 3.9f, 0f));
+            car.SetPosition(new Vector3(0f, -30.0f, 0f));
 
             car.Update(gameTime);
             car2.Update(gameTime);
@@ -185,47 +168,23 @@ namespace TGC.MonoGame.TP
             
             GraphicsDevice.Indices = IndexBuffer;
             GraphicsDevice.SetVertexBuffer(VertexBuffer);
+            
             /*
             foreach( var passes in Effect.CurrentTechnique.Passes )
             {
                 passes.Apply();
                 GraphicsDevice.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0, 0, 2);
-            }
-            */
-
-            /* -- */
+            }*/
             
-            //CargarModelo(BallModel, BallWorld, 2);
-            //CargarModelo(TrukModel, TrukWorld, 3);
+
 
             car.Draw();
 
             car2.Draw();
+            esfera.Draw();
 
         }
 
-
-        private Color RandomColor(Random random)
-        {
-            return new Color((uint)random.Next());
-        }
-
-        private void CargarModelo(Model _modelo, Matrix _modelWorld, int _seed)
-        {
-            /*Dibujo el modelo del objeto */
-            Random _random = new Random(_seed);
-            var modelMeshesBaseTransforms = new Matrix[_modelo.Bones.Count];
-            _modelo.CopyAbsoluteBoneTransformsTo(modelMeshesBaseTransforms);
-
-            foreach( var mesh in _modelo.Meshes )
-            {
-                var relativeTransform = modelMeshesBaseTransforms[mesh.ParentBone.Index];
-                Effect.Parameters["World"].SetValue(relativeTransform * _modelWorld);
-                Effect.Parameters["DiffuseColor"].SetValue(RandomColor(_random).ToVector3());
-
-                mesh.Draw();
-            }
-        }
 
         /// <summary>
         ///     Libero los recursos que se cargaron en el juego.

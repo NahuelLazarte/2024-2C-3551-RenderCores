@@ -5,15 +5,19 @@ using Microsoft.Xna.Framework.Graphics;
 namespace TGC.MonoGame.TP.Modelos
 {
     class Sphere : Modelo
-    {         
-        public Sphere(ContentManager content, Vector3 position, Matrix rotation, Vector3 color)
+    {    
+
+        private const string Path = "Models/objetos/ball"; // "Models/"  es lo mismo que poner ContentFolder3D
+
+        public Sphere(ContentManager content, Vector3 position, Matrix rotation, Color color)
             : base(content, position, rotation, color)
         {
-            string path = "objetos/ball";//poner acá la ruta del modelo 3D
-            Model3D = content.Load<Model>("Models/" + path);// "Models/"  es lo mismo que poner ContentFolder3D
+            
+            Model3D = content.Load<Model>(Path);
 
-            scale = Matrix.CreateScale(0.01f); //al poner la escala acá aplica para todo los modelos de este tipo
-            World = scale * rotation * Matrix.CreateTranslation(position);// esto tiene que ir siempre
+            SetScale(Matrix.CreateScale(0.01f)); //al poner la escala acá aplica para todo los modelos de este tipo
+            
+            World = Scale * rotation * Matrix.CreateTranslation(position); // esto tiene que ir siempre
         }
     }
 }

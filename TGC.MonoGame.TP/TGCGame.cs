@@ -56,6 +56,7 @@ namespace TGC.MonoGame.TP
         private Model TrukModel{ get; set; }
         private Matrix TrukWorld{ get; set; }
         private Car car{get;set;}
+          private Car car2{get;set;}
         
 
         /// <summary>
@@ -96,8 +97,12 @@ namespace TGC.MonoGame.TP
             BallModel = Content.Load<Model>(ContentFolder3D + "objetos/ball");
             TrukModel = Content.Load<Model>(ContentFolder3D + "objetos/truck");
 
-            car = new Car(Content);
+            car = new Car(Content,new Vector3(-20f, 3.9f, 0f),Matrix.CreateRotationY(0.5f));
+            car2 = new Car(Content,new Vector3(0f, 3.9f, 0f),Matrix.CreateRotationY(0.5f));
+
+
             car.LoadContent(Effect);
+            car2.LoadContent(Effect);
 
             VertexBuffer = new VertexBuffer(GraphicsDevice, typeof(VertexPositionColor), 4, BufferUsage.None);
             var vertices = new VertexPositionColor[]
@@ -149,7 +154,10 @@ namespace TGC.MonoGame.TP
                 Exit();
             }
             
+            //car.setPosition(new Vector3(0f, 3.9f, 0f));
+
             car.Update(gameTime);
+            car2.Update(gameTime);
             // Basado en el tiempo que paso se va generando una rotacion.
 
             base.Update(gameTime);
@@ -190,7 +198,9 @@ namespace TGC.MonoGame.TP
             //CargarModelo(BallModel, BallWorld, 2);
             //CargarModelo(TrukModel, TrukWorld, 3);
 
-            car.Draw(gameTime, View,Projection);
+            car.Draw();
+
+            car2.Draw();
 
         }
 

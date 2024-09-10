@@ -11,10 +11,23 @@ namespace TGC.MonoGame.TP.Modelos
 {
     class Car
     {
-        private Model Model { get; set; }
-        private Vector3 Position { get; set; } = Vector3.Zero;        
+        private Model Model { get; set; } // variable del modelo
+        private Vector3 position { get; set; } // posicion del modelo 
+        private Matrix rotation{ get; set; } // rotacion del modelo
+        private Matrix scale { get; set; } // escala del modelo     
         public Matrix World { get; set; }
         private Effect Effect { get; set; }
+
+        public void setPosition(Vector3 newPosition){
+            position = newPosition;
+        }
+        public void setRotation(Matrix newRotation){
+            rotation = newRotation;
+        }
+        public void setScale(Matrix newScale){
+            scale = newScale;
+        }
+
         public void LoadContent(Effect effect)
         {
             Effect = effect;    
@@ -28,39 +41,25 @@ namespace TGC.MonoGame.TP.Modelos
             }        
         }
 
-        public Car(ContentManager Content)
+        public Car(ContentManager Content, Vector3 Position,Matrix Rotation)
         {
-            World = Matrix.CreateScale(0.01f) * Matrix.CreateTranslation(0f, 3.9f, 0f);
-            string path = "objetos/ball";
-            Model = Content.Load<Model>("Models/" + path);// "Models/"  es lo mismo que poner ContentFolder3D
+            position = Position;
+            rotation = Rotation;
+            scale = Matrix.CreateScale(0.9f); //poner acá la escala que va aplicar para todos 
 
+            World = scale* rotation * Matrix.CreateTranslation(position);
+
+            string path = "objetos/truck";//poner acá la ruta del modelo 3D
+            Model = Content.Load<Model>("Models/" + path);// "Models/"  es lo mismo que poner ContentFolder3D
         }
 
         public void Update(GameTime gameTime)
         {
-            /*
-            var elapsedTime = Convert.ToSingle(gameTime.ElapsedGameTime.TotalSeconds);
-            Position += Vector3.Up * elapsedTime * 5f;
-            var quaternion = Quaternion.CreateFromAxisAngle(Vector3.Up,MathF.PI);
-            World = Matrix.CreateScale(0.2f) * Matrix.CreateFromQuaternion(quaternion);
-            */
+             World = scale* rotation * Matrix.CreateTranslation(position);
         }
 
-        public void Draw(GameTime gameTime, Matrix view, Matrix projection)
+        public void Draw()
         {
-            /*
-            Effect.Parameters["View"].SetValue(view);
-            Effect.Parameters["Projection"].SetValue(projection);
-            Effect.Parameters["DiffuseColor"].SetValue(Color.DarkBlue.ToVector3());
-
-            foreach(var mesh in Model.Meshes)
-            {
-                var world = mesh.ParentBone.Transform * World;
-                Effect.Parameters["World"].SetValue(world);
-                mesh.Draw();
-            }
-            */
-
             var modelMeshesBaseTransforms = new Matrix[Model.Bones.Count];
             Model.CopyAbsoluteBoneTransformsTo(modelMeshesBaseTransforms);
 

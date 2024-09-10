@@ -35,6 +35,7 @@ namespace TGC.MonoGame.TP.Modelos
 
         public void Update(GameTime gameTime)
         {
+            
             /*
             var elapsedTime = Convert.ToSingle(gameTime.ElapsedGameTime.TotalSeconds);
             Position += Vector3.Up * elapsedTime * 5f;

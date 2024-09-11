@@ -14,10 +14,11 @@ namespace TGC.MonoGame.TP.Pistas{
         public const string ContentFolderEffects = "Effects/";
         public Effect Effect { get; set; }
 
-        public const float DistanceBetweenFloor = 12.33f;
-        public const float DistanceBetweenWall = 18f;
+        public const float DistanceBetweenStraight = 30f;
         public Matrix scale = Matrix.CreateScale(0.03f);
-        public const float distanciaEscaleras = 3f;
+        public Matrix rotation = Matrix.CreateRotationY(1.5708f);
+        public float XAxisConst = 44.875f;
+        public float YAxisConst = 15.125f;
         public int index { get; set; }
 
         public Model PistaRecta { get; set; }
@@ -33,11 +34,24 @@ namespace TGC.MonoGame.TP.Pistas{
         private void Initialize() {
           
             PistaRectaWorlds = new Matrix[]{
-                scale * Matrix.Identity,
+                scale *
+                    Matrix.Identity,
+                scale *
+                    Matrix.CreateTranslation(Vector3.Left * DistanceBetweenStraight),
+                scale * 
+                    Matrix.CreateRotationY(1.5708f) *
+                    Matrix.CreateTranslation((Vector3.Right + Vector3.Backward) * DistanceBetweenStraight * 2),
             };
 
             PistaCurvaWorlds = new Matrix[]{
-            
+                scale * 
+                    Matrix.CreateTranslation(Vector3.Right * XAxisConst + Vector3.Backward * YAxisConst),
+                scale * 
+                    Matrix.CreateRotationY(1.5708f * 2) *
+                    Matrix.CreateTranslation(Vector3.Left * (XAxisConst + DistanceBetweenStraight) + Vector3.Forward * YAxisConst),
+                scale * 
+                    Matrix.CreateRotationY(1.5708f * 5) *
+                    Matrix.CreateTranslation(Vector3.Left * (XAxisConst + DistanceBetweenStraight) + Vector3.Forward * (YAxisConst + DistanceBetweenStraight * 2)),
             };
 
         }
@@ -45,7 +59,7 @@ namespace TGC.MonoGame.TP.Pistas{
 
         public void LoadContent(ContentManager Content){
             PistaRecta = Content.Load<Model>(ContentFolder3D + "pistas/road_straight_fix");
-            PistaCurva = Content.Load<Model>(ContentFolder3D + "pistas/road_curve");
+            PistaCurva = Content.Load<Model>(ContentFolder3D + "pistas/road_curve_fix");
             Effect = Content.Load<Effect>(ContentFolderEffects + "BasicShader");
             foreach (var mesh in PistaRecta.Meshes){
                 foreach (var meshPart in mesh.MeshParts){
@@ -67,7 +81,7 @@ namespace TGC.MonoGame.TP.Pistas{
         public void Draw(GameTime gameTime, Matrix view, Matrix projection){
             Effect.Parameters["View"].SetValue(view);
             Effect.Parameters["Projection"].SetValue(projection);
-            Effect.Parameters["DiffuseColor"].SetValue(Color.Blue.ToVector3());
+            Effect.Parameters["DiffuseColor"].SetValue(Color.DarkRed.ToVector3());
             foreach (var mesh in PistaRecta.Meshes){
                 for(int i=0; i < PistaRectaWorlds.Length; i++){
                     Matrix _pistaRectaWorld = PistaRectaWorlds[i];
@@ -75,6 +89,7 @@ namespace TGC.MonoGame.TP.Pistas{
                     mesh.Draw();
                 }
             }
+            Effect.Parameters["DiffuseColor"].SetValue(Color.DarkBlue.ToVector3());
             foreach (var mesh in PistaCurva.Meshes){
                 for(int i=0; i < PistaCurvaWorlds.Length; i++){
                     Matrix _pisoWorld = PistaCurvaWorlds[i];

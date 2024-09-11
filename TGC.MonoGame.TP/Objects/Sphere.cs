@@ -41,7 +41,7 @@ namespace TGC.MonoGame.TP.Objects{
             
             //Inicializacion de la esfera
             SpherePosition = initialPosition;
-            SphereScale = Matrix.CreateScale(0.024f);
+            SphereScale = Matrix.CreateScale(0.010f);
 
             //Atributos para el movimiento de la esfera
             SphereAcceleration = Vector3.Down * Gravity;

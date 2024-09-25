@@ -5,11 +5,13 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using TGC.MonoGame.TP;
+using TGC.MonoGame.TP.Collisions;
+using TGC.MonoGame.TP.Gizmos;
+using TGC.MonoGame.TP.Gizmos.Geometries;
 
 namespace TGC.MonoGame.TP.Pistas{
     public class Pista{
-
+        public Gizmos.Gizmos Gizmos { get; }
         public const string ContentFolder3D = "Models/";
         public const string ContentFolderEffects = "Effects/";
         public Effect Effect { get; set; }
@@ -26,6 +28,8 @@ namespace TGC.MonoGame.TP.Pistas{
 
         public Matrix[] PistaRectaWorlds { get; set; }
         public Matrix[] PistaCurvaWorlds { get; set; }
+
+        public BoundingBox[] Colliders { get; set; }
 
         public Pista() {
             Initialize();
@@ -53,6 +57,20 @@ namespace TGC.MonoGame.TP.Pistas{
                     Matrix.CreateRotationY(1.5708f * 5) *
                     Matrix.CreateTranslation(Vector3.Left * (XAxisConst + DistanceBetweenStraight) + Vector3.Forward * (YAxisConst + DistanceBetweenStraight * 2)),
             };
+
+            Colliders = new BoundingBox[PistaRectaWorlds.Length + PistaCurvaWorlds.Length];
+
+            int index = 0;
+            int AuxIndex1 = 0;
+            int AuxIndex2 = 0;
+            for(; AuxIndex1 < PistaRectaWorlds.Length; AuxIndex1++){
+                Colliders[index] = BoundingVolumesExtensions.FromMatrix(PistaRectaWorlds[AuxIndex1]);
+                index++;
+            }
+            for(; AuxIndex2 < PistaCurvaWorlds.Length; AuxIndex2++){
+                Colliders[index] = BoundingVolumesExtensions.FromMatrix(PistaCurvaWorlds[AuxIndex2]);
+                index++;
+            }
 
         }
 
@@ -97,6 +115,12 @@ namespace TGC.MonoGame.TP.Pistas{
                     mesh.Draw();
                 }
             }
+            /*for (int index = 0; index < Colliders.Length; index++){
+                var box = Colliders[index];
+                var center = BoundingVolumesExtensions.GetCenter(box);
+                var extents = BoundingVolumesExtensions.GetExtents(box);
+                Gizmos.DrawCube(center, extents * 2f, Color.Red);
+            }*/
         }
     }
 }

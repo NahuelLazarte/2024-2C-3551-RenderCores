@@ -7,6 +7,8 @@ using Microsoft.Xna.Framework.Input;
 using TGC.MonoGame.TP.Objects;
 using TGC.MonoGame.TP.Pistas;
 using Vector3 = Microsoft.Xna.Framework.Vector3;
+using System.Net.Http.Headers;
+using TGC.MonoGame.TP.Collisions;
 
 namespace TGC.MonoGame.TP{
     public class TGCGame : Game{
@@ -16,17 +18,7 @@ namespace TGC.MonoGame.TP{
         public const string ContentFolderSounds = "Sounds/";
         public const string ContentFolderSpriteFonts = "SpriteFonts/";
         public const string ContentFolderTextures = "Textures/";
-
-        public TGCGame(){
-            Graphics = new GraphicsDeviceManager(this);
-
-            Graphics.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width - 100;
-            Graphics.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height - 100;
-
-            Content.RootDirectory = "Content";
-            IsMouseVisible = true;
-        }
-
+        
         private GraphicsDeviceManager Graphics { get; }
         private SpriteBatch SpriteBatch { get; set; }
         private Model Model { get; set; }
@@ -40,29 +32,35 @@ namespace TGC.MonoGame.TP{
 
         private FollowCamera Camera { get; set; }
         private Sphere sphere { get; set; }
+        private Gizmos.Gizmos Gizmos;
         private Pista pista { get; set; }
 
+        public TGCGame(){
+            Graphics = new GraphicsDeviceManager(this);
+
+            Graphics.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width - 100;
+            Graphics.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height - 100;
+
+            Content.RootDirectory = "Content";
+            IsMouseVisible = true;
+
+            Gizmos = new Gizmos.Gizmos();
+        }
+
         protected override void Initialize(){
-            var rasterizerState = new RasterizerState();
-            rasterizerState.CullMode = CullMode.None;
-            GraphicsDevice.RasterizerState = rasterizerState;
-
-            World = Matrix.Identity;
-            View = Matrix.CreateLookAt(Vector3.UnitZ * 150, Vector3.Zero, Vector3.Up);
-            Projection = Matrix.CreatePerspectiveFieldOfView(MathHelper.PiOver4, GraphicsDevice.Viewport.AspectRatio, 1, 250);
-
             Camera = new FollowCamera(GraphicsDevice, new Vector3(0, 5, 15), Vector3.Zero, Vector3.Up);
 
             pista = new Pista();
-            sphere = new Sphere(new (0f,30f,0f));
+            sphere = new Sphere(new Vector3(0f,30f,0f));
             sphere.SphereCamera = Camera;
+            sphere.Colliders = pista.Colliders;
 
             base.Initialize();
         }
 
         protected override void LoadContent(){
-            sphere.LoadContent(Content);
             pista.LoadContent(Content);
+            sphere.LoadContent(Content);
 
             base.LoadContent();
         }
@@ -78,7 +76,7 @@ namespace TGC.MonoGame.TP{
             pista.Update(gameTime);
 
             Camera.Update(sphere.SpherePosition);
-
+            //Gizmos.UpdateViewProjection(Camera.ViewMatrix, Camera.ProjectionMatrix);
             base.Update(gameTime);
         }
 
@@ -88,12 +86,14 @@ namespace TGC.MonoGame.TP{
             sphere.Draw(gameTime, Camera.ViewMatrix, Camera.ProjectionMatrix);
             pista.Draw(gameTime, Camera.ViewMatrix, Camera.ProjectionMatrix);
 
-            var originalRasterizerState = GraphicsDevice.RasterizerState;
+            /*var originalRasterizerState = GraphicsDevice.RasterizerState;
             var rasterizerState = new RasterizerState();
             rasterizerState.CullMode = CullMode.None;
             Graphics.GraphicsDevice.RasterizerState = rasterizerState;
 
-            GraphicsDevice.RasterizerState = originalRasterizerState;
+            GraphicsDevice.RasterizerState = originalRasterizerState;*/
+
+            //Gizmos.DrawSphere(sphere.SphereCollider.Center, sphere.SphereCollider.Radius * Vector3.One, Color.Red);
         }
 
         protected override void UnloadContent(){

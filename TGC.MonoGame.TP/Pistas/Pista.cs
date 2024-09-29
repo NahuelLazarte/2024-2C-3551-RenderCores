@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Net.Mime;
+using System.Numerics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -96,7 +97,8 @@ namespace TGC.MonoGame.TP.Pistas{
 
         }
 
-        public void Draw(GameTime gameTime, Matrix view, Matrix projection){
+        public void Draw(GameTime gameTime, Matrix view, Matrix projection)
+        {
             Effect.Parameters["View"].SetValue(view);
             Effect.Parameters["Projection"].SetValue(projection);
             Effect.Parameters["DiffuseColor"].SetValue(Color.DarkRed.ToVector3());
@@ -122,5 +124,34 @@ namespace TGC.MonoGame.TP.Pistas{
                 Gizmos.DrawCube(center, extents * 2f, Color.Red);
             }*/
         }
+
+        public void DrawPistaRecta(GameTime gameTime, Matrix view, Matrix projection, Vector3 position)
+        {
+            Effect.Parameters["View"].SetValue(view);
+            Effect.Parameters["Projection"].SetValue(projection);
+            Effect.Parameters["DiffuseColor"].SetValue(Color.DarkRed.ToVector3());
+
+            PistaRectaWorlds = new Matrix[]{
+                scale *
+                    Matrix.Identity,
+                scale *
+                    Matrix.CreateTranslation(position.Left * DistanceBetweenStraight),
+                scale *
+                    Matrix.CreateRotationY(1.5708f) *
+                    Matrix.CreateTranslation((position.Right + position.Backward) * DistanceBetweenStraight * 2),
+            };
+
+            foreach (var mesh in PistaRecta.Meshes)
+            {
+                for (int i = 0; i < PistaRectaWorlds.Length; i++)
+                {
+                    Matrix _pistaRectaWorld = PistaRectaWorlds[i];
+                    Effect.Parameters["World"].SetValue(mesh.ParentBone.Transform * _pistaRectaWorld);
+                    mesh.Draw();
+                }
+            }            
+        }
+
+
     }
 }

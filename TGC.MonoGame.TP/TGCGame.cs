@@ -35,6 +35,10 @@ namespace TGC.MonoGame.TP{
         private Gizmos.Gizmos Gizmos;
         private Pista pista { get; set; }
 
+        private Vector3 _posicionPista { get; set; }
+        private Vector3 _dimensionesRectaEjeX { get; set; }
+
+
         public TGCGame(){
             Graphics = new GraphicsDeviceManager(this);
 
@@ -54,6 +58,9 @@ namespace TGC.MonoGame.TP{
             sphere = new Sphere(new Vector3(0f,30f,0f));
             sphere.SphereCamera = Camera;
             sphere.Colliders = pista.Colliders;
+            _posicionPista = new Vector3(0f, 0f, 0f);
+            
+            _dimensionesRectaEjeX = new Vector3(30f, 0f, 30f);
 
             base.Initialize();
         }
@@ -99,6 +106,27 @@ namespace TGC.MonoGame.TP{
         protected override void UnloadContent(){
             Content.Unload();
             base.UnloadContent();
+        }
+
+        void AgregarPista(Pista tipoPista)
+        {
+            switch (tipoPista)
+            {
+                case TipoPista.PistaRecta:
+                    tipoPista.DrawPistaRecta(gameTime, Camera.ViewMatrix, Camera.ProjectionMatrix, _posicionPista);
+                    Vector3 dimensionEnEje = _dimensionesRectaEjeX.X;
+                    _pistasEjeX.Add(Matrix.CreateTranslation(_posicionPista + dimensionEnEje));
+                    _posicionPista += dimensionEnEje * 2;
+                    break;
+                
+                case TipoPista.PistaCurva:
+                    tipoPista.DrawPistaCurva(gameTime, Camera.ViewMatrix, Camera.ProjectionMatrix, _posicionPista);
+                    Vector3 dimensionEnEje = _dimensionesEsquina.X;
+                    _pistasEsquinaDerecha.Add(Matrix.CreateTranslation(_posicionPista + dimensionEnEje));
+                    _posicionPista += _dimensionesEsquina.X + _dimensionesEsquina.Z;
+                    break;
+                
+            }
         }
     }
 }

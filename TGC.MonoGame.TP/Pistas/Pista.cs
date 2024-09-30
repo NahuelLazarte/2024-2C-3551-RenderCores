@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Net.Mime;
-using System.Numerics;
+
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -135,10 +135,10 @@ namespace TGC.MonoGame.TP.Pistas{
                 scale *
                     Matrix.Identity,
                 scale *
-                    Matrix.CreateTranslation(position.Left * DistanceBetweenStraight),
+                    Matrix.CreateTranslation(Vector3.Left * DistanceBetweenStraight), 
                 scale *
                     Matrix.CreateRotationY(1.5708f) *
-                    Matrix.CreateTranslation((position.Right + position.Backward) * DistanceBetweenStraight * 2),
+                    Matrix.CreateTranslation((Vector3.Right + Vector3.Backward) * DistanceBetweenStraight * 2),
             };
 
             foreach (var mesh in PistaRecta.Meshes)
@@ -155,7 +155,7 @@ namespace TGC.MonoGame.TP.Pistas{
 
     }
 }
-/* Con esto sacaremos el tamaño al hacer (boundingBox.max - boundingBox.min) sobre cada eje y tendremos sus dimensiones,
+/* Con esto sacaremos el tamaï¿½o al hacer (boundingBox.max - boundingBox.min) sobre cada eje y tendremos sus dimensiones,
  * public BoundingBox GetBounds()
     {
         Vector3 min = new Vector3(float.MaxValue, float.MaxValue, float.MaxValue);

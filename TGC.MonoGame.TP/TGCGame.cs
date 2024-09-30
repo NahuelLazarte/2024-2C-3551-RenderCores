@@ -111,7 +111,7 @@ namespace TGC.MonoGame.TP{
         void AgregarPista(Pista tipoPista)
         {
             switch (tipoPista)
-            {
+            {/*
                 case TipoPista.PistaRecta:
                     tipoPista.DrawPistaRecta(gameTime, Camera.ViewMatrix, Camera.ProjectionMatrix, _posicionPista);
                     Vector3 dimensionEnEje = _dimensionesRectaEjeX.X;
@@ -125,7 +125,7 @@ namespace TGC.MonoGame.TP{
                     _pistasEsquinaDerecha.Add(Matrix.CreateTranslation(_posicionPista + dimensionEnEje));
                     _posicionPista += _dimensionesEsquina.X + _dimensionesEsquina.Z;
                     break;
-                
+                */
             }
         }
     }

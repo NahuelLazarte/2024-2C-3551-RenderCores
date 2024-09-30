@@ -62,15 +62,25 @@ namespace TGC.MonoGame.TP
         protected override void Initialize()
         {
             World = Matrix.Identity;
-            Projection = Matrix.CreatePerspectiveFieldOfView(MathHelper.PiOver4, GraphicsDevice.Viewport.AspectRatio, 0.1f, 1000f);
+            Projection = Matrix.CreatePerspectiveFieldOfView
+            (
+                MathHelper.ToRadians(60), // Campo de visión vertical (en radianes)
+                GraphicsDevice.Viewport.AspectRatio, // Relación de aspecto
+                0.1f, // Plano de recorte cercano
+                50000f // Plano de recorte lejano
+            );
 
             CarList = new List<Car>();
             TreeList = new List<Tree>();
             TunnelList = new List<Tunnel>();
             Wave_AList = new List<Wave_A>();
 
-            CameraTarget = new Vector3(-10f, 0f, -10f);//Vector3.Zero;
-            Distance = 400;
+            CameraTarget = Vector3.Zero;//new Vector3(-10f, 0f, -10f);//Vector3.Zero;
+
+            CameraPosition = new Vector3(0, 50, 0); // Cámara elevada en el eje Y
+            CameraTarget = Vector3.Zero;
+
+            Console.WriteLine("Mensaje de prueba en la consola");
 
             base.Initialize();
         }
@@ -116,13 +126,37 @@ namespace TGC.MonoGame.TP
             {
                 Exit();
             }
+            if (Keyboard.GetState().IsKeyDown(Keys.W))
+            {
+                // Incrementar la altura de la cámara
+                CameraPosition = new Vector3(CameraPosition.X, CameraPosition.Y + 1f, CameraPosition.Z); // Ajusta este valor según sea necesario
+            }
+            if (Keyboard.GetState().IsKeyDown(Keys.S))
+            {
+                // Decrementar la altura de la cámara
+                CameraPosition = new Vector3(CameraPosition.X, CameraPosition.Y - 1f, CameraPosition.Z); // Ajusta este valor según sea necesario
+            }
+            if (Keyboard.GetState().IsKeyDown(Keys.A))
+            {
+                // Mover la cámara hacia la izquierda
+                CameraPosition = new Vector3(CameraPosition.X - 1f, CameraPosition.Y, CameraPosition.Z); // Ajusta este valor según sea necesario
+            }
 
-            CameraPosition = Distance * new Vector3((float)Math.Sin(Angle), 0, (float)Math.Cos(Angle));
-            ViewVector = Vector3.Transform(CameraTarget - CameraPosition, Matrix.CreateRotationY(0));
-            ViewVector.Normalize();
+            if (Keyboard.GetState().IsKeyDown(Keys.D))
+            {
+                // Mover la cámara hacia la derecha
+                CameraPosition = new Vector3(CameraPosition.X + 1f, CameraPosition.Y, CameraPosition.Z); // Ajusta este valor según sea necesario
+            }
+
+            //CameraPosition = Distance * new Vector3((float)Math.Sin(Angle), 0, (float)Math.Cos(Angle));
+            //ViewVector = Vector3.Transform(CameraTarget - CameraPosition, Matrix.CreateRotationY(0));
+
+
+            //ViewVector.Normalize();
 
             Angle += 0.002f;
-            View = Matrix.CreateLookAt(CameraPosition, CameraTarget, Vector3.UnitY);
+            View = Matrix.CreateLookAt(CameraPosition, CameraTarget, Vector3.Forward);
+            //Console.WriteLine($"CameraPosition: X={CameraPosition.X}, Y={CameraPosition.Y}, Z={CameraPosition.Z}");
 
             base.Update(gameTime);
         }

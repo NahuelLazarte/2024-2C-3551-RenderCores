@@ -1,5 +1,4 @@
 using System;
-using System.IO;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -7,7 +6,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace TGC.MonoGame.TP.Modelos
 {
-    class Modelo
+    abstract class Modelo
     {
         protected Model Model3D { get; set; } // variable del modelo
         private Vector3 Position { get; set; } // posicion del modelo 

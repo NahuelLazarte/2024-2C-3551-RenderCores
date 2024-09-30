@@ -1,34 +1,30 @@
 ﻿using System;
 using System.Collections.Generic;
+using BepuPhysics.Constraints;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using TGC.MonoGame.TP.Objects;
+using TGC.MonoGame.TP.Pistas;
 using TGC.MonoGame.TP.Modelos;
 using TGC.MonoGame.TP.Fondo;
 
-using Vector3 = Microsoft.Xna.Framework.Vector3;
 
-namespace TGC.MonoGame.TP
-{
-    public class TGCGame : Game
-    {
+using Vector3 = Microsoft.Xna.Framework.Vector3;
+using System.Net.Http.Headers;
+using TGC.MonoGame.TP.Collisions;
+
+
+namespace TGC.MonoGame.TP{
+    public class TGCGame : Game{
         public const string ContentFolder3D = "Models/";
         public const string ContentFolderEffects = "Effects/";
         public const string ContentFolderMusic = "Music/";
         public const string ContentFolderSounds = "Sounds/";
         public const string ContentFolderSpriteFonts = "SpriteFonts/";
         public const string ContentFolderTextures = "Textures/";
-
-        public TGCGame()
-        {
-            Graphics = new GraphicsDeviceManager(this);
-            Graphics.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width - 100;
-            Graphics.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height - 100;
-            Content.RootDirectory = "Content";
-            IsMouseVisible = true;
-        }
-
+        
         private GraphicsDeviceManager Graphics { get; }
         private SpriteBatch SpriteBatch { get; set; }
         private Model Model { get; set; }
@@ -40,77 +36,46 @@ namespace TGC.MonoGame.TP
         private VertexBuffer VertexBuffer { get; set; }
         private IndexBuffer IndexBuffer { get; set; }
 
-        private Sphere esfera { get; set; }
+        private FollowCamera Camera { get; set; }
+        private TGC.MonoGame.TP.Objects.Sphere sphere { get; set; }
+        private Gizmos.Gizmos Gizmos;
+        private Pista pista { get; set; }
 
-        private List<Car> CarList { get; set; }
-        private const uint NumCars = 50;
-        private List<Tree> TreeList { get; set; }
-        private const uint NumTree = 50;
-        private List<Tunnel> TunnelList { get; set; }
-        private const uint NumTunnel = 10;
-        private List<Wave_A> Wave_AList { get; set; }
-        private const uint NumWave_A = 20;
-        private const float MapSize = 500f;
+        private Vector3 _posicionPista { get; set; }
+        private Vector3 _dimensionesRectaEjeX { get; set; }
 
         private SkyBox SkyBox { get; set; }
-        private Vector3 CameraPosition { get; set; }
-        private float Distance { get; set; }
-        private Vector3 CameraTarget { get; set; }
-        private Vector3 ViewVector { get; set; }
-        private float Angle { get; set; }
 
-        protected override void Initialize()
-        {
-            World = Matrix.Identity;
-            Projection = Matrix.CreatePerspectiveFieldOfView
-            (
-                MathHelper.ToRadians(60), // Campo de visión vertical (en radianes)
-                GraphicsDevice.Viewport.AspectRatio, // Relación de aspecto
-                0.1f, // Plano de recorte cercano
-                50000f // Plano de recorte lejano
-            );
 
-            CarList = new List<Car>();
-            TreeList = new List<Tree>();
-            TunnelList = new List<Tunnel>();
-            Wave_AList = new List<Wave_A>();
+        public TGCGame(){
+            Graphics = new GraphicsDeviceManager(this);
 
-            CameraTarget = Vector3.Zero;//new Vector3(-10f, 0f, -10f);//Vector3.Zero;
+            Graphics.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width - 100;
+            Graphics.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height - 100;
 
-            CameraPosition = new Vector3(0, 50, 0); // Cámara elevada en el eje Y
-            CameraTarget = Vector3.Zero;
+            Content.RootDirectory = "Content";
+            IsMouseVisible = true;
 
-            Console.WriteLine("Mensaje de prueba en la consola");
+            Gizmos = new Gizmos.Gizmos();
+        }
+
+        protected override void Initialize(){
+            Camera = new FollowCamera(GraphicsDevice, new Vector3(0, 5, 15), Vector3.Zero, Vector3.Up);
+
+            pista = new Pista();
+            sphere = new TGC.MonoGame.TP.Objects.Sphere(new Vector3(0f,30f,0f));
+            sphere.SphereCamera = Camera;
+            sphere.Colliders = pista.Colliders;
+            _posicionPista = new Vector3(0f, 0f, 0f);
+            
+            _dimensionesRectaEjeX = new Vector3(30f, 0f, 30f);
 
             base.Initialize();
         }
 
-        protected override void LoadContent()
-        {
-            SpriteBatch = new SpriteBatch(GraphicsDevice);
-            Effect = Content.Load<Effect>(ContentFolderEffects + "BasicShader");
-
-            esfera = new Sphere(Content, new Vector3(0f, 3.4f, 0f), Matrix.Identity, Color.Purple);
-            esfera.LoadContent(Effect);
-
-            AgregarTunnel(NumTunnel);
-            AgregarArbol(NumTree);
-            AgregarAutos(NumCars);
-            AgregarWave_A(NumWave_A);
-
-            VertexBuffer = new VertexBuffer(GraphicsDevice, typeof(VertexPositionColor), 4, BufferUsage.None);
-            var vertices = new VertexPositionColor[]
-            {
-                new VertexPositionColor(new Vector3(MapSize, 0f, MapSize), Color.Blue),
-                new VertexPositionColor(new Vector3(MapSize, 0f, -MapSize), Color.Red),
-                new VertexPositionColor(new Vector3(-MapSize, 0f, MapSize), Color.Green),
-                new VertexPositionColor(new Vector3(-MapSize, 0f, -MapSize), Color.Yellow),
-            };
-            VertexBuffer.SetData(vertices);
-
-            IndexBuffer = new IndexBuffer(GraphicsDevice, IndexElementSize.SixteenBits, 6, BufferUsage.None);
-            var indices = new ushort[] { 0, 1, 2, 1, 3, 2 };
-            IndexBuffer.SetData(indices);
+        protected override void LoadContent(){
+            pista.LoadContent(Content);
+            sphere.LoadContent(Content);
 
             var skyBox = Content.Load<Model>("Models/skybox/cube");
             var skyBoxTexture = Content.Load<TextureCube>(ContentFolderTextures + "/skybox/skybox");
@@ -120,166 +85,63 @@ namespace TGC.MonoGame.TP
             base.LoadContent();
         }
 
-        protected override void Update(GameTime gameTime)
-        {
-            if (Keyboard.GetState().IsKeyDown(Keys.Escape))
-            {
+        protected override void Update(GameTime gameTime){
+            var keyboardState = Keyboard.GetState();
+
+            if (keyboardState.IsKeyDown(Keys.Escape)){
                 Exit();
             }
-            if (Keyboard.GetState().IsKeyDown(Keys.W))
-            {
-                // Incrementar la altura de la cámara
-                CameraPosition = new Vector3(CameraPosition.X, CameraPosition.Y + 1f, CameraPosition.Z); // Ajusta este valor según sea necesario
-            }
-            if (Keyboard.GetState().IsKeyDown(Keys.S))
-            {
-                // Decrementar la altura de la cámara
-                CameraPosition = new Vector3(CameraPosition.X, CameraPosition.Y - 1f, CameraPosition.Z); // Ajusta este valor según sea necesario
-            }
-            if (Keyboard.GetState().IsKeyDown(Keys.A))
-            {
-                // Mover la cámara hacia la izquierda
-                CameraPosition = new Vector3(CameraPosition.X - 1f, CameraPosition.Y, CameraPosition.Z); // Ajusta este valor según sea necesario
-            }
 
-            if (Keyboard.GetState().IsKeyDown(Keys.D))
-            {
-                // Mover la cámara hacia la derecha
-                CameraPosition = new Vector3(CameraPosition.X + 1f, CameraPosition.Y, CameraPosition.Z); // Ajusta este valor según sea necesario
-            }
+            sphere.Update(gameTime);
+            pista.Update(gameTime);
 
-            //CameraPosition = Distance * new Vector3((float)Math.Sin(Angle), 0, (float)Math.Cos(Angle));
-            //ViewVector = Vector3.Transform(CameraTarget - CameraPosition, Matrix.CreateRotationY(0));
-
-
-            //ViewVector.Normalize();
-
-            Angle += 0.002f;
-            View = Matrix.CreateLookAt(CameraPosition, CameraTarget, Vector3.Forward);
-            //Console.WriteLine($"CameraPosition: X={CameraPosition.X}, Y={CameraPosition.Y}, Z={CameraPosition.Z}");
-
+            Camera.Update(sphere.SpherePosition);
+            //Gizmos.UpdateViewProjection(Camera.ViewMatrix, Camera.ProjectionMatrix);
             base.Update(gameTime);
         }
 
-        protected override void Draw(GameTime gameTime)
-        {
+        protected override void Draw(GameTime gameTime){
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
-            var originalRasterizerState = GraphicsDevice.RasterizerState;
-            var rasterizerState = new RasterizerState
-            {
-                CullMode = CullMode.None
-            };
-            GraphicsDevice.RasterizerState = rasterizerState;
+            sphere.Draw(gameTime, Camera.ViewMatrix, Camera.ProjectionMatrix);
+            pista.Draw(gameTime, Camera.ViewMatrix, Camera.ProjectionMatrix);
 
-            SkyBox.Draw(View, Projection, CameraPosition);
+            //SkyBox.Draw(View, Projection, GraphicsDevice);
 
-            GraphicsDevice.RasterizerState = originalRasterizerState;
+            /*var originalRasterizerState = GraphicsDevice.RasterizerState;
+            var rasterizerState = new RasterizerState();
+            rasterizerState.CullMode = CullMode.None;
+            Graphics.GraphicsDevice.RasterizerState = rasterizerState;
 
-            Effect.CurrentTechnique = Effect.Techniques["BasicColorDrawing"];
-            Effect.Parameters["World"].SetValue(World);
-            Effect.Parameters["View"].SetValue(View);
-            Effect.Parameters["Projection"].SetValue(Projection);
-            Effect.Parameters["DiffuseColor"].SetValue(Color.Gray.ToVector3());
+            GraphicsDevice.RasterizerState = originalRasterizerState;*/
 
-            GraphicsDevice.Indices = IndexBuffer;
-            GraphicsDevice.SetVertexBuffer(VertexBuffer);
-
-            foreach (var pass in Effect.CurrentTechnique.Passes)
-            {
-                pass.Apply();
-                GraphicsDevice.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0, 0, 2);
-            }
-
-            foreach (var car in CarList)
-            {
-                car.Draw(Effect);
-            }
-
-            foreach (var tree in TreeList)
-            {
-                tree.Draw(Effect);
-            }
-
-            foreach (var tunnel in TunnelList)
-            {
-                tunnel.Draw(Effect);
-            }
-
-            foreach (var waveA in Wave_AList)
-            {
-                waveA.Draw(Effect);
-            }
-
-            esfera.Draw(Effect);
-
-            base.Draw(gameTime);
+            //Gizmos.DrawSphere(sphere.SphereCollider.Center, sphere.SphereCollider.Radius * Vector3.One, Color.Red);
         }
 
-        protected void AgregarAutos(uint cantidad)
-        {
-            var random = new Random(1);
-
-            for (uint i = 0; i < cantidad; i++)
-            {
-                float posX = (float)(random.NextDouble() * 2 * MapSize - MapSize);
-                float posZ = (float)(random.NextDouble() * 2 * MapSize - MapSize);
-
-                var newCar = new Car(Content, new Vector3(posX, 0f, posZ), Matrix.CreateRotationY((float)(random.NextDouble())), Color.Red);
-                newCar.LoadContent(Effect);
-                CarList.Add(newCar);
-            }
-        }
-
-        protected void AgregarArbol(uint cantidad)
-        {
-            var random = new Random(3);
-
-            for (uint i = 0; i < cantidad; i++)
-            {
-                float posX = (float)(random.NextDouble() * 2 * MapSize - MapSize);
-                float posZ = (float)(random.NextDouble() * 2 * MapSize - MapSize);
-
-                var newTree = new Tree(Content, new Vector3(posX, 0f, posZ), Matrix.CreateRotationY((float)(random.NextDouble())), Color.Green);
-                newTree.LoadContent(Effect);
-                TreeList.Add(newTree);
-            }
-        }
-
-        protected void AgregarTunnel(uint cantidad)
-        {
-            var random = new Random(4);
-
-            for (uint i = 0; i < cantidad; i++)
-            {
-                float posX = (float)(random.NextDouble() * 2 * MapSize - MapSize);
-                float posZ = (float)(random.NextDouble() * 2 * MapSize - MapSize);
-
-                var newTunnel = new Tunnel(Content, new Vector3(posX, 0f, posZ), Matrix.CreateRotationY((float)(random.NextDouble())), Color.LightYellow);
-                newTunnel.LoadContent(Effect);
-                TunnelList.Add(newTunnel);
-            }
-        }
-
-        protected void AgregarWave_A(uint cantidad)
-        {
-            var random = new Random(6);
-
-            for (uint i = 0; i < cantidad; i++)
-            {
-                float posX = (float)(random.NextDouble() * 2 * MapSize - MapSize);
-                float posZ = (float)(random.NextDouble() * 2 * MapSize - MapSize);
-
-                var newWave = new Wave_A(Content, new Vector3(posX, -3f, posZ), Matrix.CreateRotationY((float)(random.NextDouble())), Color.SaddleBrown);
-                newWave.LoadContent(Effect);
-                Wave_AList.Add(newWave);
-            }
-        }
-
-        protected override void UnloadContent()
-        {
+        protected override void UnloadContent(){
             Content.Unload();
             base.UnloadContent();
+        }
+
+        void AgregarPista(Pista tipoPista)
+        {
+            switch (tipoPista)
+            {/*
+                case TipoPista.PistaRecta:
+                    tipoPista.DrawPistaRecta(gameTime, Camera.ViewMatrix, Camera.ProjectionMatrix, _posicionPista);
+                    Vector3 dimensionEnEje = _dimensionesRectaEjeX.X;
+                    _pistasEjeX.Add(Matrix.CreateTranslation(_posicionPista + dimensionEnEje));
+                    _posicionPista += dimensionEnEje * 2;
+                    break;
+                
+                case TipoPista.PistaCurva:
+                    tipoPista.DrawPistaCurva(gameTime, Camera.ViewMatrix, Camera.ProjectionMatrix, _posicionPista);
+                    Vector3 dimensionEnEje = _dimensionesEsquina.X;
+                    _pistasEsquinaDerecha.Add(Matrix.CreateTranslation(_posicionPista + dimensionEnEje));
+                    _posicionPista += _dimensionesEsquina.X + _dimensionesEsquina.Z;
+                    break;
+                */
+            }
         }
     }
 }

@@ -6,7 +6,7 @@ namespace TGC.MonoGame.TP.Objects
 {
     class Pista : Modelo
     {         
-        public Pista(ContentManager content, Vector3 position, Matrix rotation, Vector3 color,string pista_name)
+        public Pista(ContentManager content, Vector3 position, Matrix rotation, Color color,string pista_name)
             : base(content, position, rotation, color)
         {
             string path = "pistas/"+pista_name;//poner acá la ruta del modelo 3D

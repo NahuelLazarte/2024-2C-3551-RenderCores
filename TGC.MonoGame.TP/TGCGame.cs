@@ -1,14 +1,20 @@
 ﻿using System;
-using System.Numerics;
+using System.Collections.Generic;
 using BepuPhysics.Constraints;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using TGC.MonoGame.TP.Objects;
 using TGC.MonoGame.TP.Pistas;
+using TGC.MonoGame.TP.Modelos;
+using TGC.MonoGame.TP.Fondo;
+
+
 using Vector3 = Microsoft.Xna.Framework.Vector3;
 using System.Net.Http.Headers;
 using TGC.MonoGame.TP.Collisions;
+
 
 namespace TGC.MonoGame.TP{
     public class TGCGame : Game{
@@ -31,12 +37,14 @@ namespace TGC.MonoGame.TP{
         private IndexBuffer IndexBuffer { get; set; }
 
         private FollowCamera Camera { get; set; }
-        private Sphere sphere { get; set; }
+        private TGC.MonoGame.TP.Objects.Sphere sphere { get; set; }
         private Gizmos.Gizmos Gizmos;
         private Pista pista { get; set; }
 
         private Vector3 _posicionPista { get; set; }
         private Vector3 _dimensionesRectaEjeX { get; set; }
+
+        private SkyBox SkyBox { get; set; }
 
 
         public TGCGame(){
@@ -55,7 +63,7 @@ namespace TGC.MonoGame.TP{
             Camera = new FollowCamera(GraphicsDevice, new Vector3(0, 5, 15), Vector3.Zero, Vector3.Up);
 
             pista = new Pista();
-            sphere = new Sphere(new Vector3(0f,30f,0f));
+            sphere = new TGC.MonoGame.TP.Objects.Sphere(new Vector3(0f,30f,0f));
             sphere.SphereCamera = Camera;
             sphere.Colliders = pista.Colliders;
             _posicionPista = new Vector3(0f, 0f, 0f);
@@ -68,6 +76,11 @@ namespace TGC.MonoGame.TP{
         protected override void LoadContent(){
             pista.LoadContent(Content);
             sphere.LoadContent(Content);
+
+            var skyBox = Content.Load<Model>("Models/skybox/cube");
+            var skyBoxTexture = Content.Load<TextureCube>(ContentFolderTextures + "/skybox/skybox");
+            var skyBoxEffect = Content.Load<Effect>(ContentFolderEffects + "SkyBox");
+            SkyBox = new SkyBox(skyBox, skyBoxTexture, skyBoxEffect);
 
             base.LoadContent();
         }
@@ -92,6 +105,8 @@ namespace TGC.MonoGame.TP{
 
             sphere.Draw(gameTime, Camera.ViewMatrix, Camera.ProjectionMatrix);
             pista.Draw(gameTime, Camera.ViewMatrix, Camera.ProjectionMatrix);
+
+            //SkyBox.Draw(View, Projection, GraphicsDevice);
 
             /*var originalRasterizerState = GraphicsDevice.RasterizerState;
             var rasterizerState = new RasterizerState();

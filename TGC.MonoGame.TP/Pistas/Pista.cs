@@ -1,14 +1,7 @@
-using System;
-using System.Collections.Generic;
-using System.Net.Mime;
-
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
 using TGC.MonoGame.TP.Collisions;
-using TGC.MonoGame.TP.Gizmos;
-using TGC.MonoGame.TP.Gizmos.Geometries;
 
 namespace TGC.MonoGame.TP.Pistas{
     public class Pista{
@@ -37,7 +30,7 @@ namespace TGC.MonoGame.TP.Pistas{
         }
 
         private void Initialize() {
-          
+        
             PistaRectaWorlds = new Matrix[]{
                 scale *
                     Matrix.Identity,

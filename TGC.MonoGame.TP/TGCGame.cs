@@ -80,7 +80,7 @@ namespace TGC.MonoGame.TP{
             var skyBox = Content.Load<Model>("Models/skybox/cube");
             var skyBoxTexture = Content.Load<TextureCube>(ContentFolderTextures + "/skybox/skybox");
             var skyBoxEffect = Content.Load<Effect>(ContentFolderEffects + "SkyBox");
-            SkyBox = new SkyBox(skyBox, skyBoxTexture, skyBoxEffect);
+            SkyBox = new SkyBox(skyBox, skyBoxTexture, skyBoxEffect,500);
 
             base.LoadContent();
         }
@@ -101,6 +101,8 @@ namespace TGC.MonoGame.TP{
         }
 
         protected override void Draw(GameTime gameTime){
+
+            
             GraphicsDevice.Clear(Color.CornflowerBlue);
             var originalRasterizerState = GraphicsDevice.RasterizerState;
             var rasterizerState = new RasterizerState
@@ -115,7 +117,19 @@ namespace TGC.MonoGame.TP{
 
             GraphicsDevice.RasterizerState = originalRasterizerState;
 
+            /*
+            GraphicsDevice.Clear(Color.CornflowerBlue);
+            GraphicsDevice.DepthStencilState = DepthStencilState.DepthRead;
+
+            SkyBox.Draw(Camera.ViewMatrix, Camera.ProjectionMatrix, Camera.position);    
+
+            GraphicsDevice.DepthStencilState = DepthStencilState.Default;
             
+            sphere.Draw(gameTime, Camera.ViewMatrix, Camera.ProjectionMatrix);
+            pista.Draw(gameTime, Camera.ViewMatrix, Camera.ProjectionMatrix);*/
+
+            
+
             //SkyBox.Draw(View, Projection, CameraPosition);
 
             /*var originalRasterizerState = GraphicsDevice.RasterizerState;

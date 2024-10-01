@@ -62,24 +62,22 @@ namespace TGC.MonoGame.TP.PistaCurva{
 
             PistaCurvaWorlds =  scale * Matrix.CreateTranslation(position) * rotation;
 
-            foreach (var mesh in PistaCurva.Meshes){
-                for(int i=0; i < PistaCurvaWorlds.Length; i++){
-                    Matrix _pisoWorld = PistaCurvaWorlds[i];
-                    Effect.Parameters["World"].SetValue(mesh.ParentBone.Transform * _pisoWorld);
-                    mesh.Draw();
-                }
+            foreach (var mesh in PistaCurva.Meshes) 
+            {
+                Effect.Parameters["World"].SetValue(mesh.ParentBone.Transform * world);
+                mesh.Draw();
             }
         }
 
-        public void Desplazamiento() {
+        public Vector3 Desplazamiento() 
+        {
             PistaCurvaBox = BoundingVolumesExtensions.CreateAABBFrom(PistaCurva);
-            desplazamientoEnEjes = PistaCurvaBox.Max - PistaCurvaBox.Min; // aca consigo el tamaño el largo de la pista para que coincida son 3/4, el ancho es el mismo.
-            desplazamientoEnEjes = new Vector3(desplazamientoEnEjes, 0, desplazamientoEnEjes*0.75f); // no estoy seguro que sea la Z
-            return desplazamientoEnEjes;
+            desplazamientoEnEjes = PistaCurvaBox.Max - PistaCurvaBox.Min;
+            return new Vector3(desplazamientoEnEjes.X, 0, desplazamientoEnEjes.Z * 0.75f);
         }
 
         public void Rotacion() {
-            // tiene que retornar el angulo de giro, en este caso 90 grados antihorario
+            return Matrix.CreateRotationY(MathHelper.ToRadians(90));
         }
 
     }

@@ -128,6 +128,8 @@ namespace TGC.MonoGame.TP{
         /* 
             tipoPista.Draw(gameTime, Camera.ViewMatrix, Camera.ProjectionMatrix, posicionActual, rotacionActual);
             Vector3 desplazamiento = tipoPista.Desplazamiento();
+            Matrix rotacion = tipoPista.Rotacion();
+            rotacionActual *=rotacion
             posicionActual += dimensionEnEje; 
         */
         

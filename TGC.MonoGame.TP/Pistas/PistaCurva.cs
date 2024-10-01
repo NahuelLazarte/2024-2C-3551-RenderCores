@@ -11,38 +11,30 @@ namespace TGC.MonoGame.TP.PistaCurva{
         public Effect Effect { get; set; }
         public Matrix scale = Matrix.CreateScale(0.03f);
 
-        public Model PistaCurva { get; set; }
+        public Model ModeloPistaCurva { get; set; }
 
-        public Matrix[] PistaCurvaWorlds { get; set; }
+        public Matrix PistaCurvaWorlds { get; set; }
 
-        private BoundingBox[] PistaCurvaBox { get; set; }
+        private BoundingBox PistaCurvaBox { get; set; }
 
         private Vector3 desplazamientoEnEjes { get; set; }
+
+        public BoundingBox Collider { get; set; }
 
         public PistaCurva() {
             Initialize();
         }
 
         private void Initialize() {
-
-            Colliders = new BoundingBox[PistaCurvaWorlds.Length];
-
-            int index = 0;
-            int AuxIndex = 0;
-
-            for(; AuxIndex < PistaCurvaWorlds.Length; AuxIndex++){
-                Colliders[index] = BoundingVolumesExtensions.FromMatrix(PistaCurvaWorlds[AuxIndex]);
-                index++;
-            }
-
+            Collider = BoundingVolumesExtensions.FromMatrix(PistaCurvaWorlds);
         }
 
 
         public void LoadContent(ContentManager Content){
-            PistaCurva = Content.Load<Model>(ContentFolder3D + "pistas/road_curve_fix");
-            Effect = Content.Load<Effect>(ContentFolderEffects + "BasicShader");
+            ModeloPistaCurva = Content.Load<Model>("Models/" + "pistas/road_curve_fix");
+            Effect = Content.Load<Effect>("Effects/" + "BasicShader");
 
-            foreach (var mesh in PistaCurva.Meshes){
+            foreach (var mesh in ModeloPistaCurva.Meshes){
                 foreach (var meshPart in mesh.MeshParts){
                     meshPart.Effect = Effect;
                 }
@@ -62,21 +54,21 @@ namespace TGC.MonoGame.TP.PistaCurva{
 
             PistaCurvaWorlds =  scale * Matrix.CreateTranslation(position) * rotation;
 
-            foreach (var mesh in PistaCurva.Meshes) 
+            foreach (var mesh in ModeloPistaCurva.Meshes) 
             {
-                Effect.Parameters["World"].SetValue(mesh.ParentBone.Transform * world);
+                Effect.Parameters["World"].SetValue(mesh.ParentBone.Transform * PistaCurvaWorlds);
                 mesh.Draw();
             }
         }
 
         public Vector3 Desplazamiento() 
         {
-            PistaCurvaBox = BoundingVolumesExtensions.CreateAABBFrom(PistaCurva);
+            PistaCurvaBox = BoundingVolumesExtensions.CreateAABBFrom(ModeloPistaCurva);
             desplazamientoEnEjes = PistaCurvaBox.Max - PistaCurvaBox.Min;
             return new Vector3(desplazamientoEnEjes.X, 0, desplazamientoEnEjes.Z * 0.75f);
         }
 
-        public void Rotacion() {
+        public Matrix Rotacion() {
             return Matrix.CreateRotationY(MathHelper.ToRadians(90));
         }
 

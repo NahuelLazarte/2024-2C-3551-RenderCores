@@ -3,46 +3,37 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using TGC.MonoGame.TP.Collisions;
 
-namespace TGC.MonoGame.TP.PistaCurva{
-    public class PistaCurva{
+namespace TGC.MonoGame.TP.PistaRecta{
+    public class PistaRecta{
         public Gizmos.Gizmos Gizmos { get; }
         public const string ContentFolder3D = "Models/";
         public const string ContentFolderEffects = "Effects/";
         public Effect Effect { get; set; }
         public Matrix scale = Matrix.CreateScale(0.03f);
 
-        public Model PistaRecta { get; set; }
+        public Model ModeloPistaRecta { get; set; }
 
-        public Matrix[] PistaRectaWorlds { get; set; }
+        public Matrix PistaRectaWorlds { get; set; }
 
-        private BoundingBox[] PistaRectaBox { get; set; }
+        private BoundingBox PistaRectaBox { get; set; }
 
         private Vector3 desplazamientoEnEjes { get; set; }
+        public BoundingBox Collider { get; set; }
 
         public PistaRecta() {
             Initialize();
         }
 
         private void Initialize() {
-
-            Colliders = new BoundingBox[PistaRectaWorlds.Length];
-
-            int index = 0;
-            int AuxIndex = 0;
-
-            for(; AuxIndex < PistaRectaWorlds.Length; AuxIndex++){
-                Colliders[index] = BoundingVolumesExtensions.FromMatrix(PistaRectaWorlds[AuxIndex]);
-                index++;
-            }
-
+            Collider = BoundingVolumesExtensions.FromMatrix(PistaRectaWorlds);
         }
 
 
         public void LoadContent(ContentManager Content){
-            PistaRecta = Content.Load<Model>(ContentFolder3D + "pistas/road_straight_fix");
+            ModeloPistaRecta = Content.Load<Model>(ContentFolder3D + "pistas/road_straight_fix");
             Effect = Content.Load<Effect>(ContentFolderEffects + "BasicShader");
 
-            foreach (var mesh in PistaRecta.Meshes){
+            foreach (var mesh in ModeloPistaRecta.Meshes){
                 foreach (var meshPart in mesh.MeshParts){
                     meshPart.Effect = Effect;
                 }
@@ -62,19 +53,18 @@ namespace TGC.MonoGame.TP.PistaCurva{
 
             PistaRectaWorlds =  scale * Matrix.CreateTranslation(position) * rotation;
 
-            foreach (var mesh in PistaRecta.Meshes){
-                for(int i=0; i < PistaRectaWorlds.Length; i++){
-                    Matrix _pisoWorld = PistaRectaWorlds[i];
-                    Effect.Parameters["World"].SetValue(mesh.ParentBone.Transform * _pisoWorld);
+            foreach (var mesh in ModeloPistaRecta.Meshes){
+                    
+                    Effect.Parameters["World"].SetValue(mesh.ParentBone.Transform * PistaRectaWorlds);
                     mesh.Draw();
-                }
+                
             }
         }
 
-        public void Desplazamiento() {
-            PistaRectaBox = BoundingVolumesExtensions.CreateAABBFrom(PistaRecta);
+        public Vector3 Desplazamiento() {
+            PistaRectaBox = BoundingVolumesExtensions.CreateAABBFrom(ModeloPistaRecta);
             desplazamientoEnEjes = PistaRectaBox.Max - PistaRectaBox.Min; // aca consigo el tamaño el largo de la pista para que coincida son 3/4, el ancho es el mismo.
-            desplazamientoEnEjes = new Vector3(desplazamientoEnEjes, 0, desplazamientoEnEjes*0.75f); // no estoy seguro que sea la Z
+            desplazamientoEnEjes = new Vector3(desplazamientoEnEjes.X, 0, desplazamientoEnEjes.Z*0.75f); // no estoy seguro que sea la Z
             return desplazamientoEnEjes;
         }
 

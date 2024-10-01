@@ -1,4 +1,4 @@
-﻿using System;
+﻿﻿using System;
 using System.Collections.Generic;
 using BepuPhysics.Constraints;
 using Microsoft.Xna.Framework;
@@ -38,18 +38,14 @@ namespace TGC.MonoGame.TP{
 
         private FollowCamera Camera { get; set; }
         private TGC.MonoGame.TP.Objects.Sphere sphere { get; set; }
-        //private Gizmos.Gizmos Gizmos;
+        private Gizmos.Gizmos Gizmos;
         private Pista pista { get; set; }
 
-        private Vector3 _posicionPista { get; set; }
+        private Vector3 posicionActual { get; set; }
         private Vector3 _dimensionesRectaEjeX { get; set; }
 
         private SkyBox SkyBox { get; set; }
-
-
-        private Vector3 CameraTarget { get; set; }
-        private Vector3 ViewVector { get; set; }
-        private Vector3 CameraPosition { get; set; }
+        float rotacionActual = 0f;
 
         public TGCGame(){
             Graphics = new GraphicsDeviceManager(this);
@@ -60,34 +56,19 @@ namespace TGC.MonoGame.TP{
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
 
-            //Gizmos = new Gizmos.Gizmos();
+            Gizmos = new Gizmos.Gizmos();
         }
 
         protected override void Initialize(){
-            //Camera = new FollowCamera(GraphicsDevice, new Vector3(0, 5, 15), Vector3.Zero, Vector3.Up);
+            Camera = new FollowCamera(GraphicsDevice, new Vector3(0, 5, 15), Vector3.Zero, Vector3.Up);
 
             pista = new Pista();
-            sphere = new Objects.Sphere(new Vector3(0f, 30f, 0f))
-            {
-                SphereCamera = Camera,
-                Colliders = pista.Colliders
-            };
-            _posicionPista = new Vector3(0f, 0f, 0f);
+            sphere = new TGC.MonoGame.TP.Objects.Sphere(new Vector3(0f,30f,0f));
+            sphere.SphereCamera = Camera;
+            sphere.Colliders = pista.Colliders;
+            posicionActual = new Vector3(0f, 0f, 0f);
             
             _dimensionesRectaEjeX = new Vector3(30f, 0f, 30f);
-
-            //-------camara-----------
-            World = Matrix.Identity;
-            Projection = Matrix.CreatePerspectiveFieldOfView
-            (
-                MathHelper.ToRadians(90), // Campo de visión vertical (en radianes)
-                GraphicsDevice.Viewport.AspectRatio, // Relación de aspecto
-                0.1f, // Plano de recorte cercano
-                50000f // Plano de recorte lejano
-            );
-            CameraTarget = Vector3.Zero;
-            CameraPosition = new Vector3(0, 50, 0); // Cámara elevada en el eje Y
-            //------Fin camara---------
 
             base.Initialize();
         }
@@ -101,8 +82,6 @@ namespace TGC.MonoGame.TP{
             var skyBoxEffect = Content.Load<Effect>(ContentFolderEffects + "SkyBox");
             SkyBox = new SkyBox(skyBox, skyBoxTexture, skyBoxEffect);
 
-            Effect = Content.Load<Effect>(ContentFolderEffects + "BasicShader");
-
             base.LoadContent();
         }
 
@@ -113,43 +92,31 @@ namespace TGC.MonoGame.TP{
                 Exit();
             }
 
-            sphere.Update(gameTime);            
+            sphere.Update(gameTime);
+            pista.Update(gameTime);
 
-            //Camera.Update(sphere.SpherePosition);
-            if (Keyboard.GetState().IsKeyDown(Keys.Up))
-            {
-                CameraPosition = new Vector3(CameraPosition.X, CameraPosition.Y + 1f, CameraPosition.Z); // Ajusta este valor según sea necesario
-            }
-            if (Keyboard.GetState().IsKeyDown(Keys.Down))
-            {
-                CameraPosition = new Vector3(CameraPosition.X, CameraPosition.Y - 1f, CameraPosition.Z); // Ajusta este valor según sea necesario
-            }
-            if (Keyboard.GetState().IsKeyDown(Keys.Left))
-            {
-                CameraPosition = new Vector3(CameraPosition.X - 1f, CameraPosition.Y, CameraPosition.Z); // Ajusta este valor según sea necesario
-            }
-
-            if (Keyboard.GetState().IsKeyDown(Keys.Right))
-            {
-                CameraPosition = new Vector3(CameraPosition.X + 1f, CameraPosition.Y, CameraPosition.Z); // Ajusta este valor según sea necesario
-            }
-
-            View = Matrix.CreateLookAt(CameraPosition, CameraTarget, Vector3.Forward);
-
+            Camera.Update(sphere.SpherePosition);
             //Gizmos.UpdateViewProjection(Camera.ViewMatrix, Camera.ProjectionMatrix);
             base.Update(gameTime);
         }
 
         protected override void Draw(GameTime gameTime){
-            /*
             GraphicsDevice.Clear(Color.CornflowerBlue);
+            var originalRasterizerState = GraphicsDevice.RasterizerState;
+            var rasterizerState = new RasterizerState
+            {
+                CullMode = CullMode.None
+            };
+            GraphicsDevice.RasterizerState = rasterizerState;
 
-            //sphere.Draw(gameTime, Camera.ViewMatrix, Camera.ProjectionMatrix);
-            //pista.Draw(gameTime, Camera.ViewMatrix, Camera.ProjectionMatrix);           
-            sphere.Draw(gameTime, View, Projection);
-            pista.Draw(gameTime, View, Projection);
+            SkyBox.Draw(Camera.ViewMatrix, Camera.ProjectionMatrix, Camera.position);
+            sphere.Draw(gameTime, Camera.ViewMatrix, Camera.ProjectionMatrix);
+            pista.Draw(gameTime, Camera.ViewMatrix, Camera.ProjectionMatrix);
 
-            SkyBox.Draw(View, Projection, CameraPosition);*/
+            GraphicsDevice.RasterizerState = originalRasterizerState;
+
+            
+            //SkyBox.Draw(View, Projection, CameraPosition);
 
             /*var originalRasterizerState = GraphicsDevice.RasterizerState;
             var rasterizerState = new RasterizerState();
@@ -159,33 +126,6 @@ namespace TGC.MonoGame.TP{
             GraphicsDevice.RasterizerState = originalRasterizerState;*/
 
             //Gizmos.DrawSphere(sphere.SphereCollider.Center, sphere.SphereCollider.Radius * Vector3.One, Color.Red);
-
-
-            GraphicsDevice.Clear(Color.CornflowerBlue);
-
-            var originalRasterizerState = GraphicsDevice.RasterizerState;
-            var rasterizerState = new RasterizerState
-            {
-                CullMode = CullMode.None
-            };
-            GraphicsDevice.RasterizerState = rasterizerState;
-
-            //SkyBox.Draw(View, Projection, CameraPosition);
-            sphere.Draw(gameTime, View, Projection);
-            pista.Draw(gameTime, View, Projection);
-
-            GraphicsDevice.RasterizerState = originalRasterizerState;
-            
-
-
-            /*
-            Effect.CurrentTechnique = Effect.Techniques["BasicColorDrawing"];
-            Effect.Parameters["World"].SetValue(World);
-            Effect.Parameters["View"].SetValue(View);
-            Effect.Parameters["Projection"].SetValue(Projection);
-            Effect.Parameters["DiffuseColor"].SetValue(Color.Gray.ToVector3());*/              
-
-            base.Draw(gameTime);
         }
 
         protected override void UnloadContent(){
@@ -195,23 +135,14 @@ namespace TGC.MonoGame.TP{
 
         void AgregarPista(Pista tipoPista)
         {
-            switch (tipoPista)
-            {/*
-                case TipoPista.PistaRecta:
-                    tipoPista.DrawPistaRecta(gameTime, Camera.ViewMatrix, Camera.ProjectionMatrix, _posicionPista);
-                    Vector3 dimensionEnEje = _dimensionesRectaEjeX.X;
-                    _pistasEjeX.Add(Matrix.CreateTranslation(_posicionPista + dimensionEnEje));
-                    _posicionPista += dimensionEnEje * 2;
-                    break;
-                
-                case TipoPista.PistaCurva:
-                    tipoPista.DrawPistaCurva(gameTime, Camera.ViewMatrix, Camera.ProjectionMatrix, _posicionPista);
-                    Vector3 dimensionEnEje = _dimensionesEsquina.X;
-                    _pistasEsquinaDerecha.Add(Matrix.CreateTranslation(_posicionPista + dimensionEnEje));
-                    _posicionPista += _dimensionesEsquina.X + _dimensionesEsquina.Z;
-                    break;
-                */
-            }
+        /* 
+            tipoPista.Draw(gameTime, Camera.ViewMatrix, Camera.ProjectionMatrix, posicionActual, rotacionActual);
+            Vector3 desplazamiento = tipoPista.Desplazamiento();
+            Matrix rotacion = tipoPista.Rotacion();
+            rotacionActual *=rotacion
+            posicionActual += dimensionEnEje; 
+        */
+        
         }
     }
 }

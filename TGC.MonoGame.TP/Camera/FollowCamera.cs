@@ -9,7 +9,7 @@ namespace TGC.MonoGame.TP
         public Matrix ViewMatrix { get; private set; }
         public Matrix ProjectionMatrix { get; private set; }
 
-        private Vector3 position;
+        public Vector3 position { get;set;}
         private Vector3 target;
         private Vector3 up;
         private Vector3 offset = new(0f, 5f, 30f);

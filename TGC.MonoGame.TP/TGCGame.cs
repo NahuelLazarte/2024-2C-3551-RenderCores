@@ -38,7 +38,7 @@ namespace TGC.MonoGame.TP{
 
         private FollowCamera Camera { get; set; }
         private TGC.MonoGame.TP.Objects.Sphere sphere { get; set; }
-        private Gizmos.Gizmos Gizmos;
+        //private Gizmos.Gizmos Gizmos;
         private Pista pista { get; set; }
 
         private Vector3 _posicionPista { get; set; }
@@ -46,6 +46,10 @@ namespace TGC.MonoGame.TP{
 
         private SkyBox SkyBox { get; set; }
 
+
+        private Vector3 CameraTarget { get; set; }
+        private Vector3 ViewVector { get; set; }
+        private Vector3 CameraPosition { get; set; }
 
         public TGCGame(){
             Graphics = new GraphicsDeviceManager(this);
@@ -56,19 +60,34 @@ namespace TGC.MonoGame.TP{
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
 
-            Gizmos = new Gizmos.Gizmos();
+            //Gizmos = new Gizmos.Gizmos();
         }
 
         protected override void Initialize(){
-            Camera = new FollowCamera(GraphicsDevice, new Vector3(0, 5, 15), Vector3.Zero, Vector3.Up);
+            //Camera = new FollowCamera(GraphicsDevice, new Vector3(0, 5, 15), Vector3.Zero, Vector3.Up);
 
             pista = new Pista();
-            sphere = new TGC.MonoGame.TP.Objects.Sphere(new Vector3(0f,30f,0f));
-            sphere.SphereCamera = Camera;
-            sphere.Colliders = pista.Colliders;
+            sphere = new Objects.Sphere(new Vector3(0f, 30f, 0f))
+            {
+                SphereCamera = Camera,
+                Colliders = pista.Colliders
+            };
             _posicionPista = new Vector3(0f, 0f, 0f);
             
             _dimensionesRectaEjeX = new Vector3(30f, 0f, 30f);
+
+            //-------camara-----------
+            World = Matrix.Identity;
+            Projection = Matrix.CreatePerspectiveFieldOfView
+            (
+                MathHelper.ToRadians(90), // Campo de visión vertical (en radianes)
+                GraphicsDevice.Viewport.AspectRatio, // Relación de aspecto
+                0.1f, // Plano de recorte cercano
+                50000f // Plano de recorte lejano
+            );
+            CameraTarget = Vector3.Zero;
+            CameraPosition = new Vector3(0, 50, 0); // Cámara elevada en el eje Y
+            //------Fin camara---------
 
             base.Initialize();
         }
@@ -82,6 +101,8 @@ namespace TGC.MonoGame.TP{
             var skyBoxEffect = Content.Load<Effect>(ContentFolderEffects + "SkyBox");
             SkyBox = new SkyBox(skyBox, skyBoxTexture, skyBoxEffect);
 
+            Effect = Content.Load<Effect>(ContentFolderEffects + "BasicShader");
+
             base.LoadContent();
         }
 
@@ -92,21 +113,43 @@ namespace TGC.MonoGame.TP{
                 Exit();
             }
 
-            sphere.Update(gameTime);
-            pista.Update(gameTime);
+            sphere.Update(gameTime);            
 
-            Camera.Update(sphere.SpherePosition);
+            //Camera.Update(sphere.SpherePosition);
+            if (Keyboard.GetState().IsKeyDown(Keys.Up))
+            {
+                CameraPosition = new Vector3(CameraPosition.X, CameraPosition.Y + 1f, CameraPosition.Z); // Ajusta este valor según sea necesario
+            }
+            if (Keyboard.GetState().IsKeyDown(Keys.Down))
+            {
+                CameraPosition = new Vector3(CameraPosition.X, CameraPosition.Y - 1f, CameraPosition.Z); // Ajusta este valor según sea necesario
+            }
+            if (Keyboard.GetState().IsKeyDown(Keys.Left))
+            {
+                CameraPosition = new Vector3(CameraPosition.X - 1f, CameraPosition.Y, CameraPosition.Z); // Ajusta este valor según sea necesario
+            }
+
+            if (Keyboard.GetState().IsKeyDown(Keys.Right))
+            {
+                CameraPosition = new Vector3(CameraPosition.X + 1f, CameraPosition.Y, CameraPosition.Z); // Ajusta este valor según sea necesario
+            }
+
+            View = Matrix.CreateLookAt(CameraPosition, CameraTarget, Vector3.Forward);
+
             //Gizmos.UpdateViewProjection(Camera.ViewMatrix, Camera.ProjectionMatrix);
             base.Update(gameTime);
         }
 
         protected override void Draw(GameTime gameTime){
+            /*
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
-            sphere.Draw(gameTime, Camera.ViewMatrix, Camera.ProjectionMatrix);
-            pista.Draw(gameTime, Camera.ViewMatrix, Camera.ProjectionMatrix);
+            //sphere.Draw(gameTime, Camera.ViewMatrix, Camera.ProjectionMatrix);
+            //pista.Draw(gameTime, Camera.ViewMatrix, Camera.ProjectionMatrix);           
+            sphere.Draw(gameTime, View, Projection);
+            pista.Draw(gameTime, View, Projection);
 
-            //SkyBox.Draw(View, Projection, GraphicsDevice);
+            SkyBox.Draw(View, Projection, CameraPosition);*/
 
             /*var originalRasterizerState = GraphicsDevice.RasterizerState;
             var rasterizerState = new RasterizerState();
@@ -116,6 +159,33 @@ namespace TGC.MonoGame.TP{
             GraphicsDevice.RasterizerState = originalRasterizerState;*/
 
             //Gizmos.DrawSphere(sphere.SphereCollider.Center, sphere.SphereCollider.Radius * Vector3.One, Color.Red);
+
+
+            GraphicsDevice.Clear(Color.CornflowerBlue);
+
+            var originalRasterizerState = GraphicsDevice.RasterizerState;
+            var rasterizerState = new RasterizerState
+            {
+                CullMode = CullMode.None
+            };
+            GraphicsDevice.RasterizerState = rasterizerState;
+
+            //SkyBox.Draw(View, Projection, CameraPosition);
+            sphere.Draw(gameTime, View, Projection);
+            pista.Draw(gameTime, View, Projection);
+
+            GraphicsDevice.RasterizerState = originalRasterizerState;
+            
+
+
+            /*
+            Effect.CurrentTechnique = Effect.Techniques["BasicColorDrawing"];
+            Effect.Parameters["World"].SetValue(World);
+            Effect.Parameters["View"].SetValue(View);
+            Effect.Parameters["Projection"].SetValue(Projection);
+            Effect.Parameters["DiffuseColor"].SetValue(Color.Gray.ToVector3());*/              
+
+            base.Draw(gameTime);
         }
 
         protected override void UnloadContent(){

@@ -1,10 +1,11 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using System.Collections.Generic;
 using TGC.MonoGame.TP.Collisions;
 
 namespace TGC.MonoGame.TP.PistaCurva{
-    public class PistaCurva{
+    public class PistasCurvas{
         public Gizmos.Gizmos Gizmos { get; }
         public const string ContentFolder3D = "Models/";
         public const string ContentFolderEffects = "Effects/";
@@ -13,21 +14,36 @@ namespace TGC.MonoGame.TP.PistaCurva{
 
         public Model ModeloPistaCurva { get; set; }
 
-        public Matrix PistaCurvaWorlds { get; set; }
-
         private BoundingBox PistaCurvaBox { get; set; }
 
         private Vector3 desplazamientoEnEjes { get; set; }
 
-        public BoundingBox Collider { get; set; }
+        public BoundingBox[] Colliders { get; set; }
 
-        public PistaCurva() {
+        private List<Matrix> _pistasCurvas { get; set; }
+
+
+        public PistasCurvas() {
             Initialize();
         }
 
         private void Initialize() {
-            Collider = BoundingVolumesExtensions.FromMatrix(PistaCurvaWorlds);
+            _pistasCurvas = new List<Matrix>();
         }
+
+        public void IniciarColliders() {
+            Colliders = new BoundingBox[_pistasCurvas.Count];
+
+            int indice = 0;
+            int Aux = 0;
+
+            for(; Aux < _pistasCurvas.Count; Aux++){
+                Colliders[indice] = BoundingVolumesExtensions.FromMatrix(_pistasCurvas[Aux]);
+                indice++;
+            }
+            
+        }
+
 
 
         public void LoadContent(ContentManager Content){
@@ -45,31 +61,38 @@ namespace TGC.MonoGame.TP.PistaCurva{
 
         }
 
-        public void Draw(GameTime gameTime, Matrix view, Matrix projection, Vector3 position, Matrix rotation)
+        public void Draw(GameTime gameTime, Matrix view, Matrix projection)
         {
+
+            
+
             Effect.Parameters["View"].SetValue(view);
             Effect.Parameters["Projection"].SetValue(projection);
-            Effect.Parameters["DiffuseColor"].SetValue(Color.DarkRed.ToVector3());
             Effect.Parameters["DiffuseColor"].SetValue(Color.DarkBlue.ToVector3());
-
-            PistaCurvaWorlds =  scale * Matrix.CreateTranslation(position) * rotation;
-
-            foreach (var mesh in ModeloPistaCurva.Meshes) 
-            {
-                Effect.Parameters["World"].SetValue(mesh.ParentBone.Transform * PistaCurvaWorlds);
-                mesh.Draw();
+            
+            foreach (var mesh in ModeloPistaCurva.Meshes){
+                for(int i=0; i < _pistasCurvas.Count; i++){
+                    Matrix _pisoWorld = _pistasCurvas[i];
+                    Effect.Parameters["World"].SetValue(mesh.ParentBone.Transform * _pisoWorld);
+                    mesh.Draw();
+                }
             }
+            
         }
 
         public Vector3 Desplazamiento() 
         {
             PistaCurvaBox = BoundingVolumesExtensions.CreateAABBFrom(ModeloPistaCurva);
             desplazamientoEnEjes = PistaCurvaBox.Max - PistaCurvaBox.Min;
-            return new Vector3(desplazamientoEnEjes.X, 0, desplazamientoEnEjes.Z * 0.75f);
+            return new Vector3(desplazamientoEnEjes.X, 0, desplazamientoEnEjes.Z); //ESTE ESTA MAL
         }
 
-        public Matrix Rotacion() {
-            return Matrix.CreateRotationY(MathHelper.ToRadians(90));
+        public float Rotacion() {
+            return MathHelper.ToRadians(-90);
+        }
+
+        public void agregarNuevaPista(float Rotacion, Vector3 Posicion) {
+            _pistasCurvas.Add(Matrix.CreateRotationY(Rotacion) * Matrix.CreateTranslation(Posicion) * scale); // METER MATRIZ DENTRO DE CADA PISTA
         }
 
     }

@@ -6,7 +6,8 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using TGC.MonoGame.TP.Objects;
-using TGC.MonoGame.TP.Pistas;
+using TGC.MonoGame.TP.PistaCurva;
+using TGC.MonoGame.TP.PistaRecta;
 using TGC.MonoGame.TP.Modelos;
 using TGC.MonoGame.TP.Fondo;
 
@@ -39,11 +40,10 @@ namespace TGC.MonoGame.TP{
         private FollowCamera Camera { get; set; }
         private TGC.MonoGame.TP.Objects.Sphere sphere { get; set; }
         private Gizmos.Gizmos Gizmos;
-        private Pista pista { get; set; }
+        private PistasCurvas _pistasCurvas { get; set; }
+        private PistasRectas _pistasRectas { get; set; }
 
         private Vector3 posicionActual { get; set; }
-        private Vector3 _dimensionesRectaEjeX { get; set; }
-
         private SkyBox SkyBox { get; set; }
         float rotacionActual = 0f;
 
@@ -57,30 +57,50 @@ namespace TGC.MonoGame.TP{
             IsMouseVisible = true;
 
             Gizmos = new Gizmos.Gizmos();
+
+            _pistasCurvas = new PistasCurvas();
+            _pistasRectas = new PistasRectas();
         }
 
         protected override void Initialize(){
             Camera = new FollowCamera(GraphicsDevice, new Vector3(0, 5, 15), Vector3.Zero, Vector3.Up);
 
-            pista = new Pista();
             sphere = new TGC.MonoGame.TP.Objects.Sphere(new Vector3(0f,30f,0f));
             sphere.SphereCamera = Camera;
-            sphere.Colliders = pista.Colliders;
+            
+            
+            _pistasCurvas.LoadContent(Content);
+            _pistasRectas.LoadContent(Content);
+
+            AgregarPistaRecta(_pistasRectas);//CAMBIAR POR UN METODO UNICO, PARCHE
+            AgregarPistaRecta(_pistasRectas);//CAMBIAR POR UN METODO UNICO, PARCHE
+            AgregarPistaRecta(_pistasRectas);//CAMBIAR POR UN METODO UNICO, PARCHE
+            AgregarPistaCurva(_pistasCurvas);//CAMBIAR POR UN METODO UNICO, PARCHE
+            AgregarPistaCurva(_pistasCurvas);
+            AgregarPistaRecta(_pistasRectas);//CAMBIAR POR UN METODO UNICO, PARCHE
+            //AgregarPistaRecta(_pistasRectas);//CAMBIAR POR UN METODO UNICO, PARCHE
+            //AgregarPistaRecta(_pistasRectas);//CAMBIAR POR UN METODO UNICO, PARCHE
+            //AgregarPistaCurva(_pistasCurvas);//CAMBIAR POR UN METODO UNICO, PARCHE
+
+            _pistasCurvas.IniciarColliders();
+            _pistasRectas.IniciarColliders();
+            
+            sphere.Colliders = _pistasRectas.Colliders; //CombineColliders(_pistasCurvas.Colliders, _pistasRectas.Colliders);
+
             posicionActual = new Vector3(0f, 0f, 0f);
             
-            _dimensionesRectaEjeX = new Vector3(30f, 0f, 30f);
-
             base.Initialize();
         }
 
         protected override void LoadContent(){
-            pista.LoadContent(Content);
             sphere.LoadContent(Content);
 
             var skyBox = Content.Load<Model>("Models/skybox/cube");
             var skyBoxTexture = Content.Load<TextureCube>(ContentFolderTextures + "/skybox/skybox");
             var skyBoxEffect = Content.Load<Effect>(ContentFolderEffects + "SkyBox");
             SkyBox = new SkyBox(skyBox, skyBoxTexture, skyBoxEffect,500);
+            
+            
 
             base.LoadContent();
         }
@@ -93,7 +113,8 @@ namespace TGC.MonoGame.TP{
             }
 
             sphere.Update(gameTime);
-            pista.Update(gameTime);
+            _pistasCurvas.Update(gameTime);
+            _pistasRectas.Update(gameTime);
 
             Camera.Update(sphere.SpherePosition);
             //Gizmos.UpdateViewProjection(Camera.ViewMatrix, Camera.ProjectionMatrix);
@@ -113,33 +134,13 @@ namespace TGC.MonoGame.TP{
 
             SkyBox.Draw(Camera.ViewMatrix, Camera.ProjectionMatrix, Camera.position);
             sphere.Draw(gameTime, Camera.ViewMatrix, Camera.ProjectionMatrix);
-            pista.Draw(gameTime, Camera.ViewMatrix, Camera.ProjectionMatrix);
+
+            _pistasCurvas.Draw(gameTime, Camera.ViewMatrix, Camera.ProjectionMatrix);
+            _pistasRectas.Draw(gameTime, Camera.ViewMatrix, Camera.ProjectionMatrix);
+
 
             GraphicsDevice.RasterizerState = originalRasterizerState;
 
-            /*
-            GraphicsDevice.Clear(Color.CornflowerBlue);
-            GraphicsDevice.DepthStencilState = DepthStencilState.DepthRead;
-
-            SkyBox.Draw(Camera.ViewMatrix, Camera.ProjectionMatrix, Camera.position);    
-
-            GraphicsDevice.DepthStencilState = DepthStencilState.Default;
-            
-            sphere.Draw(gameTime, Camera.ViewMatrix, Camera.ProjectionMatrix);
-            pista.Draw(gameTime, Camera.ViewMatrix, Camera.ProjectionMatrix);*/
-
-            
-
-            //SkyBox.Draw(View, Projection, CameraPosition);
-
-            /*var originalRasterizerState = GraphicsDevice.RasterizerState;
-            var rasterizerState = new RasterizerState();
-            rasterizerState.CullMode = CullMode.None;
-            Graphics.GraphicsDevice.RasterizerState = rasterizerState;
-
-            GraphicsDevice.RasterizerState = originalRasterizerState;*/
-
-            //Gizmos.DrawSphere(sphere.SphereCollider.Center, sphere.SphereCollider.Radius * Vector3.One, Color.Red);
         }
 
         protected override void UnloadContent(){
@@ -147,16 +148,49 @@ namespace TGC.MonoGame.TP{
             base.UnloadContent();
         }
 
-        void AgregarPista(Pista tipoPista)
+        /*
+        void AgregarPista<T>(T pista) where T : class
         {
-        /* 
-            tipoPista.Draw(gameTime, Camera.ViewMatrix, Camera.ProjectionMatrix, posicionActual, rotacionActual);
-            Vector3 desplazamiento = tipoPista.Desplazamiento();
-            Matrix rotacion = tipoPista.Rotacion();
-            rotacionActual *=rotacion
-            posicionActual += dimensionEnEje; 
-        */
-        
+            Vector3 desplazamiento = pista.Desplazamiento();
+            float rotacion = pista.Rotacion();
+            pista.agregarNuevaPista(rotacionActual, posicionActual);
+
+            rotacionActual += rotacion;
+            posicionActual += desplazamiento;
         }
+        */
+
+        void AgregarPistaRecta(PistasRectas unaPista) {
+            Vector3 desplazamiento = unaPista.Desplazamiento();
+            float rotacion = unaPista.Rotacion();
+            unaPista.agregarNuevaPista(rotacionActual, posicionActual);
+
+            rotacionActual += rotacion;
+            posicionActual += desplazamiento;
+        }
+
+        void AgregarPistaCurva(PistasCurvas unaPista) {
+            Vector3 desplazamiento = unaPista.Desplazamiento();
+            float rotacion = unaPista.Rotacion();
+            unaPista.agregarNuevaPista(rotacionActual, posicionActual);
+
+            rotacionActual += rotacion;
+            posicionActual += desplazamiento;
+        }
+
+        /*
+        private BoundingBox[] CombineColliders(BoundingBox[] curvas, BoundingBox[] rectas) {
+            if (curvas == null) return rectas;
+            if (rectas == null) return curvas;
+
+            var combined = new BoundingBox[curvas.Length + rectas.Length];
+            curvas.CopyTo(combined, 0);
+            rectas.CopyTo(combined, curvas.Length);
+
+            return combined;
+        }
+        */
     }
+
+    
 }

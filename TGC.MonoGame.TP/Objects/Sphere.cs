@@ -79,6 +79,7 @@ namespace TGC.MonoGame.TP.Objects{
         }
 
         public void Update(GameTime gameTime){
+
             var deltaTime = Convert.ToSingle(gameTime.ElapsedGameTime.TotalSeconds);
             var keyboardState = Keyboard.GetState();
 

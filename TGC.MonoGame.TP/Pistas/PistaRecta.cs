@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
 using TGC.MonoGame.TP.Collisions;
+using System; // Asegúrate de que esto esté presente en la parte superior de tu archivo
 
 namespace TGC.MonoGame.TP.PistaRecta{
     public class PistasRectas{
@@ -67,9 +68,11 @@ namespace TGC.MonoGame.TP.PistaRecta{
             int Aux = 0;
 
             for(; Aux < _pistasRectas.Count; Aux++){
-                Colliders[indice] = BoundingVolumesExtensions.FromMatrix(_pistasRectas[Aux]);
+                Colliders[indice] = BoundingVolumesExtensions.FromMatrix(_pistasRectas[Aux] * scale);
                 indice++;
             }
+
+            
 
             Effect.Parameters["View"].SetValue(view);
             Effect.Parameters["Projection"].SetValue(projection);
@@ -88,7 +91,9 @@ namespace TGC.MonoGame.TP.PistaRecta{
         public Vector3 Desplazamiento() {
             PistaRectaBox = BoundingVolumesExtensions.CreateAABBFrom(ModeloPistaRecta);
             desplazamientoEnEjes = PistaRectaBox.Max - PistaRectaBox.Min; // aca consigo el tamaño el largo de la pista para que coincida son 3/4, el ancho es el mismo.
-            desplazamientoEnEjes = new Vector3(desplazamientoEnEjes.X, 0, 0); // no estoy seguro que sea la Z
+            desplazamientoEnEjes = new Vector3(desplazamientoEnEjes.X, 0, 0);
+
+            Console.WriteLine($"Pista Recta: Desplazamiento en ejes: X = {desplazamientoEnEjes.X}, Y = {desplazamientoEnEjes.Y}, Z = {desplazamientoEnEjes.Z}");
             return desplazamientoEnEjes;
         }
 

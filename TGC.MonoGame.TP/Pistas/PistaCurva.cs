@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
 using TGC.MonoGame.TP.Collisions;
+using System; // Asegúrate de que esto esté presente en la parte superior de tu archivo
 
 namespace TGC.MonoGame.TP.PistaCurva{
     public class PistasCurvas{
@@ -10,7 +11,7 @@ namespace TGC.MonoGame.TP.PistaCurva{
         public const string ContentFolder3D = "Models/";
         public const string ContentFolderEffects = "Effects/";
         public Effect Effect { get; set; }
-        public Matrix scale = Matrix.CreateScale(0.03f);
+        public Matrix scale = Matrix.CreateScale(50f);
 
         public Model ModeloPistaCurva { get; set; }
 
@@ -47,7 +48,7 @@ namespace TGC.MonoGame.TP.PistaCurva{
 
 
         public void LoadContent(ContentManager Content){
-            ModeloPistaCurva = Content.Load<Model>("Models/" + "pistas/road_curve_fix");
+            ModeloPistaCurva = Content.Load<Model>("Models/" + "pistas/road_curve");
             Effect = Content.Load<Effect>("Effects/" + "BasicShader");
 
             foreach (var mesh in ModeloPistaCurva.Meshes){
@@ -84,7 +85,10 @@ namespace TGC.MonoGame.TP.PistaCurva{
         {
             PistaCurvaBox = BoundingVolumesExtensions.CreateAABBFrom(ModeloPistaCurva);
             desplazamientoEnEjes = PistaCurvaBox.Max - PistaCurvaBox.Min;
-            return new Vector3(desplazamientoEnEjes.X, 0, desplazamientoEnEjes.Z); //ESTE ESTA MAL
+            desplazamientoEnEjes = new Vector3(desplazamientoEnEjes.X, 0, desplazamientoEnEjes.Z);
+            Console.WriteLine($"Pista Curva: Desplazamiento en ejes: X = {desplazamientoEnEjes.X}, Y = {desplazamientoEnEjes.Y}, Z = {desplazamientoEnEjes.Z}");
+
+            return desplazamientoEnEjes;  //ESTE ESTA MAL
         }
 
         public float Rotacion() {

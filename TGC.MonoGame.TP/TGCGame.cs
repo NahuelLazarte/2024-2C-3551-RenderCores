@@ -71,13 +71,16 @@ namespace TGC.MonoGame.TP{
             
             _pistasCurvas.LoadContent(Content);
             _pistasRectas.LoadContent(Content);
-
+            posicionActual = new Vector3(0f, 0f, 0f);
             AgregarPistaRecta(_pistasRectas);//CAMBIAR POR UN METODO UNICO, PARCHE
             AgregarPistaRecta(_pistasRectas);//CAMBIAR POR UN METODO UNICO, PARCHE
             AgregarPistaRecta(_pistasRectas);//CAMBIAR POR UN METODO UNICO, PARCHE
-            AgregarPistaCurva(_pistasCurvas);//CAMBIAR POR UN METODO UNICO, PARCHE
+            AgregarPistaRecta(_pistasRectas);
             AgregarPistaCurva(_pistasCurvas);
+            AgregarPistaRecta(_pistasRectas);
             AgregarPistaRecta(_pistasRectas);//CAMBIAR POR UN METODO UNICO, PARCHE
+            
+
             //AgregarPistaRecta(_pistasRectas);//CAMBIAR POR UN METODO UNICO, PARCHE
             //AgregarPistaRecta(_pistasRectas);//CAMBIAR POR UN METODO UNICO, PARCHE
             //AgregarPistaCurva(_pistasCurvas);//CAMBIAR POR UN METODO UNICO, PARCHE
@@ -87,7 +90,7 @@ namespace TGC.MonoGame.TP{
             
             sphere.Colliders = _pistasRectas.Colliders; //CombineColliders(_pistasCurvas.Colliders, _pistasRectas.Colliders);
 
-            posicionActual = new Vector3(0f, 0f, 0f);
+            
             
             base.Initialize();
         }
@@ -164,18 +167,24 @@ namespace TGC.MonoGame.TP{
             Vector3 desplazamiento = unaPista.Desplazamiento();
             float rotacion = unaPista.Rotacion();
             unaPista.agregarNuevaPista(rotacionActual, posicionActual);
+            Console.WriteLine($"Pista Recta dibujada: Posicion en ejes: X = {posicionActual.X}, Y = {posicionActual.Y}, Z = {posicionActual.Z}");
 
-            rotacionActual += rotacion;
-            posicionActual += desplazamiento;
+            rotacionActual += rotacion; 
+            posicionActual += Vector3.Transform(desplazamiento, Matrix.CreateRotationY(rotacionActual));
         }
 
         void AgregarPistaCurva(PistasCurvas unaPista) {
             Vector3 desplazamiento = unaPista.Desplazamiento();
+            
             float rotacion = unaPista.Rotacion();
+            
+            posicionActual = new Vector3(posicionActual.X+300f, posicionActual.Y, posicionActual.Z + 500f);
+
             unaPista.agregarNuevaPista(rotacionActual, posicionActual);
+            Console.WriteLine($"Pista Curva dibujada: Posicion en ejes: X = {posicionActual.X}, Y = {posicionActual.Y}, Z = {posicionActual.Z}");
 
             rotacionActual += rotacion;
-            posicionActual += desplazamiento;
+            posicionActual += Vector3.Transform(desplazamiento, Matrix.CreateRotationY(rotacionActual));
         }
 
         /*

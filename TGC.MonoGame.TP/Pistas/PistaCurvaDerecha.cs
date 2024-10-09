@@ -35,12 +35,8 @@ namespace TGC.MonoGame.TP.PistaCurvaDerecha{
         public void IniciarColliders() {
             Colliders = new BoundingBox[_pistasCurvas.Count];
 
-            int indice = 0;
-            int Aux = 0;
-
-            for(; Aux < _pistasCurvas.Count; Aux++){
-                Colliders[indice] = BoundingVolumesExtensions.FromMatrix(_pistasCurvas[Aux]);
-                indice++;
+            for (int i = 0; i < _pistasCurvas.Count; i++) {
+                Colliders[i] = BoundingVolumesExtensions.FromMatrix(_pistasCurvas[i]);
             }
             
         }

@@ -99,7 +99,7 @@ namespace TGC.MonoGame.TP{
             _pistasCurvasDerechas.IniciarColliders();
             _pistasRectas.IniciarColliders();
             
-            sphere.Colliders = _pistasRectas.Colliders; //CombineColliders(_pistasCurvas.Colliders, _pistasRectas.Colliders);
+            sphere.Colliders = CombineColliders(_pistasRectas.Colliders, _pistasCurvasDerechas.Colliders, _pistasCurvasIzquierdas.Colliders);
             
             
             
@@ -228,18 +228,17 @@ namespace TGC.MonoGame.TP{
             Esferas.Add(posicionActual);
         }
 
-        /*
-        private BoundingBox[] CombineColliders(BoundingBox[] curvas, BoundingBox[] rectas) {
-            if (curvas == null) return rectas;
-            if (rectas == null) return curvas;
-
-            var combined = new BoundingBox[curvas.Length + rectas.Length];
-            curvas.CopyTo(combined, 0);
-            rectas.CopyTo(combined, curvas.Length);
+        
+        private BoundingBox[] CombineColliders(BoundingBox[] rectas, BoundingBox[] curvasDerechas, BoundingBox[] curvasIzquierdas) {
+            var combined = new BoundingBox[curvasDerechas.Length + curvasIzquierdas.Length + rectas.Length];
+        
+            rectas.CopyTo(combined, 0);
+            curvasDerechas.CopyTo(combined, curvasDerechas.Length);
+            curvasIzquierdas.CopyTo(combined, rectas.Length + curvasDerechas.Length);
 
             return combined;
         }
-        */
+        
     }
 
     

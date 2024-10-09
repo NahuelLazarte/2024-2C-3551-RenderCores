@@ -34,12 +34,26 @@ namespace TGC.MonoGame.TP.PistaRecta{
         public void IniciarColliders() {
             Colliders = new BoundingBox[_pistasRectas.Count];
 
-            int indice = 0;
-            int Aux = 0;
+            // Define factores de escala para cada eje
+            float scaleX = 1500f; // Ajusta este valor para el eje X
+            float scaleY = 1.0f; // Ajusta este valor para el eje Y
+            float scaleZ = 600f; // Ajusta este valor para el eje Z
 
-            for(; Aux < _pistasRectas.Count; Aux++){
-                Colliders[indice] = BoundingVolumesExtensions.FromMatrix(_pistasRectas[Aux]);
-                indice++;
+            for (int i = 0; i < _pistasRectas.Count; i++) {
+                // Crear el collider original
+                Colliders[i] = BoundingVolumesExtensions.FromMatrix(_pistasRectas[i]);
+
+                // Aplicar la escala al BoundingBox
+                Vector3 center = (Colliders[i].Min + Colliders[i].Max) / 2;
+                Vector3 size = Colliders[i].Max - Colliders[i].Min;
+
+                // Escalar el tamaño en cada eje
+                size.X *= scaleX;
+                size.Y *= scaleY;
+                size.Z *= scaleZ;
+
+                // Crear un nuevo BoundingBox escalado
+                Colliders[i] = new BoundingBox(center - size / 2, center + size / 2);
             }
         }
 
@@ -64,12 +78,8 @@ namespace TGC.MonoGame.TP.PistaRecta{
 
             Colliders = new BoundingBox[_pistasRectas.Count];
 
-            int indice = 0;
-            int Aux = 0;
-
-            for(; Aux < _pistasRectas.Count; Aux++){
-                Colliders[indice] = BoundingVolumesExtensions.FromMatrix(_pistasRectas[Aux] * scale);
-                indice++;
+            for (int i = 0; i < _pistasRectas.Count; i++) {
+                Colliders[i] = BoundingVolumesExtensions.FromMatrix(_pistasRectas[i]);
             }
 
             

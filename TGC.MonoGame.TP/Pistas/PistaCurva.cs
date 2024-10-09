@@ -11,7 +11,7 @@ namespace TGC.MonoGame.TP.PistaCurva{
         public const string ContentFolder3D = "Models/";
         public const string ContentFolderEffects = "Effects/";
         public Effect Effect { get; set; }
-        public Matrix scale = Matrix.CreateScale(50f);
+        public Matrix scale = Matrix.CreateScale(0.03f);
 
         public Model ModeloPistaCurva { get; set; }
 
@@ -48,7 +48,7 @@ namespace TGC.MonoGame.TP.PistaCurva{
 
 
         public void LoadContent(ContentManager Content){
-            ModeloPistaCurva = Content.Load<Model>("Models/" + "pistas/road_curve");
+            ModeloPistaCurva = Content.Load<Model>("Models/" + "pistas/road_curve_fix");
             Effect = Content.Load<Effect>("Effects/" + "BasicShader");
 
             foreach (var mesh in ModeloPistaCurva.Meshes){
@@ -65,7 +65,6 @@ namespace TGC.MonoGame.TP.PistaCurva{
         public void Draw(GameTime gameTime, Matrix view, Matrix projection)
         {
 
-            
 
             Effect.Parameters["View"].SetValue(view);
             Effect.Parameters["Projection"].SetValue(projection);
@@ -83,12 +82,12 @@ namespace TGC.MonoGame.TP.PistaCurva{
 
         public Vector3 Desplazamiento() 
         {
-            PistaCurvaBox = BoundingVolumesExtensions.CreateAABBFrom(ModeloPistaCurva);
+            PistaCurvaBox = BoundingVolumesExtensions.CreateAABBFrom(ModeloPistaCurva); // HACER UNA SOLA VEZ
             desplazamientoEnEjes = PistaCurvaBox.Max - PistaCurvaBox.Min;
-            desplazamientoEnEjes = new Vector3(desplazamientoEnEjes.X, 0, desplazamientoEnEjes.Z);
+            desplazamientoEnEjes = new Vector3(desplazamientoEnEjes.X - 500, 0, desplazamientoEnEjes.Z - 2500);
             Console.WriteLine($"Pista Curva: Desplazamiento en ejes: X = {desplazamientoEnEjes.X}, Y = {desplazamientoEnEjes.Y}, Z = {desplazamientoEnEjes.Z}");
 
-            return desplazamientoEnEjes;  //ESTE ESTA MAL
+            return desplazamientoEnEjes;  
         }
 
         public float Rotacion() {
@@ -96,6 +95,7 @@ namespace TGC.MonoGame.TP.PistaCurva{
         }
 
         public void agregarNuevaPista(float Rotacion, Vector3 Posicion) {
+            Posicion += Vector3.Transform(new Vector3(0,0,500), Matrix.CreateRotationY(Rotacion));
             _pistasCurvas.Add(Matrix.CreateRotationY(Rotacion) * Matrix.CreateTranslation(Posicion) * scale); // METER MATRIZ DENTRO DE CADA PISTA
         }
 

@@ -9,7 +9,9 @@ using TGC.MonoGame.TP.Objects;
 using TGC.MonoGame.TP.PistaCurvaDerecha;
 using TGC.MonoGame.TP.PistaCurvaIzquierda;
 using TGC.MonoGame.TP.PistaRecta;
+
 using TGC.MonoGame.TP.Modelos;
+
 using TGC.MonoGame.TP.Fondo;
 
 
@@ -48,6 +50,8 @@ namespace TGC.MonoGame.TP{
         private Vector3 posicionActual { get; set; }
         private SkyBox SkyBox { get; set; }
         float rotacionActual = 0f;
+
+        Modelos.Sphere esfera;
 
         public TGCGame(){
             Graphics = new GraphicsDeviceManager(this);
@@ -103,6 +107,13 @@ namespace TGC.MonoGame.TP{
             
             
             
+
+            // Crear una matriz de rotación con rotación 0
+            Matrix rotation = Matrix.Identity;
+
+            // Crear la esfera con posición (0,0,0), rotación 0 y color rojo
+            esfera = new Modelos.Sphere(Content, new Vector3(0.0f, 0.0f, 0.0f), rotation, Color.Red);
+
             base.Initialize();
         }
 
@@ -163,6 +174,8 @@ namespace TGC.MonoGame.TP{
 
             
             Gizmos.Draw();
+
+            esfera.Draw();
         }
 
         protected override void UnloadContent(){

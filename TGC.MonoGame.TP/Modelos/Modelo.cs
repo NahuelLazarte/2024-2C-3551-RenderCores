@@ -14,6 +14,7 @@ namespace TGC.MonoGame.TP.Modelos
         protected Matrix Scale { get; set; } // escala del modelo 
         private Color Color { get; set; } // color del modelo
         public Matrix World { get; set; }
+        public Effect Effect { get; set; }
 
 
         public void SetPosition( Vector3 newPosition ){ Position = newPosition; }
@@ -26,16 +27,18 @@ namespace TGC.MonoGame.TP.Modelos
         public Matrix GetScale(){ return Scale; }
         public Color GetColor(){ return Color; }
 
-        public void LoadContent(Effect _effect)
+        public void LoadContent()
         {
             foreach (var mesh in Model3D.Meshes)
             {
                 foreach (var meshPart in mesh.MeshParts)
                 {
-                    meshPart.Effect = _effect;
+                    meshPart.Effect = Effect;
                 }
-            }
+            }           
         }
+
+        
 
         public Modelo(ContentManager _content, Vector3 _position, Matrix _rotation, Color _color)
         {
@@ -50,18 +53,30 @@ namespace TGC.MonoGame.TP.Modelos
             World = Scale * Rotation * Matrix.CreateTranslation(Position);
         }
 
-        public void Draw(Effect _effect)
-        {
+        public void Draw()
+        {   
             var modelMeshesBaseTransforms = new Matrix[Model3D.Bones.Count];
             Model3D.CopyAbsoluteBoneTransformsTo(modelMeshesBaseTransforms);
 
             foreach (var mesh in Model3D.Meshes)
             {
                 var relativeTransform = modelMeshesBaseTransforms[mesh.ParentBone.Index];
-                _effect.Parameters["World"].SetValue(relativeTransform * World);
-                _effect.Parameters["DiffuseColor"].SetValue(Color.ToVector3());
+                Effect.Parameters["World"].SetValue(relativeTransform * World);
+                Effect.Parameters["DiffuseColor"].SetValue(Color.ToVector3());
                 mesh.Draw();
             }
+
+            /*
+            Effect.Parameters["View"].SetValue(view); //Cambio View por Eso
+            Effect.Parameters["Projection"].SetValue(projection);
+            Effect.Parameters["DiffuseColor"].SetValue(Color.Yellow.ToVector3());
+            foreach (var mesh in SphereModel.Meshes)
+            {
+                Effect.Parameters["World"].SetValue(mesh.ParentBone.Transform * SphereWorld);
+                mesh.Draw();
+            }*/
+
         }
     }
 }
+

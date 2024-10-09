@@ -112,7 +112,7 @@ namespace TGC.MonoGame.TP{
             Matrix rotation = Matrix.Identity;
 
             // Crear la esfera con posición (0,0,0), rotación 0 y color rojo
-            esfera = new Modelos.Sphere(Content, new Vector3(0.0f, 0.0f, 0.0f), rotation, Color.Red);
+            esfera = new Modelos.Sphere(Content, new Vector3(0.0f, 4.0f, 0.0f), rotation, Color.Red);
 
             base.Initialize();
         }
@@ -143,7 +143,14 @@ namespace TGC.MonoGame.TP{
             _pistasRectas.Update(gameTime);
 
             Gizmos.UpdateViewProjection(Camera.ViewMatrix, Camera.ProjectionMatrix);
-            Camera.Update(sphere.SpherePosition);
+
+
+            Camera.Update(esfera.GetPosition());
+            
+            esfera.Update(gameTime);
+
+            esfera.setDirection(Camera.GetDirection());
+            
             
             base.Update(gameTime);
         }

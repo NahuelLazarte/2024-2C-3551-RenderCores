@@ -84,7 +84,7 @@ namespace TGC.MonoGame.TP.Objects{
             var keyboardState = Keyboard.GetState();
 
             Vector3 friccion = -SphereVelocity * 0.05f;
-
+            /*
             if (keyboardState.IsKeyDown(Keys.W))
                 SphereAcceleration += Vector3.Forward;
             if (keyboardState.IsKeyDown(Keys.S))
@@ -102,7 +102,7 @@ namespace TGC.MonoGame.TP.Objects{
             }
             if(SphereAcceleration.Z == 0f){
                 SphereVelocity += new Vector3(friccion.X, 0f, friccion.Z);
-            }
+            }*/
 
             SphereVelocity += SphereAcceleration * deltaTime;
             var scaledVelocity = SphereVelocity * deltaTime;

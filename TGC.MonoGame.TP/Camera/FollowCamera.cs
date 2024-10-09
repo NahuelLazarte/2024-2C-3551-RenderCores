@@ -9,11 +9,16 @@ namespace TGC.MonoGame.TP
         public Matrix ViewMatrix { get; private set; }
         public Matrix ProjectionMatrix { get; private set; }
 
-        public Vector3 position { get;set;}
+        public Vector3 position { get; set; }
         private Vector3 target;
         private Vector3 up;
         private Vector3 offset = new(0f, 5f, 30f);
 
+
+        public Vector3 GetDirection()
+        {
+            return Vector3.Normalize(target - position);
+        }       
         public FollowCamera(GraphicsDevice graphicsDevice, Vector3 initialPosition, Vector3 initialTarget, Vector3 initialUp)
         {
             position = initialPosition;
@@ -22,6 +27,7 @@ namespace TGC.MonoGame.TP
 
             ViewMatrix = Matrix.CreateLookAt(position, target, up);
             ProjectionMatrix = Matrix.CreatePerspectiveFieldOfView(MathHelper.PiOver4, graphicsDevice.Viewport.AspectRatio, 0.1f, 1000.0f);
+
         }
 
         public void Update(Vector3 objectPosition)

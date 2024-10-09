@@ -9,8 +9,8 @@ namespace TGC.MonoGame.TP.Modelos
     abstract class Modelo
     {
         protected Model Model3D { get; set; } // variable del modelo
-        private Vector3 Position { get; set; } // posicion del modelo 
-        private Matrix Rotation { get; set; } // rotacion del modelo
+        protected Vector3 Position { get; set; } // posicion del modelo 
+        protected Matrix Rotation { get; set; } // rotacion del modelo
         protected Matrix Scale { get; set; } // escala del modelo 
         private Color Color { get; set; } // color del modelo
         public Matrix World { get; set; }
@@ -48,7 +48,7 @@ namespace TGC.MonoGame.TP.Modelos
             //Model = Content.Load<Model>("Models/" + path);// "Models/"  es lo mismo que poner ContentFolder3D
         }
 
-        public void Update(GameTime gameTime)
+        public virtual void Update(GameTime gameTime)
         {
             World = Scale * Rotation * Matrix.CreateTranslation(Position);
         }

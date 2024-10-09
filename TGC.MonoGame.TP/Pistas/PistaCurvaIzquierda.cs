@@ -5,8 +5,8 @@ using System.Collections.Generic;
 using TGC.MonoGame.TP.Collisions;
 using System; // Asegúrate de que esto esté presente en la parte superior de tu archivo
 
-namespace TGC.MonoGame.TP.PistaCurva{
-    public class PistasCurvas{
+namespace TGC.MonoGame.TP.PistaCurvaIzquierda{
+    public class PistasCurvasIzquierdas{
         public Gizmos.Gizmos Gizmos { get; }
         public const string ContentFolder3D = "Models/";
         public const string ContentFolderEffects = "Effects/";
@@ -24,7 +24,7 @@ namespace TGC.MonoGame.TP.PistaCurva{
         private List<Matrix> _pistasCurvas { get; set; }
 
 
-        public PistasCurvas() {
+        public PistasCurvasIzquierdas() {
             Initialize();
         }
 
@@ -84,19 +84,19 @@ namespace TGC.MonoGame.TP.PistaCurva{
         {
             PistaCurvaBox = BoundingVolumesExtensions.CreateAABBFrom(ModeloPistaCurva); // HACER UNA SOLA VEZ
             desplazamientoEnEjes = PistaCurvaBox.Max - PistaCurvaBox.Min;
-            desplazamientoEnEjes = new Vector3(desplazamientoEnEjes.X - 500, 0, desplazamientoEnEjes.Z - 2500);
+            desplazamientoEnEjes = new Vector3(desplazamientoEnEjes.X, 0, desplazamientoEnEjes.Z -1000);
             Console.WriteLine($"Pista Curva: Desplazamiento en ejes: X = {desplazamientoEnEjes.X}, Y = {desplazamientoEnEjes.Y}, Z = {desplazamientoEnEjes.Z}");
 
             return desplazamientoEnEjes;  
         }
 
         public float Rotacion() {
-            return MathHelper.ToRadians(-90);
+            return MathHelper.ToRadians(90);
         }
 
         public void agregarNuevaPista(float Rotacion, Vector3 Posicion) {
-            Posicion += Vector3.Transform(new Vector3(0,0,500), Matrix.CreateRotationY(Rotacion));
-            _pistasCurvas.Add(Matrix.CreateRotationY(Rotacion) * Matrix.CreateTranslation(Posicion) * scale); // METER MATRIZ DENTRO DE CADA PISTA
+            Posicion += Vector3.Transform(new Vector3(500,0,-500), Matrix.CreateRotationY(Rotacion));
+            _pistasCurvas.Add(Matrix.CreateRotationY(Rotacion) *  Matrix.CreateRotationX(MathHelper.Pi) * Matrix.CreateTranslation(Posicion) * scale); // METER MATRIZ DENTRO DE CADA PISTA
         }
 
     }

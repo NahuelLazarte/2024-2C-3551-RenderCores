@@ -1,3 +1,4 @@
+using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -14,10 +15,15 @@ namespace TGC.MonoGame.TP
         private Vector3 up;
         private Vector3 offset = new(0f, 5f, 30f);
 
+        private Vector3 posicionObjeto;
+
 
         public Vector3 GetDirection()
         {
-            return Vector3.Normalize(target - position);
+            Vector3 direccion = posicionObjeto - position;
+            direccion = new Vector3(direccion.X,0f,direccion.Z);
+
+            return Vector3.Normalize(direccion);
         }       
         public FollowCamera(GraphicsDevice graphicsDevice, Vector3 initialPosition, Vector3 initialTarget, Vector3 initialUp)
         {
@@ -32,7 +38,7 @@ namespace TGC.MonoGame.TP
 
         public void Update(Vector3 objectPosition)
         {
-
+            posicionObjeto = objectPosition;
             var mouseState = Mouse.GetState();
             float deltaX = mouseState.X - (GraphicsDeviceManager.DefaultBackBufferWidth / 2);
             float deltaY = mouseState.Y - (GraphicsDeviceManager.DefaultBackBufferHeight / 2);
@@ -45,6 +51,14 @@ namespace TGC.MonoGame.TP
 
             // Actualizar la matriz de vista
             ViewMatrix = Matrix.CreateLookAt(position, objectPosition, up);
+
+
+            //Console.WriteLine($"Camera Position: X={position.X}, Y={position.Y}, Z={position.Z}");
+
+            //Console.WriteLine($"objectPosition: X={objectPosition.X}, Y={objectPosition.Y}, Z={objectPosition.Z}");
+
+            //Console.WriteLine($"up: X={up.X}, Y={up.Y}, Z={up.Z}");
+
         }
     }
 }

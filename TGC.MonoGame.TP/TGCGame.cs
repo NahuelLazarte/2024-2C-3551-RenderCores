@@ -20,15 +20,17 @@ using System.Net.Http.Headers;
 using TGC.MonoGame.TP.Collisions;
 
 
-namespace TGC.MonoGame.TP{
-    public class TGCGame : Game{
+namespace TGC.MonoGame.TP
+{
+    public class TGCGame : Game
+    {
         public const string ContentFolder3D = "Models/";
         public const string ContentFolderEffects = "Effects/";
         public const string ContentFolderMusic = "Music/";
         public const string ContentFolderSounds = "Sounds/";
         public const string ContentFolderSpriteFonts = "SpriteFonts/";
         public const string ContentFolderTextures = "Textures/";
-        
+
         private GraphicsDeviceManager Graphics { get; }
         private SpriteBatch SpriteBatch { get; set; }
         private Model Model { get; set; }
@@ -52,8 +54,10 @@ namespace TGC.MonoGame.TP{
         float rotacionActual = 0f;
 
         Modelos.Sphere esfera;
+        LineDrawer lineDrawer;
 
-        public TGCGame(){
+        public TGCGame()
+        {
             Graphics = new GraphicsDeviceManager(this);
 
             Graphics.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width - 100;
@@ -67,19 +71,20 @@ namespace TGC.MonoGame.TP{
             _pistasRectas = new PistasRectas();
         }
 
-        protected override void Initialize(){
+        protected override void Initialize()
+        {
             Camera = new FollowCamera(GraphicsDevice, new Vector3(0, 5, 15), Vector3.Zero, Vector3.Up);
 
-            sphere = new TGC.MonoGame.TP.Objects.Sphere(new Vector3(0f,30f,0f));
+            sphere = new TGC.MonoGame.TP.Objects.Sphere(new Vector3(0f, 30f, 0f));
             sphere.SphereCamera = Camera;
             Gizmos = new Gizmos.Gizmos();
-            
+
             _pistasCurvasIzquierdas.LoadContent(Content);
             _pistasCurvasDerechas.LoadContent(Content);
 
             _pistasRectas.LoadContent(Content);
             posicionActual = new Vector3(0f, 0f, 0f);
-            
+
             AgregarPistaRecta(_pistasRectas);//CAMBIAR POR UN METODO UNICO, PARCHE
             AgregarPistaRecta(_pistasRectas);//CAMBIAR POR UN METODO UNICO, PARCHE
             AgregarPistaRecta(_pistasRectas);//CAMBIAR POR UN METODO UNICO, PARCHE
@@ -98,42 +103,46 @@ namespace TGC.MonoGame.TP{
             AgregarPistaRecta(_pistasRectas);//CAMBIAR POR UN METODO UNICO, PARCHE
             AgregarPistaRecta(_pistasRectas);//CAMBIAR POR UN METODO UNICO, PARCHE
             AgregarPistaRecta(_pistasRectas);//CAMBIAR POR UN METODO UNICO, PARCHE
-            
+
             _pistasCurvasIzquierdas.IniciarColliders();
             _pistasCurvasDerechas.IniciarColliders();
             _pistasRectas.IniciarColliders();
-            
+
             sphere.Colliders = CombineColliders(_pistasRectas.Colliders, _pistasCurvasDerechas.Colliders, _pistasCurvasIzquierdas.Colliders);
-            
-            
-            
+
+
+
 
             // Crear una matriz de rotación con rotación 0
             Matrix rotation = Matrix.Identity;
 
-            // Crear la esfera con posición (0,0,0), rotación 0 y color rojo
+            // Crear la esfera con posición (0,4,0), rotación 0 y color rojo
             esfera = new Modelos.Sphere(Content, new Vector3(0.0f, 4.0f, 0.0f), rotation, Color.Red);
+            lineDrawer = new LineDrawer(GraphicsDevice);
 
             base.Initialize();
         }
 
-        protected override void LoadContent(){
+        protected override void LoadContent()
+        {
             sphere.LoadContent(Content);
 
             var skyBox = Content.Load<Model>("Models/skybox/cube");
             var skyBoxTexture = Content.Load<TextureCube>(ContentFolderTextures + "/skybox/skybox");
             var skyBoxEffect = Content.Load<Effect>(ContentFolderEffects + "SkyBox");
-            SkyBox = new SkyBox(skyBox, skyBoxTexture, skyBoxEffect,500);
+            SkyBox = new SkyBox(skyBox, skyBoxTexture, skyBoxEffect, 500);
             Gizmos.LoadContent(GraphicsDevice, Content);
-            
+
 
             base.LoadContent();
         }
 
-        protected override void Update(GameTime gameTime){
+        protected override void Update(GameTime gameTime)
+        {
             var keyboardState = Keyboard.GetState();
 
-            if (keyboardState.IsKeyDown(Keys.Escape)){
+            if (keyboardState.IsKeyDown(Keys.Escape))
+            {
                 Exit();
             }
 
@@ -146,18 +155,19 @@ namespace TGC.MonoGame.TP{
 
 
             Camera.Update(esfera.GetPosition());
-            
+
             esfera.Update(gameTime);
 
             esfera.setDirection(Camera.GetDirection());
-            
-            
+
+
             base.Update(gameTime);
         }
 
-        protected override void Draw(GameTime gameTime){
+        protected override void Draw(GameTime gameTime)
+        {
 
-            
+
             GraphicsDevice.Clear(Color.CornflowerBlue);
             var originalRasterizerState = GraphicsDevice.RasterizerState;
             var rasterizerState = new RasterizerState
@@ -168,24 +178,35 @@ namespace TGC.MonoGame.TP{
 
             SkyBox.Draw(Camera.ViewMatrix, Camera.ProjectionMatrix, Camera.position);
             sphere.Draw(gameTime, Camera.ViewMatrix, Camera.ProjectionMatrix);
-            
+
             _pistasCurvasDerechas.Draw(gameTime, Camera.ViewMatrix, Camera.ProjectionMatrix);
             _pistasCurvasIzquierdas.Draw(gameTime, Camera.ViewMatrix, Camera.ProjectionMatrix);
             _pistasRectas.Draw(gameTime, Camera.ViewMatrix, Camera.ProjectionMatrix);
 
             GraphicsDevice.RasterizerState = originalRasterizerState;
 
-            foreach (var posicion in Esferas){
+            foreach (var posicion in Esferas)
+            {
                 Gizmos.DrawSphere(posicion, Vector3.One * 100, Color.Yellow);
             }
 
-            
+
             Gizmos.Draw();
 
             esfera.Draw();
+
+
+            Vector3 start = new Vector3(0, 0, 0);
+            Vector3 endGreen = new Vector3(50, 0, 0);
+            Vector3 endRed = new Vector3(0, 0, 50);
+
+            lineDrawer.DrawLine(start, endGreen, Color.Green, Camera.ViewMatrix, Camera.ProjectionMatrix);
+            lineDrawer.DrawLine(start, endRed, Color.Red, Camera.ViewMatrix, Camera.ProjectionMatrix);
+
         }
 
-        protected override void UnloadContent(){
+        protected override void UnloadContent()
+        {
             Content.Unload();
             base.UnloadContent();
         }
@@ -201,24 +222,26 @@ namespace TGC.MonoGame.TP{
             posicionActual += desplazamiento;
         }
         */
-        private List<Vector3>Esferas = new ();
+        private List<Vector3> Esferas = new();
 
-        void AgregarPistaRecta(PistasRectas unaPista) {
+        void AgregarPistaRecta(PistasRectas unaPista)
+        {
             Vector3 desplazamiento = unaPista.Desplazamiento();
             float rotacion = unaPista.Rotacion();
             unaPista.agregarNuevaPista(rotacionActual, posicionActual);
             Console.WriteLine($"Pista Recta dibujada: Posicion en ejes: X = {posicionActual.X}, Y = {posicionActual.Y}, Z = {posicionActual.Z}");
 
-            rotacionActual += rotacion; 
+            rotacionActual += rotacion;
             posicionActual += Vector3.Transform(desplazamiento, Matrix.CreateRotationY(rotacionActual));
             Esferas.Add(posicionActual);
         }
 
-        void AgregarPistaCurvaDerecha(PistasCurvasDerechas unaPista) {
+        void AgregarPistaCurvaDerecha(PistasCurvasDerechas unaPista)
+        {
             Vector3 desplazamiento = unaPista.Desplazamiento();
-            
+
             float rotacion = unaPista.Rotacion();
-            
+
             //posicionActual = new Vector3(posicionActual.X +300f, posicionActual.Y, posicionActual.Z + 500f);
 
             //posicionActual = new Vector3(posicionActual.X, posicionActual.Y, posicionActual.Z);
@@ -231,11 +254,12 @@ namespace TGC.MonoGame.TP{
             Esferas.Add(posicionActual);
         }
 
-        void AgregarPistaCurvaIzquierda(PistasCurvasIzquierdas unaPista) {
+        void AgregarPistaCurvaIzquierda(PistasCurvasIzquierdas unaPista)
+        {
             Vector3 desplazamiento = unaPista.Desplazamiento();
-            
+
             float rotacion = unaPista.Rotacion();
-            
+
             //posicionActual = new Vector3(posicionActual.X +300f, posicionActual.Y, posicionActual.Z + 500f);
 
             //posicionActual = new Vector3(posicionActual.X, posicionActual.Y, posicionActual.Z);
@@ -248,18 +272,19 @@ namespace TGC.MonoGame.TP{
             Esferas.Add(posicionActual);
         }
 
-        
-        private BoundingBox[] CombineColliders(BoundingBox[] rectas, BoundingBox[] curvasDerechas, BoundingBox[] curvasIzquierdas) {
+
+        private BoundingBox[] CombineColliders(BoundingBox[] rectas, BoundingBox[] curvasDerechas, BoundingBox[] curvasIzquierdas)
+        {
             var combined = new BoundingBox[curvasDerechas.Length + curvasIzquierdas.Length + rectas.Length];
-        
+
             rectas.CopyTo(combined, 0);
             curvasDerechas.CopyTo(combined, curvasDerechas.Length);
             curvasIzquierdas.CopyTo(combined, rectas.Length + curvasDerechas.Length);
 
             return combined;
         }
-        
+
     }
 
-    
+
 }

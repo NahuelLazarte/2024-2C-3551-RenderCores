@@ -17,7 +17,7 @@ namespace TGC.MonoGame.TP.Modelos
         public void setDirection(Vector3 newDirection)
         {
             direction = newDirection;
-            Console.WriteLine($"Direction set to: {direction}");
+            //Console.WriteLine($"Direction set to: {direction}");
 
         }  
 

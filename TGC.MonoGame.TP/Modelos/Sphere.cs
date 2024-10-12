@@ -17,14 +17,14 @@ namespace TGC.MonoGame.TP.Modelos
 
         Vector3 direction;
 
-        
+
 
         public void setDirection(Vector3 newDirection)
         {
             direction = newDirection;
             //Console.WriteLine($"Direction set to: {direction}");
 
-        }  
+        }
 
 
         public Sphere(ContentManager content, Vector3 position, Matrix rotation, Color color)
@@ -47,10 +47,10 @@ namespace TGC.MonoGame.TP.Modelos
 
             var keyboardState = Keyboard.GetState();
 
-        
+
             float elapsedTime = Convert.ToSingle(gameTime.ElapsedGameTime.TotalSeconds);
 
-            
+
 
             /*
             if (keyboardState.IsKeyDown(Keys.A))
@@ -93,14 +93,14 @@ namespace TGC.MonoGame.TP.Modelos
 
             if (keyboardState.IsKeyDown(Keys.D))
             {
-                AngleZ+=0.1f;
+                AngleZ += 0.1f;
 
                 Rotation = Matrix.CreateRotationY(AngleZ) * Matrix.CreateRotationX(AngleX);
             }
 
             if (keyboardState.IsKeyDown(Keys.A))
             {
-                AngleX+=0.1f;
+                AngleX += 0.1f;
 
                 Rotation = Matrix.CreateRotationY(AngleZ) * Matrix.CreateRotationX(AngleX);
             }
@@ -112,9 +112,35 @@ namespace TGC.MonoGame.TP.Modelos
                 acceleration.Z -= _velocity.Z * 0.95f;
             }
 
+            // Mejorar la condición de salto
+            if (keyboardState.IsKeyDown(Keys.Space) && Math.Abs(Position.Y - 4f) < 0.1f)
+            {
+                _velocity.Y += 30f;
+
+                Console.WriteLine($"Saltando");
+                Console.WriteLine($"_velocity.Y = {_velocity.Y}");
+            }
+
+
+
+            acceleration.Y = -50f;
+
             _velocity += acceleration * elapsedTime;
 
             Position += _velocity * elapsedTime;
+
+            if (Position.Y < 4f)
+            {
+                Vector3 posicionNueva = new Vector3(Position.X, 4f, Position.Z);
+                SetPosition(posicionNueva);
+
+                _velocity.Y = 0f;
+            }
+
+
+
+
+            Console.WriteLine($"Position.Y = {Position.Y}");
 
             //Console.WriteLine($"acceleration: X={acceleration.X}, Y={acceleration.Y}, Z={acceleration.Z}");
 

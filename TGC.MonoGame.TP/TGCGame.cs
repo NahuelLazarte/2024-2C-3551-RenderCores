@@ -117,7 +117,7 @@ namespace TGC.MonoGame.TP
             Matrix rotation = Matrix.Identity;
 
             // Crear la esfera con posición (0,4,0), rotación 0 y color rojo
-            esfera = new Modelos.Sphere(Content, new Vector3(0.0f, 4.0f, 0.0f), rotation, Color.Red);
+            esfera = new Modelos.Sphere(Content, new Vector3(0.0f, 4.0f, 0.0f), rotation, Color.White);
             lineDrawer = new LineDrawer(GraphicsDevice);
 
             base.Initialize();
@@ -177,7 +177,7 @@ namespace TGC.MonoGame.TP
             GraphicsDevice.RasterizerState = rasterizerState;
 
             SkyBox.Draw(Camera.ViewMatrix, Camera.ProjectionMatrix, Camera.position);
-            sphere.Draw(gameTime, Camera.ViewMatrix, Camera.ProjectionMatrix);
+            //sphere.Draw(gameTime, Camera.ViewMatrix, Camera.ProjectionMatrix);
 
             _pistasCurvasDerechas.Draw(gameTime, Camera.ViewMatrix, Camera.ProjectionMatrix);
             _pistasCurvasIzquierdas.Draw(gameTime, Camera.ViewMatrix, Camera.ProjectionMatrix);
@@ -193,7 +193,7 @@ namespace TGC.MonoGame.TP
 
             Gizmos.Draw();
 
-            esfera.Draw();
+            esfera.Draw(View,Projection);
 
 
             Vector3 start = new Vector3(0, 0, 0);

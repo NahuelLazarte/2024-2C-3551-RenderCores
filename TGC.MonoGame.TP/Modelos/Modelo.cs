@@ -17,15 +17,15 @@ namespace TGC.MonoGame.TP.Modelos
         public Effect Effect { get; set; }
 
 
-        public void SetPosition( Vector3 newPosition ){ Position = newPosition; }
-        public void SetRotation( Matrix newRotation ){ Rotation = newRotation; }
-        public void SetScale( Matrix newScale ){ Scale = newScale; }
-        public void SetColor( Color newColor ){ Color = newColor; }
+        public void SetPosition(Vector3 newPosition) { Position = newPosition; }
+        public void SetRotation(Matrix newRotation) { Rotation = newRotation; }
+        public void SetScale(Matrix newScale) { Scale = newScale; }
+        public void SetColor(Color newColor) { Color = newColor; }
 
-        public Vector3 GetPosition(){ return Position; }
-        public Matrix GetRotation(){ return Rotation; } 
-        public Matrix GetScale(){ return Scale; }
-        public Color GetColor(){ return Color; }
+        public Vector3 GetPosition() { return Position; }
+        public Matrix GetRotation() { return Rotation; }
+        public Matrix GetScale() { return Scale; }
+        public Color GetColor() { return Color; }
 
         public void LoadContent()
         {
@@ -35,10 +35,12 @@ namespace TGC.MonoGame.TP.Modelos
                 {
                     meshPart.Effect = Effect;
                 }
-            }           
+            }
+
+            
         }
 
-        
+
 
         public Modelo(ContentManager _content, Vector3 _position, Matrix _rotation, Color _color)
         {
@@ -53,8 +55,14 @@ namespace TGC.MonoGame.TP.Modelos
             World = Scale * Rotation * Matrix.CreateTranslation(Position);
         }
 
-        public void Draw()
-        {   
+
+
+        public void Draw(Matrix view, Matrix projection)
+        {
+            
+            // Configurar los parámetros del efecto
+            
+            
             var modelMeshesBaseTransforms = new Matrix[Model3D.Bones.Count];
             Model3D.CopyAbsoluteBoneTransformsTo(modelMeshesBaseTransforms);
 
@@ -65,17 +73,15 @@ namespace TGC.MonoGame.TP.Modelos
                 Effect.Parameters["DiffuseColor"].SetValue(Color.ToVector3());
                 mesh.Draw();
             }
-
-            /*
+/*
             Effect.Parameters["View"].SetValue(view); //Cambio View por Eso
             Effect.Parameters["Projection"].SetValue(projection);
             Effect.Parameters["DiffuseColor"].SetValue(Color.Yellow.ToVector3());
-            foreach (var mesh in SphereModel.Meshes)
+            foreach (var mesh in Model3D.Meshes)
             {
-                Effect.Parameters["World"].SetValue(mesh.ParentBone.Transform * SphereWorld);
+                Effect.Parameters["World"].SetValue(mesh.ParentBone.Transform * World);
                 mesh.Draw();
             }*/
-
         }
     }
 }

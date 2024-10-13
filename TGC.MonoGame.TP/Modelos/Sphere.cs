@@ -4,44 +4,53 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
+using TGC.MonoGame.TP.Collisions;
 namespace TGC.MonoGame.TP.Modelos
 {
     class Sphere : Modelo
     {
-        float AngleZ = 0f;
-        float AngleX = 0f;
-
         float LinearSpeed = 100f;
         private float RotationSpeed = 10f;
         Vector3 _velocity;
 
         Vector3 direction;
 
+        BoundingBox esferaBox;
 
+        BoundingBox size;
 
         public void setDirection(Vector3 newDirection)
         {
             direction = newDirection;
-            //Console.WriteLine($"Direction set to: {direction}");
-
         }
 
-
-        public Sphere(ContentManager content, Vector3 position, Matrix rotation, Color color)
-            : base(content, position, rotation, color)
+        public BoundingBox GetBoundingBox()
         {
+            return esferaBox;
+        }
 
+        public override void LoadContent(ContentManager content)
+        {
+            Model3D = content.Load<Model>("Models/" + "pistas/road_straight_fix");
             Model3D = content.Load<Model>("Models/" + "Spheres/sphere");
             Effect = content.Load<Effect>("Effects/" + "BasicShader");
 
-            SetScale(Matrix.CreateScale(0.01f));
+            base.LoadContent(content);
 
-            //SetScale(Matrix.CreateScale(0.01f));
-
-            World = Scale * rotation * Matrix.CreateTranslation(position);
+            // This gets an AABB with the bounds of the robot model
+            size = BoundingVolumesExtensions.CreateAABBFrom(Model3D);
+            // This moves the min and max points to the world position of each robot (one and two)
+            esferaBox = new BoundingBox(size.Min * 0.01f + Position, size.Max * 0.01f + Position);
 
 
         }
+        public Sphere(Vector3 position, Matrix rotation, Color color)
+            : base(position, rotation, color)
+        {
+            SetScale(Matrix.CreateScale(0.01f));
+            World = Scale * rotation * Matrix.CreateTranslation(position);
+        }
+
         public override void Update(GameTime gameTime)
         {
 
@@ -51,21 +60,7 @@ namespace TGC.MonoGame.TP.Modelos
             float elapsedTime = Convert.ToSingle(gameTime.ElapsedGameTime.TotalSeconds);
 
 
-
-            /*
-            if (keyboardState.IsKeyDown(Keys.A))
-            {
-                Angle += elapsedTime;
-            }
-
-            if (keyboardState.IsKeyDown(Keys.D))
-            {
-                Angle -= elapsedTime;
-            }
-            */
             Vector3 acceleration = Vector3.Zero;
-
-            //var direction = Rotation.Forward;
 
             bool accelerating = false;
 
@@ -93,16 +88,12 @@ namespace TGC.MonoGame.TP.Modelos
 
             if (keyboardState.IsKeyDown(Keys.D))
             {
-                AngleZ += 0.1f;
 
-                Rotation = Matrix.CreateRotationY(AngleZ) * Matrix.CreateRotationX(AngleX);
             }
 
             if (keyboardState.IsKeyDown(Keys.A))
             {
-                AngleX += 0.1f;
 
-                Rotation = Matrix.CreateRotationY(AngleZ) * Matrix.CreateRotationX(AngleX);
             }
 
 
@@ -121,8 +112,6 @@ namespace TGC.MonoGame.TP.Modelos
                 Console.WriteLine($"_velocity.Y = {_velocity.Y}");
             }
 
-
-
             acceleration.Y = -50f;
 
             _velocity += acceleration * elapsedTime;
@@ -136,13 +125,7 @@ namespace TGC.MonoGame.TP.Modelos
 
                 _velocity.Y = 0f;
             }
-
-
-
-
-            Console.WriteLine($"Position.Y = {Position.Y}");
-
-            //Console.WriteLine($"acceleration: X={acceleration.X}, Y={acceleration.Y}, Z={acceleration.Z}");
+            esferaBox = new BoundingBox(size.Min * 0.01f + Position, size.Max * 0.01f + Position);
 
             World = Scale * Rotation * Matrix.CreateTranslation(Position);
         }

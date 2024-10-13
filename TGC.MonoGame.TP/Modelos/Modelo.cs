@@ -27,7 +27,7 @@ namespace TGC.MonoGame.TP.Modelos
         public Matrix GetScale() { return Scale; }
         public Color GetColor() { return Color; }
 
-        public void LoadContent()
+        public virtual void LoadContent(ContentManager content)
         {
             foreach (var mesh in Model3D.Meshes)
             {
@@ -36,18 +36,13 @@ namespace TGC.MonoGame.TP.Modelos
                     meshPart.Effect = Effect;
                 }
             }
-
-            
         }
 
-
-
-        public Modelo(ContentManager _content, Vector3 _position, Matrix _rotation, Color _color)
+        public Modelo(Vector3 _position, Matrix _rotation, Color _color)
         {
             Color = _color;
             Position = _position;
-            Rotation = _rotation;
-            //Model = Content.Load<Model>("Models/" + path);// "Models/"  es lo mismo que poner ContentFolder3D
+            Rotation = _rotation;            
         }
 
         public virtual void Update(GameTime gameTime)
@@ -55,33 +50,16 @@ namespace TGC.MonoGame.TP.Modelos
             World = Scale * Rotation * Matrix.CreateTranslation(Position);
         }
 
-
-
-        public void Draw(Matrix view, Matrix projection)
+        public virtual void Draw(Matrix view, Matrix projection)
         {
-            
-            // Configurar los parámetros del efecto
-            
-            
-            var modelMeshesBaseTransforms = new Matrix[Model3D.Bones.Count];
-            Model3D.CopyAbsoluteBoneTransformsTo(modelMeshesBaseTransforms);
-
-            foreach (var mesh in Model3D.Meshes)
-            {
-                var relativeTransform = modelMeshesBaseTransforms[mesh.ParentBone.Index];
-                Effect.Parameters["World"].SetValue(relativeTransform * World);
-                Effect.Parameters["DiffuseColor"].SetValue(Color.ToVector3());
-                mesh.Draw();
-            }
-/*
-            Effect.Parameters["View"].SetValue(view); //Cambio View por Eso
+            Effect.Parameters["View"].SetValue(view);
             Effect.Parameters["Projection"].SetValue(projection);
-            Effect.Parameters["DiffuseColor"].SetValue(Color.Yellow.ToVector3());
+            Effect.Parameters["DiffuseColor"].SetValue(Color.ToVector3());
             foreach (var mesh in Model3D.Meshes)
             {
                 Effect.Parameters["World"].SetValue(mesh.ParentBone.Transform * World);
                 mesh.Draw();
-            }*/
+            }
         }
     }
 }

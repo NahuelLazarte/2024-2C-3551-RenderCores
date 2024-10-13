@@ -2,6 +2,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 
+/*
 namespace TGC.MonoGame.TP.Modelos
 {
     class Wave_A : Modelo
@@ -19,4 +20,4 @@ namespace TGC.MonoGame.TP.Modelos
             World = Scale * rotation * Matrix.CreateTranslation(position);// esto tiene que ir siempre
         }
     }
-}
+}*/

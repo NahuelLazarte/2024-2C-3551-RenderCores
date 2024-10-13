@@ -13,41 +13,44 @@ namespace TGC.MonoGame.TP.Modelos
         private float RotationSpeed = 10f;
         Vector3 _velocity;
 
+        float escala;
+
         Vector3 direction;
 
-        BoundingBox esferaBox;
+        BoundingSphere boundingSphere;
 
-        BoundingBox size;
 
         public void setDirection(Vector3 newDirection)
         {
             direction = newDirection;
         }
 
-        public BoundingBox GetBoundingBox()
+        public BoundingSphere GetBoundingSphere()
         {
-            return esferaBox;
+            return boundingSphere;
         }
 
         public override void LoadContent(ContentManager content)
         {
-            Model3D = content.Load<Model>("Models/" + "pistas/road_straight_fix");
             Model3D = content.Load<Model>("Models/" + "Spheres/sphere");
             Effect = content.Load<Effect>("Effects/" + "BasicShader");
 
             base.LoadContent(content);
 
-            // This gets an AABB with the bounds of the robot model
-            size = BoundingVolumesExtensions.CreateAABBFrom(Model3D);
-            // This moves the min and max points to the world position of each robot (one and two)
-            esferaBox = new BoundingBox(size.Min * 0.01f + Position, size.Max * 0.01f + Position);
+            boundingSphere = BoundingVolumesExtensions.CreateSphereFrom(Model3D);
 
+            boundingSphere.Center = Position;
+            boundingSphere.Radius *= escala;
+            Console.WriteLine($"boundingSphere.Radius={boundingSphere.Radius}");
+
+            Console.WriteLine($"boundingSphere.Radius={boundingSphere.Radius}");
 
         }
         public Sphere(Vector3 position, Matrix rotation, Color color)
             : base(position, rotation, color)
         {
-            SetScale(Matrix.CreateScale(0.01f));
+            escala = 0.01f;
+            SetScale(Matrix.CreateScale(escala));
             World = Scale * rotation * Matrix.CreateTranslation(position);
         }
 
@@ -125,7 +128,8 @@ namespace TGC.MonoGame.TP.Modelos
 
                 _velocity.Y = 0f;
             }
-            esferaBox = new BoundingBox(size.Min * 0.01f + Position, size.Max * 0.01f + Position);
+            
+            boundingSphere.Center = Position;
 
             World = Scale * Rotation * Matrix.CreateTranslation(Position);
         }

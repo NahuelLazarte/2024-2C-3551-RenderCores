@@ -56,6 +56,8 @@ namespace TGC.MonoGame.TP
         Modelos.Sphere esfera;
         LineDrawer lineDrawer;
 
+        Pista pistaPrueba;
+
         public TGCGame()
         {
             Graphics = new GraphicsDeviceManager(this);
@@ -113,8 +115,10 @@ namespace TGC.MonoGame.TP
             // Crear una matriz de rotación con rotación 0
             Matrix rotation = Matrix.Identity;
 
-            // Crear la esfera con posición (0,4,0), rotación 0 y color rojo
-            esfera = new Modelos.Sphere(new Vector3(0.0f, 4.0f, 0.0f), rotation, Color.White);
+           
+            esfera = new Modelos.Sphere(new Vector3(0.0f, 4.0f, 0.0f), rotation, Color.Yellow);
+            pistaPrueba = new Pista(new Vector3(0.0f, 4.0f, 0.0f), rotation, Color.White);
+
             lineDrawer = new LineDrawer(GraphicsDevice);
 
             base.Initialize();
@@ -129,11 +133,12 @@ namespace TGC.MonoGame.TP
             var skyBoxEffect = Content.Load<Effect>(ContentFolderEffects + "SkyBox");
             SkyBox = new SkyBox(skyBox, skyBoxTexture, skyBoxEffect, 500);
 
-            Gizmos.LoadContent(GraphicsDevice, Content);
+            Gizmos.LoadContent(GraphicsDevice, Content);//Gizmos.LoadContent(GraphicsDevice, new ContentManager(Content.ServiceProvider, "Content"));
 
-            //Gizmos.LoadContent(GraphicsDevice, new ContentManager(Content.ServiceProvider, "Content"));
-
+            
             esfera.LoadContent(Content);
+            pistaPrueba.LoadContent(Content);
+            
 
             base.LoadContent();
         }
@@ -178,6 +183,7 @@ namespace TGC.MonoGame.TP
 
             //esfera.Draw(View,Projection);
             esfera.Draw(Camera.ViewMatrix, Camera.ProjectionMatrix);
+            pistaPrueba.Draw(Camera.ViewMatrix, Camera.ProjectionMatrix);
 
             _pistasCurvasDerechas.Draw(gameTime, Camera.ViewMatrix, Camera.ProjectionMatrix);
             _pistasCurvasIzquierdas.Draw(gameTime, Camera.ViewMatrix, Camera.ProjectionMatrix);
@@ -190,12 +196,15 @@ namespace TGC.MonoGame.TP
                 Gizmos.DrawSphere(posicion, Vector3.One * 100, Color.Yellow);
             }
 
-            //Gizmos.DrawCube((esfera.GetBoundingBox().Max + esfera.GetBoundingBox().Min) / 2f, esfera.GetBoundingBox().Max - esfera.GetBoundingBox().Min, Color.Green);
-            BoundingBox boundingBox = esfera.GetBoundingBox();
+        
+            //Con esto se dibuja la caja alrededor de la pista
+            BoundingBox boundingBox = pistaPrueba.GetBoundingBox();
             Gizmos.DrawCube((boundingBox.Max + boundingBox.Min) / 2f, boundingBox.Max - boundingBox.Min, Color.Green);
-            Console.WriteLine($"boundingBox.Max= {boundingBox.Max}  boundingBox.Min = {boundingBox.Min}");
+            
+            BoundingSphere boundingSphere = esfera.GetBoundingSphere();
+            //BoundingSphere boundingSphere = new BoundingSphere(new Vector3(0, 0, 0), 5.0f);
+            Gizmos.DrawSphere(boundingSphere.Center, boundingSphere.Radius * Vector3.One, Color.Green);
 
-            //Gizmos.DrawSphere(esfera.GetPosition(), Vector3.One * 0.5f, Color.Yellow);
             Gizmos.Draw();
 
             
@@ -207,8 +216,6 @@ namespace TGC.MonoGame.TP
 
             lineDrawer.DrawLine(start, endGreen, Color.Green, Camera.ViewMatrix, Camera.ProjectionMatrix);
             lineDrawer.DrawLine(start, endRed, Color.Red, Camera.ViewMatrix, Camera.ProjectionMatrix);
-
-            
 
         }
 

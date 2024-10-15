@@ -91,12 +91,24 @@ namespace TGC.MonoGame.TP.Modelos
 
             if (keyboardState.IsKeyDown(Keys.D))
             {
+                Vector3 rightDirection = Vector3.Cross(direction, Vector3.Up);
+                acceleration += LinearSpeed * rightDirection;
+                accelerating = true;
 
+                float rotationAngle = RotationSpeed * elapsedTime;
+                Matrix rotationMatrix = Matrix.CreateFromAxisAngle(Vector3.Cross(Vector3.Up, rightDirection), rotationAngle);
+                Rotation *= rotationMatrix;
             }
 
             if (keyboardState.IsKeyDown(Keys.A))
             {
+                Vector3 leftDirection = Vector3.Cross(Vector3.Up, direction);
+                acceleration += LinearSpeed * leftDirection;
+                accelerating = true;
 
+                float rotationAngle = RotationSpeed * elapsedTime;
+                Matrix rotationMatrix = Matrix.CreateFromAxisAngle(Vector3.Cross(Vector3.Up, leftDirection), rotationAngle);
+                Rotation *= rotationMatrix;
             }
 
 
@@ -128,15 +140,16 @@ namespace TGC.MonoGame.TP.Modelos
 
                 _velocity.Y = 0f;
             }
-            
+
             boundingSphere.Center = Position;
 
             World = Scale * Rotation * Matrix.CreateTranslation(Position);
         }
 
-        public void RespawnAt(Vector3 newPosition){
+        public void RespawnAt(Vector3 newPosition)
+        {
             Position = newPosition;
-            _velocity = new Vector3(0,0,0);
+            _velocity = new Vector3(0, 0, 0);
         }
 
     }

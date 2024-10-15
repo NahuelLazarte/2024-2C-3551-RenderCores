@@ -15,6 +15,8 @@ using TGC.MonoGame.TP.PowerUpPez;
 
 using TGC.MonoGame.TP.ObstaculoPiedras;
 
+using TGC.MonoGame.TP.CheckPoint;
+
 using TGC.MonoGame.TP.Modelos;
 
 using TGC.MonoGame.TP.Fondo;
@@ -54,11 +56,13 @@ namespace TGC.MonoGame.TP
         private PistasCurvasDerechas _pistasCurvasDerechas { get; set; }
         private PistasRectas _pistasRectas { get; set; }
         private PowerUpPeces _peces { get; set; }
+        private CheckPoints _checkPoints { get; set; }
         private ObstaculosPiedras _piedras { get; set; }
         private Vector3 posicionActual { get; set; }
         private SkyBox SkyBox { get; set; }
         float rotacionActual = 0f;
 
+        Vector3 posicionCheckPoint;
         Modelos.Sphere esfera;
         LineDrawer lineDrawer;
 
@@ -81,6 +85,8 @@ namespace TGC.MonoGame.TP
             _peces = new PowerUpPeces();
 
             _piedras = new ObstaculosPiedras();
+
+            _checkPoints = new CheckPoints();
         }
 
         protected override void Initialize()
@@ -99,8 +105,10 @@ namespace TGC.MonoGame.TP
 
             _piedras.LoadContent(Content);
 
-            posicionActual = new Vector3(0f, 0f, 0f);
+            _checkPoints.LoadContent(Content);
 
+            posicionActual = new Vector3(0f, 0f, 0f);
+            posicionCheckPoint = new Vector3(0f, 0f, 0f);
             AgregarPistaRecta(_pistasRectas);//CAMBIAR POR UN METODO UNICO, PARCHE
             AgregarPistaRecta(_pistasRectas);//CAMBIAR POR UN METODO UNICO, PARCHE
             AgregarPowerUpPez(_peces);
@@ -122,6 +130,7 @@ namespace TGC.MonoGame.TP
             AgregarPistaRecta(_pistasRectas);//CAMBIAR POR UN METODO UNICO, PARCHE
             AgregarPistaRecta(_pistasRectas);//CAMBIAR POR UN METODO UNICO, PARCHE
             AgregarPistaRecta(_pistasRectas);//CAMBIAR POR UN METODO UNICO, PARCHE
+            AgregarCheckPoint(_checkPoints);
             AgregarPistaRecta(_pistasRectas);//CAMBIAR POR UN METODO UNICO, PARCHE
             AgregarPistaRecta(_pistasRectas);//CAMBIAR POR UN METODO UNICO, PARCHE
 
@@ -132,6 +141,8 @@ namespace TGC.MonoGame.TP
             _peces.IniciarColliders();
 
             _piedras.IniciarColliders();
+
+            _checkPoints.IniciarColliders();
 
             sphere.Colliders = CombineColliders(_pistasRectas.Colliders, _pistasCurvasDerechas.Colliders, _pistasCurvasIzquierdas.Colliders);
 
@@ -185,6 +196,8 @@ namespace TGC.MonoGame.TP
 
             _piedras.Update(gameTime, this);
 
+            _checkPoints.Update(gameTime, this);
+
 
             Gizmos.UpdateViewProjection(Camera.ViewMatrix, Camera.ProjectionMatrix);
 
@@ -222,6 +235,8 @@ namespace TGC.MonoGame.TP
 
             _piedras.Draw(gameTime, Camera.ViewMatrix, Camera.ProjectionMatrix);
 
+            _checkPoints.Draw(gameTime, Camera.ViewMatrix, Camera.ProjectionMatrix);
+
             GraphicsDevice.RasterizerState = originalRasterizerState;
 
             foreach (var posicion in Esferas)
@@ -238,6 +253,8 @@ namespace TGC.MonoGame.TP
             _peces._envolturaEsfera = boundingSphere;
 
             _piedras._envolturaEsfera = boundingSphere;
+
+            _checkPoints._envolturaEsfera = boundingSphere;
             //BoundingSphere boundingSphere = new BoundingSphere(new Vector3(0, 0, 0), 5.0f);
             Gizmos.DrawSphere(boundingSphere.Center, boundingSphere.Radius * Vector3.One, Color.Green);
 
@@ -336,10 +353,23 @@ namespace TGC.MonoGame.TP
             //Esferas.Add(posicionObstaculo);
         }
 
+        void AgregarCheckPoint(CheckPoints unCheckPoint) {
+            Vector3 posicionObstaculo = new(posicionActual.X / 40f, posicionActual.Y / 40f , posicionActual.Z / 40f);
+            unCheckPoint.AgregarNuevoCheckPoint(rotacionActual, posicionObstaculo);
+            Console.WriteLine($"Obstaculo Pez dibujado: Posicion en ejes: X = {posicionObstaculo.X}, Y = {posicionObstaculo.Y}, Z = {posicionObstaculo.Z}");
+            //Esferas.Add(posicionObstaculo);
+        }
+
         public void Respawn() {
-            esfera.RespawnAt(new Vector3(0f, 30f, 0f));
+            esfera.RespawnAt(posicionCheckPoint);
             // Camera = new FollowCamera(GraphicsDevice, new Vector3(0, 5, 15), Vector3.Zero, Vector3.Up);No funciona
         }
+
+        public void nuevoCheckPoint(Vector3 posicion) {
+            posicionCheckPoint = posicion;
+            // Camera = new FollowCamera(GraphicsDevice, new Vector3(0, 5, 15), Vector3.Zero, Vector3.Up);No funciona
+        }
+
 
         private BoundingBox[] CombineColliders(BoundingBox[] rectas, BoundingBox[] curvasDerechas, BoundingBox[] curvasIzquierdas)
         {

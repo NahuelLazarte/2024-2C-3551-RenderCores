@@ -91,12 +91,24 @@ namespace TGC.MonoGame.TP.Modelos
 
             if (keyboardState.IsKeyDown(Keys.D))
             {
+                Vector3 rightDirection = Vector3.Cross(direction, Vector3.Up);
+                acceleration += LinearSpeed * rightDirection;
+                accelerating = true;
 
+                float rotationAngle = RotationSpeed * elapsedTime;
+                Matrix rotationMatrix = Matrix.CreateFromAxisAngle(Vector3.Cross(Vector3.Up, rightDirection), rotationAngle);
+                Rotation *= rotationMatrix;
             }
 
             if (keyboardState.IsKeyDown(Keys.A))
             {
+                Vector3 leftDirection = Vector3.Cross(Vector3.Up, direction);
+                acceleration += LinearSpeed * leftDirection;
+                accelerating = true;
 
+                float rotationAngle = RotationSpeed * elapsedTime;
+                Matrix rotationMatrix = Matrix.CreateFromAxisAngle(Vector3.Cross(Vector3.Up, leftDirection), rotationAngle);
+                Rotation *= rotationMatrix;
             }
 
 
@@ -121,6 +133,7 @@ namespace TGC.MonoGame.TP.Modelos
 
             Position += _velocity * elapsedTime;
 
+            
             if (Position.Y < 4f)
             {
                 Vector3 posicionNueva = new Vector3(Position.X, 4f, Position.Z);

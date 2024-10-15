@@ -6,9 +6,12 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using TGC.MonoGame.TP.Objects;
+
 using TGC.MonoGame.TP.PistaCurvaDerecha;
 using TGC.MonoGame.TP.PistaCurvaIzquierda;
 using TGC.MonoGame.TP.PistaRecta;
+
+using TGC.MonoGame.TP.ObstaculoPez;
 
 using TGC.MonoGame.TP.Modelos;
 
@@ -48,7 +51,7 @@ namespace TGC.MonoGame.TP
         private PistasCurvasIzquierdas _pistasCurvasIzquierdas { get; set; }
         private PistasCurvasDerechas _pistasCurvasDerechas { get; set; }
         private PistasRectas _pistasRectas { get; set; }
-
+        private ObstaculosPeces _peces { get; set; }
         private Vector3 posicionActual { get; set; }
         private SkyBox SkyBox { get; set; }
         float rotacionActual = 0f;
@@ -71,6 +74,8 @@ namespace TGC.MonoGame.TP
             _pistasCurvasDerechas = new PistasCurvasDerechas();
             _pistasCurvasIzquierdas = new PistasCurvasIzquierdas();
             _pistasRectas = new PistasRectas();
+
+            _peces = new ObstaculosPeces();
         }
 
         protected override void Initialize()
@@ -83,23 +88,29 @@ namespace TGC.MonoGame.TP
 
             _pistasCurvasIzquierdas.LoadContent(Content);
             _pistasCurvasDerechas.LoadContent(Content);
-
             _pistasRectas.LoadContent(Content);
+
+            _peces.LoadContent(Content);
+
             posicionActual = new Vector3(0f, 0f, 0f);
 
             AgregarPistaRecta(_pistasRectas);//CAMBIAR POR UN METODO UNICO, PARCHE
             AgregarPistaRecta(_pistasRectas);//CAMBIAR POR UN METODO UNICO, PARCHE
+            AgregarObstaculoPez(_peces);
             AgregarPistaRecta(_pistasRectas);//CAMBIAR POR UN METODO UNICO, PARCHE
             AgregarPistaRecta(_pistasRectas);
+            AgregarObstaculoPez(_peces);
             AgregarPistaCurvaDerecha(_pistasCurvasDerechas);
             AgregarPistaRecta(_pistasRectas);//CAMBIAR POR UN METODO UNICO, PARCHE
             AgregarPistaRecta(_pistasRectas);//CAMBIAR POR UN METODO UNICO, PARCHE
+            AgregarObstaculoPez(_peces);
             AgregarPistaCurvaDerecha(_pistasCurvasDerechas);//CAMBIAR POR UN METODO UNICO, PARCHE
             AgregarPistaRecta(_pistasRectas);//CAMBIAR POR UN METODO UNICO, PARCHE
             AgregarPistaCurvaIzquierda(_pistasCurvasIzquierdas);
             AgregarPistaRecta(_pistasRectas);//CAMBIAR POR UN METODO UNICO, PARCHE
             AgregarPistaRecta(_pistasRectas);//CAMBIAR POR UN METODO UNICO, PARCHE
             AgregarPistaRecta(_pistasRectas);//CAMBIAR POR UN METODO UNICO, PARCHE
+            AgregarObstaculoPez(_peces);
             AgregarPistaRecta(_pistasRectas);//CAMBIAR POR UN METODO UNICO, PARCHE
             AgregarPistaRecta(_pistasRectas);//CAMBIAR POR UN METODO UNICO, PARCHE
             AgregarPistaRecta(_pistasRectas);//CAMBIAR POR UN METODO UNICO, PARCHE
@@ -110,6 +121,8 @@ namespace TGC.MonoGame.TP
             _pistasCurvasDerechas.IniciarColliders();
             _pistasRectas.IniciarColliders();
 
+            _peces.IniciarColliders();
+
             sphere.Colliders = CombineColliders(_pistasRectas.Colliders, _pistasCurvasDerechas.Colliders, _pistasCurvasIzquierdas.Colliders);
 
             // Crear una matriz de rotación con rotación 0
@@ -117,7 +130,7 @@ namespace TGC.MonoGame.TP
 
            
             esfera = new Modelos.Sphere(new Vector3(0.0f, 4.0f, 0.0f), rotation, Color.Yellow);
-            pistaPrueba = new Pista(new Vector3(0.0f, 4.0f, 0.0f), rotation, Color.White);
+            pistaPrueba = new Pista(new Vector3(50.0f, 4.0f, 0.0f), rotation, Color.White);
 
             lineDrawer = new LineDrawer(GraphicsDevice);
 
@@ -153,9 +166,13 @@ namespace TGC.MonoGame.TP
             }
 
             sphere.Update(gameTime);
+
             _pistasCurvasDerechas.Update(gameTime);
             _pistasCurvasIzquierdas.Update(gameTime);
             _pistasRectas.Update(gameTime);
+
+            _peces.Update(gameTime, this);
+
 
             Gizmos.UpdateViewProjection(Camera.ViewMatrix, Camera.ProjectionMatrix);
 
@@ -189,6 +206,8 @@ namespace TGC.MonoGame.TP
             _pistasCurvasIzquierdas.Draw(gameTime, Camera.ViewMatrix, Camera.ProjectionMatrix);
             _pistasRectas.Draw(gameTime, Camera.ViewMatrix, Camera.ProjectionMatrix);
 
+            _peces.Draw(gameTime, Camera.ViewMatrix, Camera.ProjectionMatrix);
+
             GraphicsDevice.RasterizerState = originalRasterizerState;
 
             foreach (var posicion in Esferas)
@@ -202,6 +221,7 @@ namespace TGC.MonoGame.TP
             Gizmos.DrawCube((boundingBox.Max + boundingBox.Min) / 2f, boundingBox.Max - boundingBox.Min, Color.Green);
             
             BoundingSphere boundingSphere = esfera.GetBoundingSphere();
+            _peces._envolturaEsfera = boundingSphere;
             //BoundingSphere boundingSphere = new BoundingSphere(new Vector3(0, 0, 0), 5.0f);
             Gizmos.DrawSphere(boundingSphere.Center, boundingSphere.Radius * Vector3.One, Color.Green);
 
@@ -286,13 +306,19 @@ namespace TGC.MonoGame.TP
             Esferas.Add(posicionActual);
         }
 
+        void AgregarObstaculoPez(ObstaculosPeces unObstaculo) {
+            Vector3 posicionObstaculo = new(posicionActual.X / 185f, posicionActual.Y / 180f + 0.5f, posicionActual.Z / 150f);
+            unObstaculo.AgregarNuevoObstaculo(rotacionActual, posicionObstaculo);
+            Console.WriteLine($"Obstaculo Pez dibujado: Posicion en ejes: X = {posicionObstaculo.X}, Y = {posicionObstaculo.Y}, Z = {posicionObstaculo.Z}");
+            //Esferas.Add(posicionObstaculo);
+        }
 
         private BoundingBox[] CombineColliders(BoundingBox[] rectas, BoundingBox[] curvasDerechas, BoundingBox[] curvasIzquierdas)
         {
             var combined = new BoundingBox[curvasDerechas.Length + curvasIzquierdas.Length + rectas.Length];
 
             rectas.CopyTo(combined, 0);
-            curvasDerechas.CopyTo(combined, curvasDerechas.Length);
+            curvasDerechas.CopyTo(combined, rectas.Length);
             curvasIzquierdas.CopyTo(combined, rectas.Length + curvasDerechas.Length);
 
             return combined;

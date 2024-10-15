@@ -20,7 +20,7 @@ namespace TGC.MonoGame.TP.Modelos
 
         public override void LoadContent(ContentManager content)
         {
-            Model3D = content.Load<Model>("Models/" + "pistas/road_straight_fix");
+            Model3D = content.Load<Model>("Models/" + "obstaculos/fishBones");
             Effect = content.Load<Effect>("Effects/" + "BasicShader");
 
             base.LoadContent(content); //Llamo al método LoadContent de la clase que Pista hereda (Modelo)
@@ -33,7 +33,7 @@ namespace TGC.MonoGame.TP.Modelos
         public Pista(Vector3 position, Matrix rotation, Color color)
             : base(position, rotation, color)
         {
-            escala = 0.01f;
+            escala = 2f;
             SetScale(Matrix.CreateScale(escala));
             World = Scale * rotation * Matrix.CreateTranslation(position);
         }

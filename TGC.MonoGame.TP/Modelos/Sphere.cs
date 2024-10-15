@@ -133,6 +133,12 @@ namespace TGC.MonoGame.TP.Modelos
 
             World = Scale * Rotation * Matrix.CreateTranslation(Position);
         }
+
+        public void RespawnAt(Vector3 newPosition){
+            Position = newPosition;
+            _velocity = new Vector3(0,0,0);
+        }
+
     }
 
 

@@ -11,7 +11,9 @@ using TGC.MonoGame.TP.PistaCurvaDerecha;
 using TGC.MonoGame.TP.PistaCurvaIzquierda;
 using TGC.MonoGame.TP.PistaRecta;
 
-using TGC.MonoGame.TP.ObstaculoPez;
+using TGC.MonoGame.TP.PowerUpPez;
+
+using TGC.MonoGame.TP.ObstaculoPiedras;
 
 using TGC.MonoGame.TP.Modelos;
 
@@ -51,7 +53,8 @@ namespace TGC.MonoGame.TP
         private PistasCurvasIzquierdas _pistasCurvasIzquierdas { get; set; }
         private PistasCurvasDerechas _pistasCurvasDerechas { get; set; }
         private PistasRectas _pistasRectas { get; set; }
-        private ObstaculosPeces _peces { get; set; }
+        private PowerUpPeces _peces { get; set; }
+        private ObstaculosPiedras _piedras { get; set; }
         private Vector3 posicionActual { get; set; }
         private SkyBox SkyBox { get; set; }
         float rotacionActual = 0f;
@@ -75,7 +78,9 @@ namespace TGC.MonoGame.TP
             _pistasCurvasIzquierdas = new PistasCurvasIzquierdas();
             _pistasRectas = new PistasRectas();
 
-            _peces = new ObstaculosPeces();
+            _peces = new PowerUpPeces();
+
+            _piedras = new ObstaculosPiedras();
         }
 
         protected override void Initialize()
@@ -92,25 +97,28 @@ namespace TGC.MonoGame.TP
 
             _peces.LoadContent(Content);
 
+            _piedras.LoadContent(Content);
+
             posicionActual = new Vector3(0f, 0f, 0f);
 
             AgregarPistaRecta(_pistasRectas);//CAMBIAR POR UN METODO UNICO, PARCHE
             AgregarPistaRecta(_pistasRectas);//CAMBIAR POR UN METODO UNICO, PARCHE
-            AgregarObstaculoPez(_peces);
+            AgregarPowerUpPez(_peces);
             AgregarPistaRecta(_pistasRectas);//CAMBIAR POR UN METODO UNICO, PARCHE
             AgregarPistaRecta(_pistasRectas);
-            AgregarObstaculoPez(_peces);
+            AgregarPowerUpPez(_peces);
             AgregarPistaCurvaDerecha(_pistasCurvasDerechas);
             AgregarPistaRecta(_pistasRectas);//CAMBIAR POR UN METODO UNICO, PARCHE
             AgregarPistaRecta(_pistasRectas);//CAMBIAR POR UN METODO UNICO, PARCHE
-            AgregarObstaculoPez(_peces);
+            AgregarPowerUpPez(_peces);
             AgregarPistaCurvaDerecha(_pistasCurvasDerechas);//CAMBIAR POR UN METODO UNICO, PARCHE
             AgregarPistaRecta(_pistasRectas);//CAMBIAR POR UN METODO UNICO, PARCHE
             AgregarPistaCurvaIzquierda(_pistasCurvasIzquierdas);
             AgregarPistaRecta(_pistasRectas);//CAMBIAR POR UN METODO UNICO, PARCHE
             AgregarPistaRecta(_pistasRectas);//CAMBIAR POR UN METODO UNICO, PARCHE
+            AgregarObstaculoPiedra(_piedras);
             AgregarPistaRecta(_pistasRectas);//CAMBIAR POR UN METODO UNICO, PARCHE
-            AgregarObstaculoPez(_peces);
+            AgregarPowerUpPez(_peces);
             AgregarPistaRecta(_pistasRectas);//CAMBIAR POR UN METODO UNICO, PARCHE
             AgregarPistaRecta(_pistasRectas);//CAMBIAR POR UN METODO UNICO, PARCHE
             AgregarPistaRecta(_pistasRectas);//CAMBIAR POR UN METODO UNICO, PARCHE
@@ -122,6 +130,8 @@ namespace TGC.MonoGame.TP
             _pistasRectas.IniciarColliders();
 
             _peces.IniciarColliders();
+
+            _piedras.IniciarColliders();
 
             sphere.Colliders = CombineColliders(_pistasRectas.Colliders, _pistasCurvasDerechas.Colliders, _pistasCurvasIzquierdas.Colliders);
 
@@ -173,6 +183,8 @@ namespace TGC.MonoGame.TP
 
             _peces.Update(gameTime, this);
 
+            _piedras.Update(gameTime, this);
+
 
             Gizmos.UpdateViewProjection(Camera.ViewMatrix, Camera.ProjectionMatrix);
 
@@ -208,6 +220,8 @@ namespace TGC.MonoGame.TP
 
             _peces.Draw(gameTime, Camera.ViewMatrix, Camera.ProjectionMatrix);
 
+            _piedras.Draw(gameTime, Camera.ViewMatrix, Camera.ProjectionMatrix);
+
             GraphicsDevice.RasterizerState = originalRasterizerState;
 
             foreach (var posicion in Esferas)
@@ -222,6 +236,8 @@ namespace TGC.MonoGame.TP
             
             BoundingSphere boundingSphere = esfera.GetBoundingSphere();
             _peces._envolturaEsfera = boundingSphere;
+
+            _piedras._envolturaEsfera = boundingSphere;
             //BoundingSphere boundingSphere = new BoundingSphere(new Vector3(0, 0, 0), 5.0f);
             Gizmos.DrawSphere(boundingSphere.Center, boundingSphere.Radius * Vector3.One, Color.Green);
 
@@ -306,11 +322,23 @@ namespace TGC.MonoGame.TP
             Esferas.Add(posicionActual);
         }
 
-        void AgregarObstaculoPez(ObstaculosPeces unObstaculo) {
+        void AgregarPowerUpPez(PowerUpPeces unPowerUp) {
             Vector3 posicionObstaculo = new(posicionActual.X / 185f, posicionActual.Y / 180f + 0.5f, posicionActual.Z / 150f);
+            unPowerUp.AgregarNuevoPowerUp(rotacionActual, posicionObstaculo);
+            Console.WriteLine($"Obstaculo Pez dibujado: Posicion en ejes: X = {posicionObstaculo.X}, Y = {posicionObstaculo.Y}, Z = {posicionObstaculo.Z}");
+            //Esferas.Add(posicionObstaculo);
+        }
+
+        void AgregarObstaculoPiedra(ObstaculosPiedras unObstaculo) {
+            Vector3 posicionObstaculo = new(posicionActual.X / 40f, posicionActual.Y / 40f , posicionActual.Z / 40f);
             unObstaculo.AgregarNuevoObstaculo(rotacionActual, posicionObstaculo);
             Console.WriteLine($"Obstaculo Pez dibujado: Posicion en ejes: X = {posicionObstaculo.X}, Y = {posicionObstaculo.Y}, Z = {posicionObstaculo.Z}");
             //Esferas.Add(posicionObstaculo);
+        }
+
+        public void Respawn() {
+            esfera.RespawnAt(new Vector3(0f, 30f, 0f));
+            // Camera = new FollowCamera(GraphicsDevice, new Vector3(0, 5, 15), Vector3.Zero, Vector3.Up);No funciona
         }
 
         private BoundingBox[] CombineColliders(BoundingBox[] rectas, BoundingBox[] curvasDerechas, BoundingBox[] curvasIzquierdas)

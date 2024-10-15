@@ -122,6 +122,7 @@ namespace TGC.MonoGame.TP
             AgregarPistaCurvaDerecha(_pistasCurvasDerechas);//CAMBIAR POR UN METODO UNICO, PARCHE
             AgregarPistaRecta(_pistasRectas);//CAMBIAR POR UN METODO UNICO, PARCHE
             AgregarPistaCurvaIzquierda(_pistasCurvasIzquierdas);
+            AgregarObstaculoPiedra(_piedras);
             AgregarPistaRecta(_pistasRectas);//CAMBIAR POR UN METODO UNICO, PARCHE
             AgregarPistaRecta(_pistasRectas);//CAMBIAR POR UN METODO UNICO, PARCHE
             AgregarObstaculoPiedra(_piedras);
@@ -130,10 +131,30 @@ namespace TGC.MonoGame.TP
             AgregarPistaRecta(_pistasRectas);//CAMBIAR POR UN METODO UNICO, PARCHE
             AgregarPistaRecta(_pistasRectas);//CAMBIAR POR UN METODO UNICO, PARCHE
             AgregarPistaRecta(_pistasRectas);//CAMBIAR POR UN METODO UNICO, PARCHE
+            AgregarObstaculoPiedra(_piedras);
             AgregarCheckPoint(_checkPoints);
             AgregarPistaRecta(_pistasRectas);//CAMBIAR POR UN METODO UNICO, PARCHE
             AgregarPistaRecta(_pistasRectas);//CAMBIAR POR UN METODO UNICO, PARCHE
-
+            AgregarPistaRecta(_pistasRectas);//CAMBIAR POR UN METODO UNICO, PARCHE
+            AgregarPistaCurvaDerecha(_pistasCurvasDerechas);
+            AgregarPistaRecta(_pistasRectas);
+            AgregarPistaRecta(_pistasRectas);//CAMBIAR POR UN METODO UNICO, PARCHE
+            AgregarPowerUpPez(_peces);
+            AgregarPistaRecta(_pistasRectas);//CAMBIAR POR UN METODO UNICO, PARCHE
+            AgregarObstaculoPiedra(_piedras);
+            AgregarPistaRecta(_pistasRectas);//CAMBIAR POR UN METODO UNICO, PARCHE
+            AgregarPowerUpPez(_peces);
+            AgregarPistaRecta(_pistasRectas);
+            AgregarPistaRecta(_pistasRectas);//CAMBIAR POR UN METODO UNICO, PARCHE
+            AgregarPistaCurvaDerecha(_pistasCurvasDerechas);
+            AgregarPistaRecta(_pistasRectas);//CAMBIAR POR UN METODO UNICO, PARCHE
+            AgregarPistaRecta(_pistasRectas);//CAMBIAR POR UN METODO UNICO, PARCHE
+            AgregarPistaRecta(_pistasRectas);
+            AgregarPistaRecta(_pistasRectas);//CAMBIAR POR UN METODO UNICO, PARCHE
+            AgregarPistaRecta(_pistasRectas);//CAMBIAR POR UN METODO UNICO, PARCHE
+            AgregarPowerUpPez(_peces);
+            AgregarPistaRecta(_pistasRectas);//CAMBIAR POR UN METODO UNICO, PARCHE
+            AgregarPistaRecta(_pistasRectas);
             _pistasCurvasIzquierdas.IniciarColliders();
             _pistasCurvasDerechas.IniciarColliders();
             _pistasRectas.IniciarColliders();
@@ -340,14 +361,14 @@ namespace TGC.MonoGame.TP
         }
 
         void AgregarPowerUpPez(PowerUpPeces unPowerUp) {
-            Vector3 posicionObstaculo = new(posicionActual.X / 185f, posicionActual.Y / 180f + 0.5f, posicionActual.Z / 150f);
+            Vector3 posicionObstaculo = new(posicionActual.X / 167f, posicionActual.Y / 180f + 0.5f, posicionActual.Z / 167f);
             unPowerUp.AgregarNuevoPowerUp(rotacionActual, posicionObstaculo);
             Console.WriteLine($"Obstaculo Pez dibujado: Posicion en ejes: X = {posicionObstaculo.X}, Y = {posicionObstaculo.Y}, Z = {posicionObstaculo.Z}");
             //Esferas.Add(posicionObstaculo);
         }
 
         void AgregarObstaculoPiedra(ObstaculosPiedras unObstaculo) {
-            Vector3 posicionObstaculo = new(posicionActual.X / 40f, posicionActual.Y / 40f , posicionActual.Z / 40f);
+            Vector3 posicionObstaculo = new(posicionActual.X / 38f, posicionActual.Y / 38f , posicionActual.Z / 33.5f);
             unObstaculo.AgregarNuevoObstaculo(rotacionActual, posicionObstaculo);
             Console.WriteLine($"Obstaculo Pez dibujado: Posicion en ejes: X = {posicionObstaculo.X}, Y = {posicionObstaculo.Y}, Z = {posicionObstaculo.Z}");
             //Esferas.Add(posicionObstaculo);

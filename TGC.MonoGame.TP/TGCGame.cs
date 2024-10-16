@@ -165,12 +165,12 @@ namespace TGC.MonoGame.TP
 
             _checkPoints.IniciarColliders();
 
-            sphere.Colliders = CombineColliders(_pistasRectas.Colliders, _pistasCurvasDerechas.Colliders, _pistasCurvasIzquierdas.Colliders);
+            //sphere.Colliders = CombineColliders(_pistasRectas.Colliders, _pistasCurvasDerechas.Colliders, _pistasCurvasIzquierdas.Colliders);
 
             // Crear una matriz de rotación con rotación 0
             Matrix rotation = Matrix.Identity;
 
-           
+
             esfera = new Modelos.Sphere(new Vector3(0.0f, 4.0f, 0.0f), rotation, Color.Yellow);
             pistaPrueba = new Pista(new Vector3(50.0f, 4.0f, 0.0f), rotation, Color.White);
 
@@ -190,10 +190,10 @@ namespace TGC.MonoGame.TP
 
             Gizmos.LoadContent(GraphicsDevice, Content);//Gizmos.LoadContent(GraphicsDevice, new ContentManager(Content.ServiceProvider, "Content"));
 
-            
+
             esfera.LoadContent(Content);
             pistaPrueba.LoadContent(Content);
-            
+
 
             base.LoadContent();
         }
@@ -207,7 +207,7 @@ namespace TGC.MonoGame.TP
                 Exit();
             }
 
-            sphere.Update(gameTime);
+            //sphere.Update(gameTime);
 
             _pistasCurvasDerechas.Update(gameTime);
             _pistasCurvasIzquierdas.Update(gameTime);
@@ -265,11 +265,23 @@ namespace TGC.MonoGame.TP
                 Gizmos.DrawSphere(posicion, Vector3.One * 100, Color.Yellow);
             }
 
-        
+
             //Con esto se dibuja la caja alrededor de la pista
             BoundingBox boundingBox = pistaPrueba.GetBoundingBox();
             Gizmos.DrawCube((boundingBox.Max + boundingBox.Min) / 2f, boundingBox.Max - boundingBox.Min, Color.Green);
+
+
+            List<BoundingBox> CollidersPistaRecta = _pistasRectas.Colliders;
+            // Iterar sobre cada BoundingBox en la lista y dibujarla
             
+            foreach (var boundingBoxPista in CollidersPistaRecta)
+            {
+
+                Gizmos.DrawCube((boundingBoxPista.Max + boundingBoxPista.Min) / 2f, boundingBoxPista.Max - boundingBoxPista.Min, Color.Green);
+            }
+
+
+
             BoundingSphere boundingSphere = esfera.GetBoundingSphere();
             _peces._envolturaEsfera = boundingSphere;
 
@@ -281,7 +293,7 @@ namespace TGC.MonoGame.TP
 
             Gizmos.Draw();
 
-            
+
 
 
             Vector3 start = new Vector3(0, 0, 0);
@@ -360,39 +372,45 @@ namespace TGC.MonoGame.TP
             Esferas.Add(posicionActual);
         }
 
-        void AgregarPowerUpPez(PowerUpPeces unPowerUp) {
+        void AgregarPowerUpPez(PowerUpPeces unPowerUp)
+        {
             Vector3 posicionObstaculo = new(posicionActual.X / 167f, posicionActual.Y / 180f + 0.5f, posicionActual.Z / 167f);
             unPowerUp.AgregarNuevoPowerUp(rotacionActual, posicionObstaculo);
             Console.WriteLine($"Obstaculo Pez dibujado: Posicion en ejes: X = {posicionObstaculo.X}, Y = {posicionObstaculo.Y}, Z = {posicionObstaculo.Z}");
             //Esferas.Add(posicionObstaculo);
         }
 
-        void AgregarObstaculoPiedra(ObstaculosPiedras unObstaculo) {
-            Vector3 posicionObstaculo = new(posicionActual.X / 38f, posicionActual.Y / 38f , posicionActual.Z / 33.5f);
+        void AgregarObstaculoPiedra(ObstaculosPiedras unObstaculo)
+        {
+            Vector3 posicionObstaculo = new(posicionActual.X / 38f, posicionActual.Y / 38f, posicionActual.Z / 33.5f);
             unObstaculo.AgregarNuevoObstaculo(rotacionActual, posicionObstaculo);
             Console.WriteLine($"Obstaculo Pez dibujado: Posicion en ejes: X = {posicionObstaculo.X}, Y = {posicionObstaculo.Y}, Z = {posicionObstaculo.Z}");
             //Esferas.Add(posicionObstaculo);
         }
 
-        void AgregarCheckPoint(CheckPoints unCheckPoint) {
-            Vector3 posicionObstaculo = new(posicionActual.X / 40f, posicionActual.Y / 40f , posicionActual.Z / 40f);
+        void AgregarCheckPoint(CheckPoints unCheckPoint)
+        {
+            Vector3 posicionObstaculo = new(posicionActual.X / 40f, posicionActual.Y / 40f, posicionActual.Z / 40f);
             unCheckPoint.AgregarNuevoCheckPoint(rotacionActual, posicionObstaculo);
             Console.WriteLine($"Obstaculo Pez dibujado: Posicion en ejes: X = {posicionObstaculo.X}, Y = {posicionObstaculo.Y}, Z = {posicionObstaculo.Z}");
             //Esferas.Add(posicionObstaculo);
         }
 
-        public void Respawn() {
+        public void Respawn()
+        {
             esfera.RespawnAt(posicionCheckPoint);
             // Camera = new FollowCamera(GraphicsDevice, new Vector3(0, 5, 15), Vector3.Zero, Vector3.Up);No funciona
         }
 
-        public void nuevoCheckPoint(Vector3 posicion) {
+        public void nuevoCheckPoint(Vector3 posicion)
+        {
             posicionCheckPoint = posicion;
             // Camera = new FollowCamera(GraphicsDevice, new Vector3(0, 5, 15), Vector3.Zero, Vector3.Up);No funciona
         }
 
 
-        public void recibirPowerUpPez() {
+        public void recibirPowerUpPez()
+        {
             esfera.aumentarVelocidad(1.5f);
         }
 

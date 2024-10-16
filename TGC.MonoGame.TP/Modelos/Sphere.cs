@@ -19,6 +19,10 @@ namespace TGC.MonoGame.TP.Modelos
 
         BoundingSphere boundingSphere;
 
+        public BoundingBox[] Colliders { get; set; }
+
+        private bool OnGround { get; set; }
+
 
         public void setDirection(Vector3 newDirection)
         {
@@ -42,9 +46,6 @@ namespace TGC.MonoGame.TP.Modelos
             boundingSphere.Center = Position;
             boundingSphere.Radius *= escala;
             Console.WriteLine($"boundingSphere.Radius={boundingSphere.Radius}");
-
-            Console.WriteLine($"boundingSphere.Radius={boundingSphere.Radius}");
-
         }
         public Sphere(Vector3 position, Matrix rotation, Color color)
             : base(position, rotation, color)
@@ -59,7 +60,6 @@ namespace TGC.MonoGame.TP.Modelos
 
             var keyboardState = Keyboard.GetState();
 
-
             float elapsedTime = Convert.ToSingle(gameTime.ElapsedGameTime.TotalSeconds);
 
 
@@ -71,22 +71,14 @@ namespace TGC.MonoGame.TP.Modelos
             {
                 acceleration += LinearSpeed * direction;
                 accelerating = true;
-
-                // Aplicar rotación para simular el rodamiento
-                float rotationAngle = RotationSpeed * elapsedTime;
-                Matrix rotationMatrix = Matrix.CreateFromAxisAngle(Vector3.Cross(Vector3.Up, direction), rotationAngle);
-                Rotation *= rotationMatrix;
-
+                ApplyRotation(elapsedTime, direction);
             }
 
             if (keyboardState.IsKeyDown(Keys.S))
             {
                 acceleration -= LinearSpeed * direction;
                 accelerating = true;
-
-                float rotationAngle = (-RotationSpeed) * elapsedTime;
-                Matrix rotationMatrix = Matrix.CreateFromAxisAngle(Vector3.Cross(Vector3.Up, direction), rotationAngle);
-                Rotation *= rotationMatrix;
+                ApplyRotation(elapsedTime, -direction);
             }
 
             if (keyboardState.IsKeyDown(Keys.D))
@@ -94,10 +86,7 @@ namespace TGC.MonoGame.TP.Modelos
                 Vector3 rightDirection = Vector3.Cross(direction, Vector3.Up);
                 acceleration += LinearSpeed * rightDirection;
                 accelerating = true;
-
-                float rotationAngle = RotationSpeed * elapsedTime;
-                Matrix rotationMatrix = Matrix.CreateFromAxisAngle(Vector3.Cross(Vector3.Up, rightDirection), rotationAngle);
-                Rotation *= rotationMatrix;
+                ApplyRotation(elapsedTime, rightDirection);
             }
 
             if (keyboardState.IsKeyDown(Keys.A))
@@ -105,10 +94,7 @@ namespace TGC.MonoGame.TP.Modelos
                 Vector3 leftDirection = Vector3.Cross(Vector3.Up, direction);
                 acceleration += LinearSpeed * leftDirection;
                 accelerating = true;
-
-                float rotationAngle = RotationSpeed * elapsedTime;
-                Matrix rotationMatrix = Matrix.CreateFromAxisAngle(Vector3.Cross(Vector3.Up, leftDirection), rotationAngle);
-                Rotation *= rotationMatrix;
+                ApplyRotation(elapsedTime, leftDirection);
             }
 
 
@@ -133,7 +119,7 @@ namespace TGC.MonoGame.TP.Modelos
 
             Position += _velocity * elapsedTime;
 
-            
+
             if (Position.Y < 4f)
             {
                 Vector3 posicionNueva = new Vector3(Position.X, 4f, Position.Z);
@@ -142,9 +128,18 @@ namespace TGC.MonoGame.TP.Modelos
                 _velocity.Y = 0f;
             }
 
+            // // Aplicar la detección de colisiones con el suelo
+            //SolveVerticalMovement();
+
             boundingSphere.Center = Position;
 
             World = Scale * Rotation * Matrix.CreateTranslation(Position);
+        }
+        private void ApplyRotation(float elapsedTime, Vector3 direction)
+        {
+            float rotationAngle = RotationSpeed * elapsedTime;
+            Matrix rotationMatrix = Matrix.CreateFromAxisAngle(Vector3.Cross(Vector3.Up, direction), rotationAngle);
+            Rotation *= rotationMatrix;
         }
 
         public void RespawnAt(Vector3 newPosition)
@@ -158,7 +153,70 @@ namespace TGC.MonoGame.TP.Modelos
             _velocity *= aumento;
         }
 
+        private void SolveVerticalMovement()
+        {
+            // Si la esfera no tiene velocidad vertical, no hay nada que hacer
+            if (_velocity.Y == 0f)
+                return;
+
+            // Mover la esfera según la velocidad vertical
+            boundingSphere.Center += Vector3.Up * _velocity.Y;
+            // Inicialmente, asumimos que la esfera no está en el suelo
+            OnGround = false;
+
+            // Detectar colisiones
+            var collided = false;
+            var foundIndex = -1;
+            for (var index = 0; index < Colliders.Length; index++)
+            {
+                if (!boundingSphere.Intersects(Colliders[index]))
+                    continue;
+
+                // Si colisionamos, detener la velocidad vertical
+                _velocity.Y = 0f;
+
+                // Marcar la colisión y guardar el índice del collider
+                collided = true;
+                foundIndex = index;
+                break;
+            }
+
+            // Corregir la penetración hasta que no haya colisiones
+            while (collided)
+            {
+                var collider = Colliders[foundIndex];
+                var colliderY = BoundingVolumesExtensions.GetCenter(collider).Y;
+                var sphereY = boundingSphere.Center.Y;
+                var extents = BoundingVolumesExtensions.GetExtents(collider);
+
+                // Calcular la penetración y ajustar la posición de la esfera
+                float penetration = (sphereY > colliderY)
+                    ? colliderY + extents.Y - sphereY + boundingSphere.Radius
+                    : -sphereY - boundingSphere.Radius + colliderY - extents.Y;
+
+                // Si estamos encima del collider, estamos en el suelo
+                if (sphereY > colliderY)
+                    OnGround = true;
+
+                // Mover la esfera para resolver la penetración
+                boundingSphere.Center += Vector3.Up * penetration;
+                collided = false;
+
+                // Verificar colisiones nuevamente
+                for (var index = 0; index < Colliders.Length; index++)
+                {
+                    if (!boundingSphere.Intersects(Colliders[index]))                   
+
+                        continue;
+
+                    // Si aún colisionamos, repetir el proceso
+                    collided = true;
+                    foundIndex = index;
+                    break;
+                }
+            }
+        }
+
+        
     }
-
-
 }

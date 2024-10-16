@@ -16,17 +16,14 @@ namespace TGC.MonoGame.TP.PistaRecta
         public Matrix scale = Matrix.CreateScale(0.03f);
 
         public Model ModeloPistaRecta { get; set; }
-
+        public Model ModeloMuro { get; set; }
         private BoundingBox PistaRectaBox { get; set; }
-
         private Vector3 desplazamientoEnEjes { get; set; }
-        //public BoundingBox[] Colliders { get; set; }
-
         public List<BoundingBox> Colliders { get; set; }
-
         private List<Matrix> _pistasRectas { get; set; }
-
+        private List<Matrix> _muros { get; set; }
         float escala = 0.03f;
+        float escalaMuros = 3f;
         BoundingBox size;
 
 
@@ -39,45 +36,31 @@ namespace TGC.MonoGame.TP.PistaRecta
         private void Initialize()
         {
             _pistasRectas = new List<Matrix>();
+            _muros = new List<Matrix>();
             Colliders = new List<BoundingBox>();
         }
 
         public void IniciarColliders()
         {
-            //Colliders = new BoundingBox[_pistasRectas.Count];
-
-            /*
-            // Define factores de escala para cada eje
-            float scaleX = 1500f; // Ajusta este valor para el eje X
-            float scaleY = 1.0f; // Ajusta este valor para el eje Y
-            float scaleZ = 600f; // Ajusta este valor para el eje Z
-
-            for (int i = 0; i < _pistasRectas.Count; i++) {
-                // Crear el collider original
-                Colliders[i] = BoundingVolumesExtensions.FromMatrix(_pistasRectas[i]);
-
-                // Aplicar la escala al BoundingBox
-                Vector3 center = (Colliders[i].Min + Colliders[i].Max) / 2;
-                Vector3 size = Colliders[i].Max - Colliders[i].Min;
-
-                // Escalar el tamaño en cada eje
-                size.X *= scaleX;
-                size.Y *= scaleY;
-                size.Z *= scaleZ;
-
-                // Crear un nuevo BoundingBox escalado
-                Colliders[i] = new BoundingBox(center - size / 2, center + size / 2);
-            }
-            */
+            
         }
 
 
         public void LoadContent(ContentManager Content)
         {
             ModeloPistaRecta = Content.Load<Model>(ContentFolder3D + "pistas/road_straight_fix");
+            ModeloMuro = Content.Load<Model>(ContentFolder3D + "pistas/wallHalf");
             Effect = Content.Load<Effect>(ContentFolderEffects + "BasicShader");
 
             foreach (var mesh in ModeloPistaRecta.Meshes)
+            {
+                foreach (var meshPart in mesh.MeshParts)
+                {
+                    meshPart.Effect = Effect;
+                }
+            }
+
+            foreach (var mesh in ModeloMuro.Meshes)
             {
                 foreach (var meshPart in mesh.MeshParts)
                 {
@@ -95,19 +78,11 @@ namespace TGC.MonoGame.TP.PistaRecta
 
         public void Draw(GameTime gameTime, Matrix view, Matrix projection)
         {
-            /*
-            Colliders = new BoundingBox[_pistasRectas.Count];
-
-            for (int i = 0; i < _pistasRectas.Count; i++) {
-                Colliders[i] = BoundingVolumesExtensions.FromMatrix(_pistasRectas[i]);
-            }
-
-            */
-
             Effect.Parameters["View"].SetValue(view);
             Effect.Parameters["Projection"].SetValue(projection);
             Effect.Parameters["DiffuseColor"].SetValue(Color.DarkBlue.ToVector3());
 
+            // Dibujar las pistas
             foreach (var mesh in ModeloPistaRecta.Meshes)
             {
                 for (int i = 0; i < _pistasRectas.Count; i++)
@@ -117,7 +92,17 @@ namespace TGC.MonoGame.TP.PistaRecta
                     mesh.Draw();
                 }
             }
-
+            // Dibujar los muros
+            Effect.Parameters["DiffuseColor"].SetValue(Color.Gray.ToVector3()); // Color para los muros
+            foreach (var mesh in ModeloMuro.Meshes)
+            {
+                for (int i = 0; i < _muros.Count; i++)
+                {
+                    Matrix _muroWorld = _muros[i];
+                    Effect.Parameters["World"].SetValue(mesh.ParentBone.Transform * _muroWorld);
+                    mesh.Draw();
+                }
+            }
         }
 
         public Vector3 Desplazamiento()
@@ -134,20 +119,29 @@ namespace TGC.MonoGame.TP.PistaRecta
         {
             return 0; // No hay rotacion
         }
-        /*
-        public void agregarNuevaPista(float Rotacion, Vector3 Posicion) {
-            _pistasRectas.Add(Matrix.CreateRotationY(Rotacion) * Matrix.CreateTranslation(Posicion) * scale); // METER MATRIZ DENTRO DE CADA PISTA
-            
-            BoundingBox box = new BoundingBox(size.Min * escala + Posicion, size.Max * escala + Posicion);
-            Colliders.Add(box);
-            Console.WriteLine($"Box min= {box.Min}  Box max= {box.Max} ");
-        }*/
+        
         public void agregarNuevaPista(float Rotacion, Vector3 Posicion)
         {
             // Crear la matriz de transformación completa
-            Matrix world = Matrix.CreateRotationY(Rotacion) *  Matrix.CreateTranslation(Posicion) *Matrix.CreateScale(escala);
-    
-            _pistasRectas.Add(world);            
+            Matrix worldPista = Matrix.CreateRotationY(Rotacion) *  Matrix.CreateTranslation(Posicion) *Matrix.CreateScale(escala);
+            
+            var posicionMuros = new Vector3(Posicion.X / 100f, Posicion.Y/ 100f, Posicion.Z/ 100f);
+            var posicionIzquierda = posicionMuros;
+            var posicionDerecha =  posicionMuros;
+            var desplazamientoDerecha = new Vector3(25.22f, -12f, 9f);
+            var desplazamientoIzquierda = new Vector3(-25.22f, -12f, -9f);
+            
+            posicionIzquierda += Vector3.Transform(desplazamientoIzquierda, Matrix.CreateRotationY(Rotacion));
+            posicionDerecha += Vector3.Transform(desplazamientoDerecha, Matrix.CreateRotationY(Rotacion));
+
+            Matrix muroDerecha = Matrix.CreateRotationY(Rotacion + MathHelper.ToRadians(-90)) *  Matrix.CreateTranslation(posicionDerecha) *Matrix.CreateScale(escalaMuros);
+            Matrix muroIzquierda = Matrix.CreateRotationY(Rotacion + MathHelper.ToRadians(90)) *  Matrix.CreateTranslation(posicionIzquierda) *Matrix.CreateScale(escalaMuros);
+
+            _pistasRectas.Add(worldPista);  
+
+            _muros.Add(muroDerecha); 
+            _muros.Add(muroIzquierda); 
+
             
             BoundingBox box = new BoundingBox(size.Min * escala + Posicion * escala , size.Max * escala + Posicion * escala);
 

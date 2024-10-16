@@ -392,6 +392,10 @@ namespace TGC.MonoGame.TP
         }
 
 
+        public void recibirPowerUpPez() {
+            esfera.aumentarVelocidad(1.5f);
+        }
+
         private BoundingBox[] CombineColliders(BoundingBox[] rectas, BoundingBox[] curvasDerechas, BoundingBox[] curvasIzquierdas)
         {
             var combined = new BoundingBox[curvasDerechas.Length + curvasIzquierdas.Length + rectas.Length];

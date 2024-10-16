@@ -153,6 +153,11 @@ namespace TGC.MonoGame.TP.Modelos
             _velocity = new Vector3(0, 0, 0);
         }
 
+        public void aumentarVelocidad(float aumento)
+        {
+            _velocity *= aumento;
+        }
+
     }
 
 

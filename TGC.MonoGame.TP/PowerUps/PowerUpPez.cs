@@ -79,6 +79,8 @@ namespace TGC.MonoGame.TP.PowerUpPez{
                 MediaPlayer.Play(CollisionSound);
                 _peces.RemoveAt(i);
                 
+                Game.recibirPowerUpPez();
+
             }
             
             }

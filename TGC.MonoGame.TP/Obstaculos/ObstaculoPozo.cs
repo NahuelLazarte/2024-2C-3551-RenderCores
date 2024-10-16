@@ -113,7 +113,7 @@ namespace TGC.MonoGame.TP.ObstaculoPozo
 
             Effect.Parameters["View"].SetValue(view);
             Effect.Parameters["Projection"].SetValue(projection);
-            Effect.Parameters["DiffuseColor"].SetValue(Color.DarkBlue.ToVector3());
+            Effect.Parameters["DiffuseColor"].SetValue(new Vector3(0.5f, 0.5f, 0.5f));
 
             foreach (var mesh in ModeloPozo.Meshes)
             {

@@ -43,10 +43,11 @@ namespace TGC.MonoGame.TP.CheckPoint{
         }
 
         public void LoadContent(ContentManager Content){
-            ModeloCheckPoint = Content.Load<Model>("Models/" + "CheckPoint/lantern"); // HAY QUE MOVERLO DE CARPETA
+            ModeloCheckPoint = Content.Load<Model>("Models/" + "CheckPoint/campfire"); // HAY QUE MOVERLO DE CARPETA
             Effect = Content.Load<Effect>("Effects/" + "BasicShader");
 
             foreach (var mesh in ModeloCheckPoint.Meshes){
+                Console.WriteLine($"Meshname pistacurva {mesh.Name}");
                 foreach (var meshPart in mesh.MeshParts){
                     meshPart.Effect = Effect;
                 }
@@ -94,9 +95,25 @@ namespace TGC.MonoGame.TP.CheckPoint{
 
             
             foreach (var mesh in ModeloCheckPoint.Meshes){
-                for(int i=0; i < _checkPoints.Count; i++){
+                string meshName = mesh.Name.ToLower();
+                for (int i=0; i < _checkPoints.Count; i++){
                     Matrix _pisoWorld = _checkPoints[i];
                     Effect.Parameters["World"].SetValue(mesh.ParentBone.Transform * _pisoWorld);
+                    switch (meshName)
+                    {
+                        case "campfire":
+                            Effect.Parameters["DiffuseColor"].SetValue(new Vector3(1.0f, 0.5f, 0.0f)); // Color para el pan de abajo
+                            break;
+                        case "bucket":
+                            Effect.Parameters["DiffuseColor"].SetValue(new Vector3(0.7f, 0.7f, 0.7f)); // Color para el pan de arriba
+                            break;
+                        case "rocks":
+                            Effect.Parameters["DiffuseColor"].SetValue(new Vector3(0.5f, 0.5f, 0.5f)); // Color para el queso
+                            break;
+                        case "wood":
+                            Effect.Parameters["DiffuseColor"].SetValue(new Vector3(0.6f, 0.3f, 0.1f)); // Color para la carne
+                            break;
+                    }
                     mesh.Draw();
                 }
             }
@@ -104,8 +121,8 @@ namespace TGC.MonoGame.TP.CheckPoint{
 
 
         public void AgregarNuevoCheckPoint(float Rotacion, Vector3 Posicion) {
-            var transform = Matrix.CreateRotationY(Rotacion) * Matrix.CreateTranslation(Posicion) * scale ; 
-            _checkPoints.Add(transform); 
+            var transform = Matrix.CreateRotationY(Rotacion + MathHelper.ToRadians(-90)) * Matrix.CreateTranslation(Posicion) * Matrix.CreateScale(5f); 
+            _checkPoints.Add(transform);
             Console.WriteLine($"Drawing checkpoint at position {Posicion}");
         }
 

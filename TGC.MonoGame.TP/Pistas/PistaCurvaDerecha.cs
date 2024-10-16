@@ -50,6 +50,7 @@ namespace TGC.MonoGame.TP.PistaCurvaDerecha{
             Effect = Content.Load<Effect>("Effects/" + "BasicShader");
 
             foreach (var mesh in ModeloPistaCurva.Meshes){
+                
                 foreach (var meshPart in mesh.MeshParts){
                     meshPart.Effect = Effect;
                 }

@@ -29,7 +29,6 @@ namespace TGC.MonoGame.TP.PistaRecta
         float escala = 0.03f;
         BoundingBox size;
 
-        int contador = 0;
 
 
         public PistasRectas()
@@ -146,25 +145,16 @@ namespace TGC.MonoGame.TP.PistaRecta
         public void agregarNuevaPista(float Rotacion, Vector3 Posicion)
         {
             // Crear la matriz de transformación completa
-            Matrix transform = Matrix.CreateRotationY(Rotacion) *  Matrix.CreateTranslation(Posicion) *Matrix.CreateScale(escala);
+            Matrix world = Matrix.CreateRotationY(Rotacion) *  Matrix.CreateTranslation(Posicion) *Matrix.CreateScale(escala);
+    
+            _pistasRectas.Add(world);            
+            
+            BoundingBox box = new BoundingBox(size.Min * escala + Posicion * escala , size.Max * escala + Posicion * escala);
 
-            // Agregar la matriz de transformación a la lista de pistas
-            _pistasRectas.Add(transform);
-            if(contador ==4 ){
-                // Transformar los puntos mínimos y máximos del BoundingBox original
-            Vector3 transformedMin = Vector3.Transform(size.Min, transform);
-            Vector3 transformedMax = Vector3.Transform(size.Max, transform);
-
-            // Crear y agregar el nuevo BoundingBox transformado a la lista de colliders
-            BoundingBox box = new BoundingBox(transformedMin, transformedMax);
             Colliders.Add(box);
 
             // Imprimir los valores del BoundingBox para depuración
-            Console.WriteLine($"Box min= {box.Min}  Box max= {box.Max} ");
-            
-            }
-            contador++;
-            
+            Console.WriteLine($"Box min= {box.Min}  Box max= {box.Max} ");           
 
         }
 

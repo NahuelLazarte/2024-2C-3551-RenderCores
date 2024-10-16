@@ -315,13 +315,12 @@ namespace TGC.MonoGame.TP
             Pista recta colision
             */
 
-            BoundingBox boundingBox = pistaPrueba.GetBoundingBox();
-            Gizmos.DrawCube((boundingBox.Max + boundingBox.Min) / 2f, boundingBox.Max - boundingBox.Min, Color.Green);
+            //BoundingBox boundingBox = pistaPrueba.GetBoundingBox();
+            //Gizmos.DrawCube((boundingBox.Max + boundingBox.Min) / 2f, boundingBox.Max - boundingBox.Min, Color.Green);
             List<BoundingBox> CollidersPistaRecta = _pistasRectas.Colliders;
             foreach (var boundingBoxPista in CollidersPistaRecta)
             {
-
-                Gizmos.DrawCube((boundingBoxPista.Max + boundingBoxPista.Min) / 2f, boundingBoxPista.Max - boundingBoxPista.Min, Color.Green);
+                Gizmos.DrawCube((boundingBoxPista.Max + boundingBoxPista.Min) / 2f, boundingBoxPista.Max - boundingBoxPista.Min, Color.Green);                
             }
             esfera.Colliders = CollidersPistaRecta;
 

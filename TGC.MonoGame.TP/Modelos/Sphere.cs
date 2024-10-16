@@ -212,8 +212,10 @@ namespace TGC.MonoGame.TP.Modelos
 
 
                 // Verificar intersección
-                //bool hayIntersecion = boundingSphere.Intersects(collider);
-                bool hayIntersecion = Intersects(boundingSphere, collider);
+                bool hayIntersecion = collider.Intersects(boundingSphere);//boundingSphere.Intersects(collider);
+
+                
+                //bool hayIntersecion = Intersects(boundingSphere, collider);
 
                 if (hayIntersecion)
                 {

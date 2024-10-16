@@ -106,13 +106,13 @@ namespace TGC.MonoGame.TP.PistaCurvaIzquierda{
             // Aquí asumo que tienes un 'size' definido, que representa el tamaño original de la pista curva
             Vector3 transformedMin = Vector3.Transform(size.Min, transform);
             Vector3 transformedMax = Vector3.Transform(size.Max, transform);
-
+            /*
             // Crear y agregar el nuevo BoundingBox transformado a la lista de colliders
             BoundingBox box = new BoundingBox(transformedMin, transformedMax);
             Colliders.Add(box);
 
             // Imprimir los valores del BoundingBox para depuración
-            Console.WriteLine($"Box min= {box.Min}  Box max= {box.Max}");
+            Console.WriteLine($"Box min= {box.Min}  Box max= {box.Max}");*/
         }
 
     }

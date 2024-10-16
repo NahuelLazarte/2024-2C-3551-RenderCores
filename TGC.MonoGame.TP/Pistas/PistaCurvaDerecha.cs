@@ -19,26 +19,28 @@ namespace TGC.MonoGame.TP.PistaCurvaDerecha{
 
         private Vector3 desplazamientoEnEjes { get; set; }
 
-        public BoundingBox[] Colliders { get; set; }
+        public List<BoundingBox> Colliders { get; set; }
 
         private List<Matrix> _pistasCurvas { get; set; }
 
-
+        BoundingBox size;
         public PistasCurvasDerechas() {
             Initialize();
         }
 
         private void Initialize() {
             _pistasCurvas = new List<Matrix>();
+            Colliders = new List<BoundingBox>();
         }
 
         public void IniciarColliders() {
+            /*
             Colliders = new BoundingBox[_pistasCurvas.Count];
 
             for (int i = 0; i < _pistasCurvas.Count; i++) {
                 Colliders[i] = BoundingVolumesExtensions.FromMatrix(_pistasCurvas[i]);
             }
-            
+            */
         }
 
 
@@ -52,6 +54,9 @@ namespace TGC.MonoGame.TP.PistaCurvaDerecha{
                     meshPart.Effect = Effect;
                 }
             }
+
+            size = BoundingVolumesExtensions.CreateAABBFrom(ModeloPistaCurva);
+
         }
 
         public void Update(GameTime gameTime){
@@ -91,8 +96,41 @@ namespace TGC.MonoGame.TP.PistaCurvaDerecha{
         }
 
         public void agregarNuevaPista(float Rotacion, Vector3 Posicion) {
-            Posicion += Vector3.Transform(new Vector3(300,0,500), Matrix.CreateRotationY(Rotacion));
+            /*
+            
+            
             _pistasCurvas.Add(Matrix.CreateRotationY(Rotacion) * Matrix.CreateTranslation(Posicion) * scale); // METER MATRIZ DENTRO DE CADA PISTA
+
+            Vector3 transformedMin = Vector3.Transform(size.Min, transform);
+            Vector3 transformedMax = Vector3.Transform(size.Max, transform);
+
+            // Crear y agregar el nuevo BoundingBox transformado a la lista de colliders
+            BoundingBox box = new BoundingBox(transformedMin, transformedMax);
+            Colliders.Add(box);
+
+            // Imprimir los valores del BoundingBox para depuración
+            Console.WriteLine($"Box min= {box.Min}  Box max= {box.Max} ");
+            */
+
+            // Crear la matriz de transformación completa
+            Posicion += Vector3.Transform(new Vector3(300,0,500), Matrix.CreateRotationY(Rotacion));
+            Matrix transform = Matrix.CreateRotationY(Rotacion) * Matrix.CreateTranslation(Posicion) * scale;
+
+            // Agregar la matriz de transformación a la lista de pistas
+            _pistasCurvas.Add(transform);
+
+            // Transformar los puntos mínimos y máximos del BoundingBox original
+            // Aquí asumo que tienes un 'size' definido, que representa el tamaño original de la pista curva
+            Vector3 transformedMin = Vector3.Transform(size.Min, transform);
+            Vector3 transformedMax = Vector3.Transform(size.Max, transform);
+
+            // Crear y agregar el nuevo BoundingBox transformado a la lista de colliders
+            BoundingBox box = new BoundingBox(transformedMin, transformedMax);
+            Colliders.Add(box);
+
+            // Imprimir los valores del BoundingBox para depuración
+            Console.WriteLine($"Box min= {box.Min}  Box max= {box.Max}");
+
         }
 
     }

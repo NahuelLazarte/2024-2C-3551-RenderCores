@@ -280,6 +280,23 @@ namespace TGC.MonoGame.TP
                 Gizmos.DrawCube((boundingBoxPista.Max + boundingBoxPista.Min) / 2f, boundingBoxPista.Max - boundingBoxPista.Min, Color.Green);
             }
 
+            List<BoundingBox> CollidersPistaCurvaDerecha = _pistasCurvasDerechas.Colliders; 
+
+            foreach (var boundingBoxPista in CollidersPistaCurvaDerecha)
+            {
+
+                Gizmos.DrawCube((boundingBoxPista.Max + boundingBoxPista.Min) / 2f, boundingBoxPista.Max - boundingBoxPista.Min, Color.Green);
+            }
+
+            List<BoundingBox> CollidersPistaCurvaIzquierda = _pistasCurvasIzquierdas.Colliders; 
+
+            foreach (var boundingBoxPista in CollidersPistaCurvaIzquierda)
+            {
+
+                Gizmos.DrawCube((boundingBoxPista.Max + boundingBoxPista.Min) / 2f, boundingBoxPista.Max - boundingBoxPista.Min, Color.Green);
+            }
+
+
 
 
             BoundingSphere boundingSphere = esfera.GetBoundingSphere();

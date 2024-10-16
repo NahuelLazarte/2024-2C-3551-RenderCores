@@ -9,8 +9,8 @@ namespace TGC.MonoGame.TP.Modelos
 {
     class Sphere : Modelo
     {
-        float LinearSpeed = 100f;
-        private float RotationSpeed = 10f;
+        float LinearSpeed = 40f;
+        private float RotationSpeed = 20f;
         Vector3 _velocity;
 
         float escala;

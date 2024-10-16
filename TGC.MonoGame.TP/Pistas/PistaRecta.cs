@@ -20,15 +20,13 @@ namespace TGC.MonoGame.TP.PistaRecta
         private BoundingBox PistaRectaBox { get; set; }
 
         private Vector3 desplazamientoEnEjes { get; set; }
-        //public BoundingBox[] Colliders { get; set; }
-
+    
         public List<BoundingBox> Colliders { get; set; }
 
         private List<Matrix> _pistasRectas { get; set; }
 
         float escala = 0.03f;
         BoundingBox size;
-
 
 
         public PistasRectas()
@@ -41,36 +39,6 @@ namespace TGC.MonoGame.TP.PistaRecta
             _pistasRectas = new List<Matrix>();
             Colliders = new List<BoundingBox>();
         }
-
-        public void IniciarColliders()
-        {
-            //Colliders = new BoundingBox[_pistasRectas.Count];
-
-            /*
-            // Define factores de escala para cada eje
-            float scaleX = 1500f; // Ajusta este valor para el eje X
-            float scaleY = 1.0f; // Ajusta este valor para el eje Y
-            float scaleZ = 600f; // Ajusta este valor para el eje Z
-
-            for (int i = 0; i < _pistasRectas.Count; i++) {
-                // Crear el collider original
-                Colliders[i] = BoundingVolumesExtensions.FromMatrix(_pistasRectas[i]);
-
-                // Aplicar la escala al BoundingBox
-                Vector3 center = (Colliders[i].Min + Colliders[i].Max) / 2;
-                Vector3 size = Colliders[i].Max - Colliders[i].Min;
-
-                // Escalar el tamaño en cada eje
-                size.X *= scaleX;
-                size.Y *= scaleY;
-                size.Z *= scaleZ;
-
-                // Crear un nuevo BoundingBox escalado
-                Colliders[i] = new BoundingBox(center - size / 2, center + size / 2);
-            }
-            */
-        }
-
 
         public void LoadContent(ContentManager Content)
         {
@@ -95,14 +63,6 @@ namespace TGC.MonoGame.TP.PistaRecta
 
         public void Draw(GameTime gameTime, Matrix view, Matrix projection)
         {
-            /*
-            Colliders = new BoundingBox[_pistasRectas.Count];
-
-            for (int i = 0; i < _pistasRectas.Count; i++) {
-                Colliders[i] = BoundingVolumesExtensions.FromMatrix(_pistasRectas[i]);
-            }
-
-            */
 
             Effect.Parameters["View"].SetValue(view);
             Effect.Parameters["Projection"].SetValue(projection);
@@ -146,13 +106,12 @@ namespace TGC.MonoGame.TP.PistaRecta
         {
             // Crear la matriz de transformación completa
             Matrix world = Matrix.CreateRotationY(Rotacion) *  Matrix.CreateTranslation(Posicion) *Matrix.CreateScale(escala);
-    
+
             _pistasRectas.Add(world);            
             
             BoundingBox box = new BoundingBox(size.Min * escala + Posicion * escala , size.Max * escala + Posicion * escala);
 
             Colliders.Add(box);
-
             // Imprimir los valores del BoundingBox para depuración
             Console.WriteLine($"Box min= {box.Min}  Box max= {box.Max} ");           
 

@@ -69,6 +69,7 @@ namespace TGC.MonoGame.TP
 
         Pista pistaPrueba;
 
+
         public TGCGame()
         {
             Graphics = new GraphicsDeviceManager(this);
@@ -115,9 +116,9 @@ namespace TGC.MonoGame.TP
             posicionActual = new Vector3(0f, 0f, 0f);
             posicionCheckPoint = new Vector3(0f, 0f, 0f);
 
-            
 
-            
+
+
             AgregarPistaRecta(_pistasRectas);//CAMBIAR POR UN METODO UNICO, PARCHE
             AgregarPozo(_pozos);
             AgregarPistaRecta(_pistasRectas);//CAMBIAR POR UN METODO UNICO, PARCHE
@@ -166,10 +167,7 @@ namespace TGC.MonoGame.TP
             AgregarPowerUpPez(_peces);
             AgregarPistaRecta(_pistasRectas);//CAMBIAR POR UN METODO UNICO, PARCHE
             AgregarPistaRecta(_pistasRectas);
-            
-            _pistasCurvasIzquierdas.IniciarColliders();
-            _pistasCurvasDerechas.IniciarColliders();
-            _pistasRectas.IniciarColliders();
+
 
             _peces.IniciarColliders();
             _piedras.IniciarColliders();
@@ -181,7 +179,7 @@ namespace TGC.MonoGame.TP
             Matrix rotation = Matrix.Identity;
 
 
-            esfera = new Modelos.Sphere(new Vector3(0.0f, 4.0f, 0.0f), rotation, Color.Yellow);
+            esfera = new Modelos.Sphere(new Vector3(0.0f, 10.0f, 0.0f), rotation, Color.Yellow);
             pistaPrueba = new Pista(new Vector3(50.0f, 4.0f, 0.0f), rotation, Color.White);
 
             lineDrawer = new LineDrawer(GraphicsDevice);
@@ -256,7 +254,7 @@ namespace TGC.MonoGame.TP
             //sphere.Draw(gameTime, Camera.ViewMatrix, Camera.ProjectionMatrix);
 
             //esfera.Draw(View,Projection);
-            esfera.Draw(Camera.ViewMatrix, Camera.ProjectionMatrix);
+
             pistaPrueba.Draw(Camera.ViewMatrix, Camera.ProjectionMatrix);
 
             _pistasCurvasDerechas.Draw(gameTime, Camera.ViewMatrix, Camera.ProjectionMatrix);
@@ -271,7 +269,7 @@ namespace TGC.MonoGame.TP
 
             _pozos.Draw(gameTime, Camera.ViewMatrix, Camera.ProjectionMatrix);
 
-            GraphicsDevice.RasterizerState = originalRasterizerState;
+
 
             /*
             foreach (var posicion in Esferas)
@@ -279,26 +277,9 @@ namespace TGC.MonoGame.TP
                 Gizmos.DrawSphere(posicion, Vector3.One * 100, Color.Yellow);
             }*/
 
-
-            
-
-            List<BoundingBox> CollidersPistaCurvaDerecha = _pistasCurvasDerechas.Colliders; 
-
-            foreach (var boundingBoxPista in CollidersPistaCurvaDerecha)
-            {
-
-                Gizmos.DrawCube((boundingBoxPista.Max + boundingBoxPista.Min) / 2f, boundingBoxPista.Max - boundingBoxPista.Min, Color.Green);
-            }
-
-            List<BoundingBox> CollidersPistaCurvaIzquierda = _pistasCurvasIzquierdas.Colliders; 
-
-            foreach (var boundingBoxPista in CollidersPistaCurvaIzquierda)
-            {
-
-                Gizmos.DrawCube((boundingBoxPista.Max + boundingBoxPista.Min) / 2f, boundingBoxPista.Max - boundingBoxPista.Min, Color.Green);
-            }
-
-
+            List<BoundingBox> CollidersPistaRecta = _pistasRectas.Colliders;
+            List<BoundingBox> CollidersPistaCurvaDerecha = _pistasCurvasDerechas.Colliders;
+            List<BoundingBox> CollidersPistaCurvaIzquierda = _pistasCurvasIzquierdas.Colliders;
 
 
             BoundingSphere boundingSphere = esfera.GetBoundingSphere();
@@ -307,26 +288,32 @@ namespace TGC.MonoGame.TP
             _piedras._envolturaEsfera = boundingSphere;
             _pozos._envolturaEsfera = boundingSphere;
             _checkPoints._envolturaEsfera = boundingSphere;
-            
-            //BoundingSphere boundingSphere = new BoundingSphere(new Vector3(0, 0, 0), 5.0f);
-            Gizmos.DrawSphere(boundingSphere.Center, boundingSphere.Radius * Vector3.One, Color.White);
 
-            /*
-            Pista recta colision
-            */
 
-            //BoundingBox boundingBox = pistaPrueba.GetBoundingBox();
-            //Gizmos.DrawCube((boundingBox.Max + boundingBox.Min) / 2f, boundingBox.Max - boundingBox.Min, Color.Green);
-            List<BoundingBox> CollidersPistaRecta = _pistasRectas.Colliders;
+            esfera.Colliders.AddRange(CollidersPistaRecta);
+            esfera.Colliders.AddRange(CollidersPistaCurvaDerecha);
+            esfera.Colliders.AddRange(CollidersPistaCurvaIzquierda);
+
+            foreach (var boundingBoxPista in CollidersPistaCurvaDerecha)
+            {
+                Gizmos.DrawCube((boundingBoxPista.Max + boundingBoxPista.Min) / 2f, boundingBoxPista.Max - boundingBoxPista.Min, Color.Green);
+            }
+
+            foreach (var boundingBoxPista in CollidersPistaCurvaIzquierda)
+            {
+                Gizmos.DrawCube((boundingBoxPista.Max + boundingBoxPista.Min) / 2f, boundingBoxPista.Max - boundingBoxPista.Min, Color.Green);
+            }
+
             foreach (var boundingBoxPista in CollidersPistaRecta)
             {
-                Gizmos.DrawCube((boundingBoxPista.Max + boundingBoxPista.Min) / 2f, boundingBoxPista.Max - boundingBoxPista.Min, Color.Green);                
+                Gizmos.DrawCube((boundingBoxPista.Max + boundingBoxPista.Min) / 2f, boundingBoxPista.Max - boundingBoxPista.Min, Color.Green);
             }
-            esfera.Colliders = CollidersPistaRecta;
+
+            Gizmos.DrawSphere(boundingSphere.Center, boundingSphere.Radius * Vector3.One, Color.White);
 
             Gizmos.Draw();
 
-
+            esfera.Draw(Camera.ViewMatrix, Camera.ProjectionMatrix);
 
 
             Vector3 start = new Vector3(0, 0, 0);
@@ -335,6 +322,8 @@ namespace TGC.MonoGame.TP
 
             lineDrawer.DrawLine(start, endGreen, Color.Green, Camera.ViewMatrix, Camera.ProjectionMatrix);
             lineDrawer.DrawLine(start, endRed, Color.Red, Camera.ViewMatrix, Camera.ProjectionMatrix);
+
+            GraphicsDevice.RasterizerState = originalRasterizerState;
 
         }
 

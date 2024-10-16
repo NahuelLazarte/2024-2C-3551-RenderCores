@@ -14,7 +14,7 @@ using TGC.MonoGame.TP.PistaRecta;
 using TGC.MonoGame.TP.PowerUpPez;
 
 using TGC.MonoGame.TP.ObstaculoPiedras;
-
+using TGC.MonoGame.TP.ObstaculoPozo;
 using TGC.MonoGame.TP.CheckPoint;
 
 using TGC.MonoGame.TP.Modelos;
@@ -58,6 +58,7 @@ namespace TGC.MonoGame.TP
         private PowerUpPeces _peces { get; set; }
         private CheckPoints _checkPoints { get; set; }
         private ObstaculosPiedras _piedras { get; set; }
+        private ObstaculosPozos _pozos { get; set; }
         private Vector3 posicionActual { get; set; }
         private SkyBox SkyBox { get; set; }
         float rotacionActual = 0f;
@@ -86,6 +87,8 @@ namespace TGC.MonoGame.TP
 
             _piedras = new ObstaculosPiedras();
 
+            _pozos = new ObstaculosPozos();
+
             _checkPoints = new CheckPoints();
         }
 
@@ -105,11 +108,18 @@ namespace TGC.MonoGame.TP
 
             _piedras.LoadContent(Content);
 
+            _pozos.LoadContent(Content);
+
             _checkPoints.LoadContent(Content);
 
             posicionActual = new Vector3(0f, 0f, 0f);
             posicionCheckPoint = new Vector3(0f, 0f, 0f);
+
+            
+
+            
             AgregarPistaRecta(_pistasRectas);//CAMBIAR POR UN METODO UNICO, PARCHE
+            AgregarPozo(_pozos);
             AgregarPistaRecta(_pistasRectas);//CAMBIAR POR UN METODO UNICO, PARCHE
             AgregarPowerUpPez(_peces);
             AgregarPistaRecta(_pistasRectas);//CAMBIAR POR UN METODO UNICO, PARCHE
@@ -150,21 +160,21 @@ namespace TGC.MonoGame.TP
             AgregarPistaRecta(_pistasRectas);//CAMBIAR POR UN METODO UNICO, PARCHE
             AgregarPistaRecta(_pistasRectas);//CAMBIAR POR UN METODO UNICO, PARCHE
             AgregarPistaRecta(_pistasRectas);
+            AgregarPozo(_pozos);
             AgregarPistaRecta(_pistasRectas);//CAMBIAR POR UN METODO UNICO, PARCHE
             AgregarPistaRecta(_pistasRectas);//CAMBIAR POR UN METODO UNICO, PARCHE
             AgregarPowerUpPez(_peces);
             AgregarPistaRecta(_pistasRectas);//CAMBIAR POR UN METODO UNICO, PARCHE
             AgregarPistaRecta(_pistasRectas);
+            
             _pistasCurvasIzquierdas.IniciarColliders();
             _pistasCurvasDerechas.IniciarColliders();
             _pistasRectas.IniciarColliders();
 
             _peces.IniciarColliders();
-
             _piedras.IniciarColliders();
-
             _checkPoints.IniciarColliders();
-
+            _pozos.IniciarColliders();
             //sphere.Colliders = CombineColliders(_pistasRectas.Colliders, _pistasCurvasDerechas.Colliders, _pistasCurvasIzquierdas.Colliders);
 
             // Crear una matriz de rotación con rotación 0
@@ -219,6 +229,7 @@ namespace TGC.MonoGame.TP
 
             _checkPoints.Update(gameTime, this);
 
+            _pozos.Update(gameTime, this);
 
             Gizmos.UpdateViewProjection(Camera.ViewMatrix, Camera.ProjectionMatrix);
 
@@ -257,6 +268,8 @@ namespace TGC.MonoGame.TP
             _piedras.Draw(gameTime, Camera.ViewMatrix, Camera.ProjectionMatrix);
 
             _checkPoints.Draw(gameTime, Camera.ViewMatrix, Camera.ProjectionMatrix);
+
+            _pozos.Draw(gameTime, Camera.ViewMatrix, Camera.ProjectionMatrix);
 
             GraphicsDevice.RasterizerState = originalRasterizerState;
 
@@ -300,11 +313,12 @@ namespace TGC.MonoGame.TP
 
 
             BoundingSphere boundingSphere = esfera.GetBoundingSphere();
+
             _peces._envolturaEsfera = boundingSphere;
-
             _piedras._envolturaEsfera = boundingSphere;
-
+            _pozos._envolturaEsfera = boundingSphere;
             _checkPoints._envolturaEsfera = boundingSphere;
+            
             //BoundingSphere boundingSphere = new BoundingSphere(new Vector3(0, 0, 0), 5.0f);
             Gizmos.DrawSphere(boundingSphere.Center, boundingSphere.Radius * Vector3.One, Color.Green);
 
@@ -389,6 +403,21 @@ namespace TGC.MonoGame.TP
             Esferas.Add(posicionActual);
         }
 
+        void AgregarPozo(ObstaculosPozos unPozo)
+        {
+            Vector3 desplazamiento = unPozo.Desplazamiento() * 60f;
+
+            //posicionActual = new Vector3(posicionActual.X +300f, posicionActual.Y, posicionActual.Z + 500f);
+
+            //posicionActual = new Vector3(posicionActual.X, posicionActual.Y, posicionActual.Z);
+            Vector3 posicionObstaculo = new(posicionActual.X / 68f, posicionActual.Y / 70f, posicionActual.Z / 68f);
+
+            unPozo.agregarNuevoPozo(rotacionActual, posicionObstaculo);
+            Console.WriteLine($"Pista Curva dibujada: Posicion en ejes: X = {posicionActual.X}, Y = {posicionActual.Y}, Z = {posicionActual.Z}");
+
+            posicionActual += Vector3.Transform(desplazamiento, Matrix.CreateRotationY(rotacionActual));
+            Esferas.Add(posicionActual);
+        }
         void AgregarPowerUpPez(PowerUpPeces unPowerUp)
         {
             Vector3 posicionObstaculo = new(posicionActual.X / 167f, posicionActual.Y / 180f + 0.5f, posicionActual.Z / 167f);

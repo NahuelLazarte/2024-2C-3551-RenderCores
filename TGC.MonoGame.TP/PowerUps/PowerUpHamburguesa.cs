@@ -11,43 +11,45 @@ using TGC.MonoGame.TP;
 using System; // Asegúrate de que esto esté presente en la parte superior de tu archivo
 
 
-namespace TGC.MonoGame.TP.PowerUpPez{
-    public class PowerUpPeces{
+namespace TGC.MonoGame.TP.PowerUpHamburguesa{
+    public class PowerUpHamburguesas{
         public Gizmos.Gizmos Gizmos { get; }
         public const string ContentFolder3D = "Models/";
         public const string ContentFolderEffects = "Effects/";
         public Effect Effect { get; set; }
         public Matrix scale = Matrix.CreateScale(5f);
-        public Model ModeloPez { get; set; }
+        public Model ModeloHamburguesa { get; set; }
         public BoundingBox[] Colliders { get; set; }
         private float Rotation { get; set; }
-        private List<Matrix> _peces { get; set; }
+        private List<Matrix> _hamburguesas { get; set; }
         public BoundingSphere _envolturaEsfera{ get; set; }
         public Song CollisionSound { get; set; }
 
-        public PowerUpPeces() {
+        public PowerUpHamburguesas() {
             Initialize();
         }
 
         private void Initialize() {
-            _peces = new List<Matrix>();
+            _hamburguesas = new List<Matrix>();
         }
 
         public void IniciarColliders() {
-            Colliders = new BoundingBox[_peces.Count];
+            Colliders = new BoundingBox[_hamburguesas.Count];
 
-            for (int i = 0; i < _peces.Count; i++) {
-                Colliders[i] = BoundingVolumesExtensions.FromMatrix(_peces[i]);
+            for (int i = 0; i < _hamburguesas.Count; i++) {
+                Colliders[i] = BoundingVolumesExtensions.FromMatrix(_hamburguesas[i]);
             }
             
         }
 
         public void LoadContent(ContentManager Content){
-            ModeloPez = Content.Load<Model>("Models/" + "obstaculos/fish"); // HAY QUE MOVERLO DE CARPETA
+            ModeloHamburguesa = Content.Load<Model>("Models/" + "obstaculos/burger"); // HAY QUE MOVERLO DE CARPETA
             Effect = Content.Load<Effect>("Effects/" + "BasicShader");
 
-            foreach (var mesh in ModeloPez.Meshes){
+            foreach (var mesh in ModeloHamburguesa.Meshes){
+                
                 foreach (var meshPart in mesh.MeshParts){
+
                     meshPart.Effect = Effect;
                 }
             }
@@ -55,7 +57,7 @@ namespace TGC.MonoGame.TP.PowerUpPez{
             CollisionSound = Content.Load<Song>("Audio/ColisionPez"); // Ajusta la ruta según sea necesario
 
 
-            Console.WriteLine(ModeloPez != null ? "Modelo cargado exitosamente" : "Error al cargar el modelo");
+            Console.WriteLine(ModeloHamburguesa != null ? "Modelo cargado exitosamente" : "Error al cargar el modelo");
 
         }
 
@@ -65,9 +67,9 @@ namespace TGC.MonoGame.TP.PowerUpPez{
             
             float sinOffset = (float)Math.Sin(Rotation) * 0.8f; // Ajusta el multiplicador para la amplitud
 
-            for (int i = 0; i < _peces.Count; i++) {
-                var originalPosition = _peces[i].Translation; // Obtener la posición original
-                _peces[i] =  Matrix.CreateRotationY(Rotation) * Matrix.CreateTranslation(originalPosition.X, originalPosition.Y + (sinOffset) * 0.05f, originalPosition.Z) ;
+            for (int i = 0; i < _hamburguesas.Count; i++) {
+                var originalPosition = _hamburguesas[i].Translation; // Obtener la posición original
+                _hamburguesas[i] =  Matrix.CreateRotationY(Rotation) * Matrix.CreateTranslation(originalPosition.X, originalPosition.Y + (sinOffset) * 0.05f, originalPosition.Z) ;
             
             
            // Comprobar colisión
@@ -77,7 +79,7 @@ namespace TGC.MonoGame.TP.PowerUpPez{
                 Console.WriteLine($"¡Colisión con el pez en la posición {originalPosition}!");
                 // Aquí puedes realizar la acción que desees, como eliminar el pez, reducir vida, etc.
                 MediaPlayer.Play(CollisionSound);
-                _peces.RemoveAt(i);
+                _hamburguesas.RemoveAt(i);
                 
                 Game.recibirPowerUpPez();
 
@@ -97,10 +99,36 @@ namespace TGC.MonoGame.TP.PowerUpPez{
             Effect.Parameters["DiffuseColor"].SetValue(Color.Chocolate.ToVector3());
 
             
-            foreach (var mesh in ModeloPez.Meshes){
-                for(int i=0; i < _peces.Count; i++){
-                    Matrix _pisoWorld = _peces[i];
+            foreach (var mesh in ModeloHamburguesa.Meshes){
+                string meshName = mesh.Name.ToLower(); // Asegúrate de comparar en minúsculas
+
+                for (int i=0; i < _hamburguesas.Count; i++){
+                    Matrix _pisoWorld = _hamburguesas[i];
                     Effect.Parameters["World"].SetValue(mesh.ParentBone.Transform * _pisoWorld);
+                    switch (meshName)
+                    {
+                        case "bunbottom":
+                            Effect.Parameters["DiffuseColor"].SetValue(new Vector3(0.8f, 0.52f, 0.25f)); // Color para el pan de abajo
+                            break;
+                        case "buntop":
+                            Effect.Parameters["DiffuseColor"].SetValue(new Vector3(0.8f, 0.52f, 0.25f)); // Color para el pan de arriba
+                            break;
+                        case "cheese":
+                            Effect.Parameters["DiffuseColor"].SetValue(Color.Yellow.ToVector3()); // Color para el queso
+                            break;
+                        case "patty":
+                            Effect.Parameters["DiffuseColor"].SetValue(new Vector3(0.5f, 0.25f, 0.1f)); // Color para la carne
+                            break;
+                        case "salad":
+                            Effect.Parameters["DiffuseColor"].SetValue(Color.Green.ToVector3()); // Color para la lechuga
+                            break;
+                        case "tomato":
+                            Effect.Parameters["DiffuseColor"].SetValue(Color.Red.ToVector3()); // Color para el tomate
+                            break;
+                        default:
+                            Effect.Parameters["DiffuseColor"].SetValue(Color.White.ToVector3()); // Color por defecto
+                            break;
+                    }
                     mesh.Draw();
                 }
             }
@@ -109,7 +137,7 @@ namespace TGC.MonoGame.TP.PowerUpPez{
 
         public void AgregarNuevoPowerUp(float Rotacion, Vector3 Posicion) {
             var transform = Matrix.CreateRotationY(Rotacion) * Matrix.CreateTranslation(Posicion) * scale ; 
-            _peces.Add(transform); 
+            _hamburguesas.Add(transform); 
             Console.WriteLine($"Drawing fish at position {Posicion}");
         }
 

@@ -11,7 +11,7 @@ using TGC.MonoGame.TP.PistaCurvaDerecha;
 using TGC.MonoGame.TP.PistaCurvaIzquierda;
 using TGC.MonoGame.TP.PistaRecta;
 
-using TGC.MonoGame.TP.PowerUpPez;
+using TGC.MonoGame.TP.PowerUpHamburguesa;
 
 using TGC.MonoGame.TP.ObstaculoPiedras;
 using TGC.MonoGame.TP.ObstaculoPozo;
@@ -55,7 +55,7 @@ namespace TGC.MonoGame.TP
         private PistasCurvasIzquierdas _pistasCurvasIzquierdas { get; set; }
         private PistasCurvasDerechas _pistasCurvasDerechas { get; set; }
         private PistasRectas _pistasRectas { get; set; }
-        private PowerUpPeces _peces { get; set; }
+        private PowerUpHamburguesas _hamburguesas { get; set; }
         private CheckPoints _checkPoints { get; set; }
         private ObstaculosPiedras _piedras { get; set; }
         private ObstaculosPozos _pozos { get; set; }
@@ -84,7 +84,7 @@ namespace TGC.MonoGame.TP
             _pistasCurvasIzquierdas = new PistasCurvasIzquierdas();
             _pistasRectas = new PistasRectas();
 
-            _peces = new PowerUpPeces();
+            _hamburguesas = new PowerUpHamburguesas();
 
             _piedras = new ObstaculosPiedras();
 
@@ -105,7 +105,7 @@ namespace TGC.MonoGame.TP
             _pistasCurvasDerechas.LoadContent(Content);
             _pistasRectas.LoadContent(Content);
 
-            _peces.LoadContent(Content);
+            _hamburguesas.LoadContent(Content);
 
             _piedras.LoadContent(Content);
 
@@ -114,7 +114,7 @@ namespace TGC.MonoGame.TP
             _checkPoints.LoadContent(Content);
 
             posicionActual = new Vector3(0f, 0f, 0f);
-            posicionCheckPoint = new Vector3(0f, 0f, 0f);
+            posicionCheckPoint = new Vector3(0f, 4f, 0f);
 
 
 
@@ -122,14 +122,14 @@ namespace TGC.MonoGame.TP
             AgregarPistaRecta(_pistasRectas);//CAMBIAR POR UN METODO UNICO, PARCHE
             AgregarPozo(_pozos);
             AgregarPistaRecta(_pistasRectas);//CAMBIAR POR UN METODO UNICO, PARCHE
-            AgregarPowerUpPez(_peces);
+            AgregarPowerUpHamburguesa(_hamburguesas);
             AgregarPistaRecta(_pistasRectas);//CAMBIAR POR UN METODO UNICO, PARCHE
             AgregarPistaRecta(_pistasRectas);
-            AgregarPowerUpPez(_peces);
+            AgregarPowerUpHamburguesa(_hamburguesas);
             AgregarPistaCurvaDerecha(_pistasCurvasDerechas);
             AgregarPistaRecta(_pistasRectas);//CAMBIAR POR UN METODO UNICO, PARCHE
             AgregarPistaRecta(_pistasRectas);//CAMBIAR POR UN METODO UNICO, PARCHE
-            AgregarPowerUpPez(_peces);
+            AgregarPowerUpHamburguesa(_hamburguesas);
             AgregarPistaCurvaDerecha(_pistasCurvasDerechas);//CAMBIAR POR UN METODO UNICO, PARCHE
             AgregarPistaRecta(_pistasRectas);//CAMBIAR POR UN METODO UNICO, PARCHE
             AgregarPistaCurvaIzquierda(_pistasCurvasIzquierdas);
@@ -138,7 +138,7 @@ namespace TGC.MonoGame.TP
             AgregarPistaRecta(_pistasRectas);//CAMBIAR POR UN METODO UNICO, PARCHE
             AgregarObstaculoPiedra(_piedras);
             AgregarPistaRecta(_pistasRectas);//CAMBIAR POR UN METODO UNICO, PARCHE
-            AgregarPowerUpPez(_peces);
+            AgregarPowerUpHamburguesa(_hamburguesas);
             AgregarPistaRecta(_pistasRectas);//CAMBIAR POR UN METODO UNICO, PARCHE
             AgregarPistaRecta(_pistasRectas);//CAMBIAR POR UN METODO UNICO, PARCHE
             AgregarPistaRecta(_pistasRectas);//CAMBIAR POR UN METODO UNICO, PARCHE
@@ -150,11 +150,11 @@ namespace TGC.MonoGame.TP
             AgregarPistaCurvaDerecha(_pistasCurvasDerechas);
             AgregarPistaRecta(_pistasRectas);
             AgregarPistaRecta(_pistasRectas);//CAMBIAR POR UN METODO UNICO, PARCHE
-            AgregarPowerUpPez(_peces);
+            AgregarPowerUpHamburguesa(_hamburguesas);
             AgregarPistaRecta(_pistasRectas);//CAMBIAR POR UN METODO UNICO, PARCHE
             AgregarObstaculoPiedra(_piedras);
             AgregarPistaRecta(_pistasRectas);//CAMBIAR POR UN METODO UNICO, PARCHE
-            AgregarPowerUpPez(_peces);
+            AgregarPowerUpHamburguesa(_hamburguesas);
             AgregarPistaRecta(_pistasRectas);
             AgregarPistaRecta(_pistasRectas);//CAMBIAR POR UN METODO UNICO, PARCHE
             AgregarPistaCurvaDerecha(_pistasCurvasDerechas);
@@ -164,12 +164,12 @@ namespace TGC.MonoGame.TP
             AgregarPozo(_pozos);
             AgregarPistaRecta(_pistasRectas);//CAMBIAR POR UN METODO UNICO, PARCHE
             AgregarPistaRecta(_pistasRectas);//CAMBIAR POR UN METODO UNICO, PARCHE
-            AgregarPowerUpPez(_peces);
+            AgregarPowerUpHamburguesa(_hamburguesas);
             AgregarPistaRecta(_pistasRectas);//CAMBIAR POR UN METODO UNICO, PARCHE
             AgregarPistaRecta(_pistasRectas);
 
 
-            _peces.IniciarColliders();
+            _hamburguesas.IniciarColliders();
             _piedras.IniciarColliders();
             _checkPoints.IniciarColliders();
             _pozos.IniciarColliders();
@@ -221,7 +221,7 @@ namespace TGC.MonoGame.TP
             _pistasCurvasIzquierdas.Update(gameTime);
             _pistasRectas.Update(gameTime);
 
-            _peces.Update(gameTime, this);
+            _hamburguesas.Update(gameTime, this);
 
             _piedras.Update(gameTime, this);
 
@@ -261,7 +261,7 @@ namespace TGC.MonoGame.TP
             _pistasCurvasIzquierdas.Draw(gameTime, Camera.ViewMatrix, Camera.ProjectionMatrix);
             _pistasRectas.Draw(gameTime, Camera.ViewMatrix, Camera.ProjectionMatrix);
 
-            _peces.Draw(gameTime, Camera.ViewMatrix, Camera.ProjectionMatrix);
+            _hamburguesas.Draw(gameTime, Camera.ViewMatrix, Camera.ProjectionMatrix);
 
             _piedras.Draw(gameTime, Camera.ViewMatrix, Camera.ProjectionMatrix);
 
@@ -284,7 +284,7 @@ namespace TGC.MonoGame.TP
 
             BoundingSphere boundingSphere = esfera.GetBoundingSphere();
 
-            _peces._envolturaEsfera = boundingSphere;
+            _hamburguesas._envolturaEsfera = boundingSphere;
             _piedras._envolturaEsfera = boundingSphere;
             _pozos._envolturaEsfera = boundingSphere;
             _checkPoints._envolturaEsfera = boundingSphere;
@@ -409,7 +409,7 @@ namespace TGC.MonoGame.TP
             posicionActual += Vector3.Transform(desplazamiento, Matrix.CreateRotationY(rotacionActual));
             Esferas.Add(posicionActual);
         }
-        void AgregarPowerUpPez(PowerUpPeces unPowerUp)
+        void AgregarPowerUpHamburguesa(PowerUpHamburguesas unPowerUp)
         {
             Vector3 posicionObstaculo = new(posicionActual.X / 167f, posicionActual.Y / 180f + 0.5f, posicionActual.Z / 167f);
             unPowerUp.AgregarNuevoPowerUp(rotacionActual, posicionObstaculo);
@@ -427,7 +427,7 @@ namespace TGC.MonoGame.TP
 
         void AgregarCheckPoint(CheckPoints unCheckPoint)
         {
-            Vector3 posicionObstaculo = new(posicionActual.X / 40f, posicionActual.Y / 40f, posicionActual.Z / 40f);
+            Vector3 posicionObstaculo = new(posicionActual.X / 170f, posicionActual.Y / 185f, posicionActual.Z / 170f);
             unCheckPoint.AgregarNuevoCheckPoint(rotacionActual, posicionObstaculo);
             Console.WriteLine($"Obstaculo Pez dibujado: Posicion en ejes: X = {posicionObstaculo.X}, Y = {posicionObstaculo.Y}, Z = {posicionObstaculo.Z}");
             //Esferas.Add(posicionObstaculo);

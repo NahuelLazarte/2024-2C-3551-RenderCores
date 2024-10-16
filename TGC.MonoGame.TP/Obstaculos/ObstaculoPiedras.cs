@@ -86,7 +86,7 @@ namespace TGC.MonoGame.TP.ObstaculoPiedras{
         {
             Effect.Parameters["View"].SetValue(view);
             Effect.Parameters["Projection"].SetValue(projection);
-            Effect.Parameters["DiffuseColor"].SetValue(Color.Chocolate.ToVector3());
+            Effect.Parameters["DiffuseColor"].SetValue(new Vector3(0.5f, 0.5f, 0.5f));
 
             
             foreach (var mesh in ModeloPez.Meshes){

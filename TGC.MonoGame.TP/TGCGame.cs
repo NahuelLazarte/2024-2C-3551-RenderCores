@@ -260,25 +260,14 @@ namespace TGC.MonoGame.TP
 
             GraphicsDevice.RasterizerState = originalRasterizerState;
 
+            /*
             foreach (var posicion in Esferas)
             {
                 Gizmos.DrawSphere(posicion, Vector3.One * 100, Color.Yellow);
-            }
+            }*/
 
 
-            //Con esto se dibuja la caja alrededor de la pista
-            BoundingBox boundingBox = pistaPrueba.GetBoundingBox();
-            Gizmos.DrawCube((boundingBox.Max + boundingBox.Min) / 2f, boundingBox.Max - boundingBox.Min, Color.Green);
-
-
-            List<BoundingBox> CollidersPistaRecta = _pistasRectas.Colliders;
-            // Iterar sobre cada BoundingBox en la lista y dibujarla
             
-            foreach (var boundingBoxPista in CollidersPistaRecta)
-            {
-
-                Gizmos.DrawCube((boundingBoxPista.Max + boundingBoxPista.Min) / 2f, boundingBoxPista.Max - boundingBoxPista.Min, Color.Green);
-            }
 
             List<BoundingBox> CollidersPistaCurvaDerecha = _pistasCurvasDerechas.Colliders; 
 
@@ -306,7 +295,21 @@ namespace TGC.MonoGame.TP
 
             _checkPoints._envolturaEsfera = boundingSphere;
             //BoundingSphere boundingSphere = new BoundingSphere(new Vector3(0, 0, 0), 5.0f);
-            Gizmos.DrawSphere(boundingSphere.Center, boundingSphere.Radius * Vector3.One, Color.Green);
+            Gizmos.DrawSphere(boundingSphere.Center, boundingSphere.Radius * Vector3.One, Color.White);
+
+            /*
+            Pista recta colision
+            */
+
+            BoundingBox boundingBox = pistaPrueba.GetBoundingBox();
+            Gizmos.DrawCube((boundingBox.Max + boundingBox.Min) / 2f, boundingBox.Max - boundingBox.Min, Color.Green);
+            List<BoundingBox> CollidersPistaRecta = _pistasRectas.Colliders;
+            foreach (var boundingBoxPista in CollidersPistaRecta)
+            {
+
+                Gizmos.DrawCube((boundingBoxPista.Max + boundingBoxPista.Min) / 2f, boundingBoxPista.Max - boundingBoxPista.Min, Color.Green);
+            }
+            esfera.Colliders = CollidersPistaRecta;
 
             Gizmos.Draw();
 

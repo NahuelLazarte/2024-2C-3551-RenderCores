@@ -69,7 +69,7 @@ namespace TGC.MonoGame.TP.PowerUpPez{
                 var originalPosition = _peces[i].Translation; // Obtener la posición original
                 _peces[i] =  Matrix.CreateRotationY(Rotation) * Matrix.CreateTranslation(originalPosition.X, originalPosition.Y + (sinOffset) * 0.05f, originalPosition.Z) ;
             
-           
+            
            // Comprobar colisión
             var fishBoundingSphere = new BoundingSphere(originalPosition, scale.Translation.X); // Ajustar el tamaño de la esfera de colisión según sea necesario
             if (_envolturaEsfera.Intersects(fishBoundingSphere)) {

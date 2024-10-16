@@ -69,7 +69,7 @@ namespace TGC.MonoGame.TP.PistaCurvaDerecha{
 
             Effect.Parameters["View"].SetValue(view);
             Effect.Parameters["Projection"].SetValue(projection);
-            Effect.Parameters["DiffuseColor"].SetValue(Color.DarkBlue.ToVector3());
+            Effect.Parameters["DiffuseColor"].SetValue(Color.White.ToVector3());
             
             foreach (var mesh in ModeloPistaCurva.Meshes){
                 for(int i=0; i < _pistasCurvas.Count; i++){

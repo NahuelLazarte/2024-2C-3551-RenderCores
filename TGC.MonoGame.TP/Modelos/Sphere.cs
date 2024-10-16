@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using System.Collections.Generic;
 
 using TGC.MonoGame.TP.Collisions;
 namespace TGC.MonoGame.TP.Modelos
@@ -19,9 +20,11 @@ namespace TGC.MonoGame.TP.Modelos
 
         BoundingSphere boundingSphere;
 
-        public BoundingBox[] Colliders { get; set; }
+        public List<BoundingBox> Colliders { get; set; }
+
 
         private bool OnGround { get; set; }
+        private KeyboardState previousKeyboardState;
 
 
         public void setDirection(Vector3 newDirection)
@@ -44,7 +47,7 @@ namespace TGC.MonoGame.TP.Modelos
             boundingSphere = BoundingVolumesExtensions.CreateSphereFrom(Model3D);
 
             boundingSphere.Center = Position;
-            boundingSphere.Radius *= escala;
+            boundingSphere.Radius *= 0.0059f;
             Console.WriteLine($"boundingSphere.Radius={boundingSphere.Radius}");
         }
         public Sphere(Vector3 position, Matrix rotation, Color color)
@@ -53,6 +56,7 @@ namespace TGC.MonoGame.TP.Modelos
             escala = 0.01f;
             SetScale(Matrix.CreateScale(escala));
             World = Scale * rotation * Matrix.CreateTranslation(position);
+            Colliders = new List<BoundingBox>();
         }
 
         public override void Update(GameTime gameTime)
@@ -104,31 +108,54 @@ namespace TGC.MonoGame.TP.Modelos
                 acceleration.Z -= _velocity.Z * 0.95f;
             }
 
+            if (keyboardState.IsKeyDown(Keys.Up) && !previousKeyboardState.IsKeyDown(Keys.Up))
+            {
+                // Mover la pelota arriba
+                Vector3 irArriba = new Vector3(0f, 1f, 0f);
+
+                Position += irArriba;
+                Console.WriteLine($"Posicion pelota Y ={Position.Y}");
+                SolveVerticalMovement();
+            }
+            if (keyboardState.IsKeyDown(Keys.Down) && !previousKeyboardState.IsKeyDown(Keys.Down))
+            {
+                // Mover la pelota abajo
+                Vector3 irAbajo = new Vector3(0f, -1f, 0f);
+
+                Position += irAbajo;
+                Console.WriteLine($"Posicion pelota Y ={Position.Y}");
+                SolveVerticalMovement();
+            }
+
             // Mejorar la condición de salto
+            /*
             if (keyboardState.IsKeyDown(Keys.Space) && Math.Abs(Position.Y - 4f) < 0.1f)
             {
                 _velocity.Y += 30f;
 
                 Console.WriteLine($"Saltando");
                 Console.WriteLine($"_velocity.Y = {_velocity.Y}");
-            }
+            }*/
 
-            acceleration.Y = -50f;
+            //acceleration.Y = -50f;
 
             _velocity += acceleration * elapsedTime;
 
             Position += _velocity * elapsedTime;
 
+            previousKeyboardState = keyboardState;
 
+            /*
             if (Position.Y < 4f)
             {
                 Vector3 posicionNueva = new Vector3(Position.X, 4f, Position.Z);
                 SetPosition(posicionNueva);
 
                 _velocity.Y = 0f;
-            }
+            }*/
 
             // // Aplicar la detección de colisiones con el suelo
+            //SolveVerticalMovement();
             //SolveVerticalMovement();
 
             boundingSphere.Center = Position;
@@ -153,8 +180,55 @@ namespace TGC.MonoGame.TP.Modelos
             _velocity *= aumento;
         }
 
+        public bool Intersects(BoundingSphere sphere, BoundingBox box)
+        {
+            // Encuentra el punto más cercano en el BoundingBox al centro del BoundingSphere
+            Vector3 closestPoint = Vector3.Clamp(sphere.Center, box.Min, box.Max);
+
+            // Calcula la distancia desde el punto más cercano al centro del BoundingSphere
+            float distanceSquared = Vector3.DistanceSquared(closestPoint, sphere.Center);
+
+            // Verifica si la distancia es menor o igual al radio del BoundingSphere al cuadrado
+            bool intersects = distanceSquared <= sphere.Radius * sphere.Radius;
+
+            Console.WriteLine($"BoundingSphere Center: {sphere.Center}, Radius: {sphere.Radius}");
+            Console.WriteLine($"BoundingBox Min: {box.Min}, Max: {box.Max}");
+            Console.WriteLine($"Closest Point: {closestPoint}");
+            Console.WriteLine($"Distance Squared: {distanceSquared}, Radius Squared: {sphere.Radius * sphere.Radius}");
+            Console.WriteLine($"Intersects: {intersects}");
+            return intersects;
+        }
+
         private void SolveVerticalMovement()
         {
+            int contador = 0;
+
+            //boundingSphere.Radius *= 1.2f;
+            //Console.WriteLine($"El tamaño de la lista Colliders es: {Colliders.Count}");
+            Console.WriteLine($"BoundingSphere Center: {boundingSphere.Center}, Radius: {boundingSphere.Radius}");
+            foreach (BoundingBox collider in Colliders)
+            {
+                // Imprimir información del BoundingBox
+
+
+                // Verificar intersección
+                //bool hayIntersecion = boundingSphere.Intersects(collider);
+                bool hayIntersecion = Intersects(boundingSphere, collider);
+
+                if (hayIntersecion)
+                {
+
+                }
+                else
+                {
+
+                }
+                Console.WriteLine($"BoundingBox {contador} Min: {collider.Min}, Max: {collider.Max} " + (hayIntersecion ? "Hay interseccion" : "No hay interseccion"));
+                contador++;
+            }
+            Console.WriteLine("");
+
+            /*
             // Si la esfera no tiene velocidad vertical, no hay nada que hacer
             if (_velocity.Y == 0f)
                 return;
@@ -205,7 +279,7 @@ namespace TGC.MonoGame.TP.Modelos
                 // Verificar colisiones nuevamente
                 for (var index = 0; index < Colliders.Length; index++)
                 {
-                    if (!boundingSphere.Intersects(Colliders[index]))                   
+                    if (!boundingSphere.Intersects(Colliders[index]))
 
                         continue;
 
@@ -214,9 +288,9 @@ namespace TGC.MonoGame.TP.Modelos
                     foundIndex = index;
                     break;
                 }
-            }
+            }*/
         }
 
-        
+
     }
 }

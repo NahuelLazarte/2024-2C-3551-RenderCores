@@ -29,6 +29,8 @@ namespace TGC.MonoGame.TP.PistaRecta
         float escala = 0.03f;
         BoundingBox size;
 
+        int contador = 0;
+
 
         public PistasRectas()
         {
@@ -148,8 +150,8 @@ namespace TGC.MonoGame.TP.PistaRecta
 
             // Agregar la matriz de transformación a la lista de pistas
             _pistasRectas.Add(transform);
-
-            // Transformar los puntos mínimos y máximos del BoundingBox original
+            if(contador ==4 ){
+                // Transformar los puntos mínimos y máximos del BoundingBox original
             Vector3 transformedMin = Vector3.Transform(size.Min, transform);
             Vector3 transformedMax = Vector3.Transform(size.Max, transform);
 
@@ -159,6 +161,11 @@ namespace TGC.MonoGame.TP.PistaRecta
 
             // Imprimir los valores del BoundingBox para depuración
             Console.WriteLine($"Box min= {box.Min}  Box max= {box.Max} ");
+            
+            }
+            contador++;
+            
+
         }
 
     }

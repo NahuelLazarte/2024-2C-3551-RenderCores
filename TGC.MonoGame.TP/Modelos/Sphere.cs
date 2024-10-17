@@ -133,7 +133,7 @@ namespace TGC.MonoGame.TP.Modelos
             // Mejorar la condición de salto
             
             //if (keyboardState.IsKeyDown(Keys.Space) && Math.Abs(Position.Y - 4f) < 0.1f)
-            if (keyboardState.IsKeyDown(Keys.Space) && Position.Y <= posicionNueva.Y)  
+            if (keyboardState.IsKeyDown(Keys.Space) && Position.Y <= posicionNueva.Y && OnGround)  
             {
                 _velocity.Y += 30f;
 
@@ -145,11 +145,13 @@ namespace TGC.MonoGame.TP.Modelos
                 acceleration.Y = -50f;
             }
 
-            if(Position.Y < -25f)
-            {
-                Game.Respawn();
+            for(int i = 0; i < Colliders.Count; i++) {
+                if(Position.Y <= 2.5f && !boundingSphere.Intersects(Colliders[i]))
+                {
+                    Game.Respawn();
+                }
             }
-            
+
 
             //acceleration.Y = -10f;
 

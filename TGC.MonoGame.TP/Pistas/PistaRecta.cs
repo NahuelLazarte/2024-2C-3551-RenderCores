@@ -21,11 +21,14 @@ namespace TGC.MonoGame.TP.PistaRecta
         private Vector3 desplazamientoEnEjes { get; set; }
     
         public List<BoundingBox> Colliders { get; set; }
+        public List<BoundingBox> CollidersMuro { get; set; }
+
         private List<Matrix> _pistasRectas { get; set; }
         private List<Matrix> _muros { get; set; }
         float escala = 0.03f;
         float escalaMuros = 3f;
-        BoundingBox size;
+        BoundingBox Pistasize;
+        BoundingBox Rocksize;
 
 
         public PistasRectas()
@@ -38,6 +41,7 @@ namespace TGC.MonoGame.TP.PistaRecta
             _pistasRectas = new List<Matrix>();
             _muros = new List<Matrix>();
             Colliders = new List<BoundingBox>();
+            CollidersMuro = new List<BoundingBox>();
         }
 
         public void LoadContent(ContentManager Content)
@@ -62,7 +66,9 @@ namespace TGC.MonoGame.TP.PistaRecta
                 }
             }
 
-            size = BoundingVolumesExtensions.CreateAABBFrom(ModeloPistaRecta);
+            Pistasize = BoundingVolumesExtensions.CreateAABBFrom(ModeloPistaRecta);
+            Rocksize = BoundingVolumesExtensions.CreateAABBFrom(ModeloMuro);
+
         }
 
         public void Update(GameTime gameTime)
@@ -137,11 +143,9 @@ namespace TGC.MonoGame.TP.PistaRecta
             _muros.Add(muroDerecha); 
             _muros.Add(muroIzquierda);    
             
-            BoundingBox box = new BoundingBox(size.Min * escala + Posicion * escala , size.Max * escala + Posicion * escala);
+            BoundingBox box = new BoundingBox(Pistasize.Min * escala + Posicion * escala , Pistasize.Max * escala + Posicion * escala);
 
             Colliders.Add(box);
-            // Imprimir los valores del BoundingBox para depuración
-            Console.WriteLine($"Box min= {box.Min}  Box max= {box.Max} ");           
 
         }
 

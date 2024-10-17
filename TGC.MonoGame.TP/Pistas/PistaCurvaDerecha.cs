@@ -97,28 +97,15 @@ namespace TGC.MonoGame.TP.PistaCurvaDerecha
         public void agregarNuevaPista(float Rotacion, Vector3 Posicion)
         {
 
-            // Crear la matriz de transformación completa
             Posicion += Vector3.Transform(new Vector3(300, 0, 500), Matrix.CreateRotationY(Rotacion));
             Matrix transform = Matrix.CreateRotationY(Rotacion) * Matrix.CreateTranslation(Posicion) * scale;
 
-            // Agregar la matriz de transformación a la lista de pistas
             _pistasCurvas.Add(transform);
-
-            // Transformar los puntos mínimos y máximos del BoundingBox original
-            // Aquí asumo que tienes un 'size' definido, que representa el tamaño original de la pista curva
-            Vector3 transformedMin = Vector3.Transform(size.Min, transform);
-            Vector3 transformedMax = Vector3.Transform(size.Max, transform);
 
             BoundingBox box = new BoundingBox(size.Min * escala + Posicion * escala, size.Max * escala + Posicion * escala);
 
-            Colliders.Add(box);
-            /*
-            // Crear y agregar el nuevo BoundingBox transformado a la lista de colliders
-            BoundingBox box = new BoundingBox(transformedMin, transformedMax);
-            Colliders.Add(box);
 
-            // Imprimir los valores del BoundingBox para depuración
-            Console.WriteLine($"Box min= {box.Min}  Box max= {box.Max}");*/
+            Colliders.Add(box);
 
         }
 

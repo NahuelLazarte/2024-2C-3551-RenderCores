@@ -142,7 +142,6 @@ namespace TGC.MonoGame.TP
             AgregarPistaRecta(_pistasRectas);//CAMBIAR POR UN METODO UNICO, PARCHE
             AgregarPistaRecta(_pistasRectas);//CAMBIAR POR UN METODO UNICO, PARCHE
             AgregarPistaRecta(_pistasRectas);//CAMBIAR POR UN METODO UNICO, PARCHE
-            AgregarObstaculoPiedra(_piedras);
             AgregarCheckPoint(_checkPoints);
             AgregarPistaRecta(_pistasRectas);//CAMBIAR POR UN METODO UNICO, PARCHE
             AgregarPistaRecta(_pistasRectas);//CAMBIAR POR UN METODO UNICO, PARCHE
@@ -180,6 +179,7 @@ namespace TGC.MonoGame.TP
 
 
             esfera = new Modelos.Sphere(new Vector3(0.0f, 10.0f, 0.0f), rotation, Color.Yellow);
+            esfera.Game = this;
             pistaPrueba = new Pista(new Vector3(50.0f, 4.0f, 0.0f), rotation, Color.White);
 
             lineDrawer = new LineDrawer(GraphicsDevice);
@@ -280,7 +280,8 @@ namespace TGC.MonoGame.TP
             List<BoundingBox> CollidersPistaRecta = _pistasRectas.Colliders;
             List<BoundingBox> CollidersPistaCurvaDerecha = _pistasCurvasDerechas.Colliders;
             List<BoundingBox> CollidersPistaCurvaIzquierda = _pistasCurvasIzquierdas.Colliders;
-
+            List<BoundingBox> CollidersPiedras = _piedras.Colliders;
+            List<BoundingBox> CollidersCheckpoints = _checkPoints.Colliders;
 
             BoundingSphere boundingSphere = esfera.GetBoundingSphere();
 
@@ -288,6 +289,7 @@ namespace TGC.MonoGame.TP
             _piedras._envolturaEsfera = boundingSphere;
             _pozos._envolturaEsfera = boundingSphere;
             _checkPoints._envolturaEsfera = boundingSphere;
+
 
 
             esfera.Colliders.AddRange(CollidersPistaRecta);
@@ -305,6 +307,16 @@ namespace TGC.MonoGame.TP
             }
 
             foreach (var boundingBoxPista in CollidersPistaRecta)
+            {
+                Gizmos.DrawCube((boundingBoxPista.Max + boundingBoxPista.Min) / 2f, boundingBoxPista.Max - boundingBoxPista.Min, Color.Green);
+            }
+
+            foreach (var boundingBoxPista in CollidersPiedras)
+            {
+                Gizmos.DrawCube((boundingBoxPista.Max + boundingBoxPista.Min) / 2f, boundingBoxPista.Max - boundingBoxPista.Min, Color.Green);
+            }
+
+            foreach (var boundingBoxPista in CollidersCheckpoints)
             {
                 Gizmos.DrawCube((boundingBoxPista.Max + boundingBoxPista.Min) / 2f, boundingBoxPista.Max - boundingBoxPista.Min, Color.Green);
             }
@@ -441,7 +453,7 @@ namespace TGC.MonoGame.TP
 
         public void nuevoCheckPoint(Vector3 posicion)
         {
-            posicionCheckPoint = posicion;
+            posicionCheckPoint = new Vector3(posicion.X, posicion.Y +2f, posicion.Z) ;
             // Camera = new FollowCamera(GraphicsDevice, new Vector3(0, 5, 15), Vector3.Zero, Vector3.Up);No funciona
         }
 

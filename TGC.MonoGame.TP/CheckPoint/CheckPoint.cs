@@ -19,11 +19,12 @@ namespace TGC.MonoGame.TP.CheckPoint{
         public Effect Effect { get; set; }
         public Matrix scale = Matrix.CreateScale(1f);
         public Model ModeloCheckPoint { get; set; }
-        public BoundingBox[] Colliders { get; set; }
+        public List<BoundingBox> Colliders { get; set; }
         private float Rotation { get; set; }
         private List<Matrix> _checkPoints { get; set; }
         public BoundingSphere _envolturaEsfera{ get; set; }
         public Song CollisionSound { get; set; }
+        BoundingBox size;
 
         public CheckPoints() {
             Initialize();
@@ -31,14 +32,11 @@ namespace TGC.MonoGame.TP.CheckPoint{
 
         private void Initialize() {
             _checkPoints = new List<Matrix>();
+            Colliders = new List<BoundingBox>();
         }
 
         public void IniciarColliders() {
-            Colliders = new BoundingBox[_checkPoints.Count];
-
-            for (int i = 0; i < _checkPoints.Count; i++) {
-                Colliders[i] = BoundingVolumesExtensions.FromMatrix(_checkPoints[i]);
-            }
+          
             
         }
 
@@ -55,8 +53,8 @@ namespace TGC.MonoGame.TP.CheckPoint{
 
             CollisionSound = Content.Load<Song>("Audio/CheckPoint"); // Ajusta la ruta según sea necesario
 
+            size = BoundingVolumesExtensions.CreateAABBFrom(ModeloCheckPoint);
 
-            Console.WriteLine(ModeloCheckPoint != null ? "Modelo cargado exitosamente" : "Error al cargar el modelo");
 
         }
 
@@ -67,21 +65,14 @@ namespace TGC.MonoGame.TP.CheckPoint{
             //float sinOffset = (float)Math.Sin(Rotation) * 0.8f; // Ajusta el multiplicador para la amplitud
 
             for (int i = 0; i < _checkPoints.Count; i++) {
-                var originalPosition = _checkPoints[i].Translation; // Obtener la posición original
-                //_checkPoints[i] =  Matrix.CreateRotationY(Rotation) * Matrix.CreateTranslation(originalPosition.X, originalPosition.Y + (sinOffset) * 0.05f, originalPosition.Z) ;
-            
-           
-           // Comprobar colisión
-            var checkpointBoundingSphere = new BoundingSphere(originalPosition, scale.Translation.X); // Ajustar el tamaño de la esfera de colisión según sea necesario
-            
-            if (_envolturaEsfera.Intersects(checkpointBoundingSphere)) {
-                // Acción al tocar el modelo
-                Console.WriteLine($"¡Alcanzaste un nuevo checkpoint: {originalPosition}!");
-                // Aquí puedes realizar la acción que desees, como eliminar el pez, reducir vida, etc.
-                MediaPlayer.Play(CollisionSound);
-                _checkPoints.RemoveAt(i);
-                Game.nuevoCheckPoint(originalPosition);
-            }
+                var originalPosition = _checkPoints[i].Translation;
+                if (_envolturaEsfera.Intersects(Colliders[i])) {
+                    // Acción al tocar el modelo
+                    // Aquí puedes realizar la acción que desees, como eliminar el pez, reducir vida, etc.
+                    MediaPlayer.Play(CollisionSound);
+                    _checkPoints.RemoveAt(i);
+                    Game.nuevoCheckPoint(originalPosition);
+                }
             
             }
 
@@ -123,7 +114,12 @@ namespace TGC.MonoGame.TP.CheckPoint{
         public void AgregarNuevoCheckPoint(float Rotacion, Vector3 Posicion) {
             var transform = Matrix.CreateRotationY(Rotacion + MathHelper.ToRadians(-90)) * Matrix.CreateTranslation(Posicion) * Matrix.CreateScale(5f); 
             _checkPoints.Add(transform);
-            Console.WriteLine($"Drawing checkpoint at position {Posicion}");
+            Vector3 transformedMin = Vector3.Transform(size.Min, transform);
+            Vector3 transformedMax = Vector3.Transform(size.Max, transform);
+
+            BoundingBox box = new BoundingBox(size.Min* 5f  + Posicion* 5f , size.Max* 5f + Posicion * 5f);
+
+            Colliders.Add(box);
         }
 
     }

@@ -4,8 +4,9 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System.Collections.Generic;
-
+using TGC.MonoGame.TP;
 using TGC.MonoGame.TP.Collisions;
+
 namespace TGC.MonoGame.TP.Modelos
 {
     class Sphere : Modelo
@@ -26,7 +27,7 @@ namespace TGC.MonoGame.TP.Modelos
 
         private bool OnGround = false;
         private KeyboardState previousKeyboardState;
-
+        public TGCGame Game;
 
         public void setDirection(Vector3 newDirection)
         {
@@ -48,7 +49,7 @@ namespace TGC.MonoGame.TP.Modelos
             boundingSphere = BoundingVolumesExtensions.CreateSphereFrom(Model3D);
 
             boundingSphere.Center = Position;
-            boundingSphere.Radius *= 0.0059f;
+            boundingSphere.Radius *= 0.007f;
         }
         public Sphere(Vector3 position, Matrix rotation, Color color)
             : base(position, rotation, color)
@@ -142,6 +143,11 @@ namespace TGC.MonoGame.TP.Modelos
 
             if(!OnGround){
                 acceleration.Y = -50f;
+            }
+
+            if(Position.Y < -25f)
+            {
+                Game.Respawn();
             }
             
 

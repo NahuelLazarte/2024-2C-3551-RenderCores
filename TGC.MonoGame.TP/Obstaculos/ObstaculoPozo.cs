@@ -37,31 +37,7 @@ namespace TGC.MonoGame.TP.ObstaculoPozo
 
         public void IniciarColliders()
         {
-            //Colliders = new BoundingBox[_pozos.Count];
-
-            /*
-            // Define factores de escala para cada eje
-            float scaleX = 1500f; // Ajusta este valor para el eje X
-            float scaleY = 1.0f; // Ajusta este valor para el eje Y
-            float scaleZ = 600f; // Ajusta este valor para el eje Z
-
-            for (int i = 0; i < _pozos.Count; i++) {
-                // Crear el collider original
-                Colliders[i] = BoundingVolumesExtensions.FromMatrix(_pozos[i]);
-
-                // Aplicar la escala al BoundingBox
-                Vector3 center = (Colliders[i].Min + Colliders[i].Max) / 2;
-                Vector3 size = Colliders[i].Max - Colliders[i].Min;
-
-                // Escalar el tamaño en cada eje
-                size.X *= scaleX;
-                size.Y *= scaleY;
-                size.Z *= scaleZ;
-
-                // Crear un nuevo BoundingBox escalado
-                Colliders[i] = new BoundingBox(center - size / 2, center + size / 2);
-            }
-            */
+            
         }
 
 
@@ -84,19 +60,11 @@ namespace TGC.MonoGame.TP.ObstaculoPozo
         public void Update(GameTime gameTime, TGCGame Game)
         {
             for (int i = 0; i < _pozos.Count; i++) {
-                var originalPosition = _pozos[i].Translation; // Obtener la posición original            
-           // Comprobar colisión
-            var piedrasBoundingSphere = new BoundingSphere(originalPosition, scale.Translation.X); // Ajustar el tamaño de la esfera de colisión según sea necesario
-            if (_envolturaEsfera.Intersects(piedrasBoundingSphere)) { //Colliders[i]
-                // Acción al tocar el modelo
-                Console.WriteLine($"¡Colisión con piedras en la posición {originalPosition}!");
-                // Aquí puedes realizar la acción que desees, como eliminar el pez, reducir vida, etc.
-                //MediaPlayer.Play(CollisionSound);
-                //_obstaculosPiedras.RemoveAt(i);
+                if (_envolturaEsfera.Intersects(Colliders[i])){
+                    Game.Respawn();
+                }
+                       
 
-                Game.Respawn();
-                
-            }
             }
         }
 
@@ -137,33 +105,20 @@ namespace TGC.MonoGame.TP.ObstaculoPozo
             return desplazamientoEnEjes;
         }
 
-        /*
-        public void agregarNuevaPista(float Rotacion, Vector3 Posicion) {
-            _pozos.Add(Matrix.CreateRotationY(Rotacion) * Matrix.CreateTranslation(Posicion) * scale); // METER MATRIZ DENTRO DE CADA PISTA
-            
-            BoundingBox box = new BoundingBox(size.Min * escala + Posicion, size.Max * escala + Posicion);
-            Colliders.Add(box);
-            Console.WriteLine($"Box min= {box.Min}  Box max= {box.Max} ");
-        }*/
+        
         public void agregarNuevoPozo(float Rotacion, Vector3 Posicion)
         {
             Posicion += Vector3.Transform(new Vector3(0,-15,0), Matrix.CreateRotationY(Rotacion));
-            // Crear la matriz de transformación completa
+
             Matrix transform = Matrix.CreateRotationY(Rotacion) *  Matrix.CreateTranslation(Posicion) *Matrix.CreateScale(escala);
 
-            // Agregar la matriz de transformación a la lista de pistas
             _pozos.Add(transform);
 
-            // Transformar los puntos mínimos y máximos del BoundingBox original
             Vector3 transformedMin = Vector3.Transform(size.Min, transform);
             Vector3 transformedMax = Vector3.Transform(size.Max, transform);
 
-            // Crear y agregar el nuevo BoundingBox transformado a la lista de colliders
             BoundingBox box = new BoundingBox(transformedMin, transformedMax);
             Colliders.Add(box);
-
-            // Imprimir los valores del BoundingBox para depuración
-            Console.WriteLine($"Box min= {box.Min}  Box max= {box.Max} ");
         }
 
     }

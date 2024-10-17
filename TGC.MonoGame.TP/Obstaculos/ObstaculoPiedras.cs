@@ -19,11 +19,12 @@ namespace TGC.MonoGame.TP.ObstaculoPiedras{
         public Effect Effect { get; set; }
         public Matrix scale = Matrix.CreateScale(1f);
         public Model ModeloPez { get; set; }
-        public BoundingBox[] Colliders { get; set; }
+        public List<BoundingBox> Colliders { get; set; }
         private float Rotation { get; set; }
         private List<Matrix> _obstaculosPiedras { get; set; }
         public BoundingSphere _envolturaEsfera{ get; set; }
         public Song CollisionSound { get; set; }
+        BoundingBox size;
 
         public ObstaculosPiedras() {
             Initialize();
@@ -31,14 +32,10 @@ namespace TGC.MonoGame.TP.ObstaculoPiedras{
 
         private void Initialize() {
             _obstaculosPiedras = new List<Matrix>();
+            Colliders = new List<BoundingBox>();
         }
 
         public void IniciarColliders() {
-            Colliders = new BoundingBox[_obstaculosPiedras.Count];
-
-            for (int i = 0; i < _obstaculosPiedras.Count; i++) {
-                Colliders[i] = BoundingVolumesExtensions.FromMatrix(_obstaculosPiedras[i]);
-            }
             
         }
 
@@ -53,28 +50,20 @@ namespace TGC.MonoGame.TP.ObstaculoPiedras{
             }
 
             CollisionSound = Content.Load<Song>("Audio/ColisionPez"); // Ajusta la ruta según sea necesario
+            size = BoundingVolumesExtensions.CreateAABBFrom(ModeloPez);
 
-
-            Console.WriteLine(ModeloPez != null ? "Modelo cargado exitosamente" : "Error al cargar el modelo");
 
         }
 
         public void Update(GameTime gameTime, TGCGame Game) {
-            
+          
             for (int i = 0; i < _obstaculosPiedras.Count; i++) {
-                var originalPosition = _obstaculosPiedras[i].Translation; // Obtener la posición original            
-           // Comprobar colisión
-            var piedrasBoundingSphere = new BoundingSphere(originalPosition, scale.Translation.X); // Ajustar el tamaño de la esfera de colisión según sea necesario
-            if (_envolturaEsfera.Intersects(piedrasBoundingSphere)) {
-                // Acción al tocar el modelo
-                Console.WriteLine($"¡Colisión con piedras en la posición {originalPosition}!");
-                // Aquí puedes realizar la acción que desees, como eliminar el pez, reducir vida, etc.
-                MediaPlayer.Play(CollisionSound);
-                //_obstaculosPiedras.RemoveAt(i);
-
-                Game.Respawn();
-                
-            }
+                if (_envolturaEsfera.Intersects(Colliders[i])) {
+                    // Acción al tocar el modelo
+                    MediaPlayer.Play(CollisionSound);
+                    //_obstaculosPiedras.RemoveAt(i);
+                    Game.Respawn();
+                }
             }
 
         }
@@ -98,11 +87,17 @@ namespace TGC.MonoGame.TP.ObstaculoPiedras{
             }
         }
 
-
         public void AgregarNuevoObstaculo(float Rotacion, Vector3 Posicion) {
             var transform = Matrix.CreateRotationY(Rotacion) * Matrix.CreateTranslation(Posicion) * scale ; 
-            _obstaculosPiedras.Add(transform); 
-            Console.WriteLine($"Drawing fish at position {Posicion}");
+            _obstaculosPiedras.Add(transform);
+
+            Vector3 transformedMin = Vector3.Transform(size.Min, transform);
+            Vector3 transformedMax = Vector3.Transform(size.Max, transform);
+
+            BoundingBox box = new BoundingBox(size.Min  + Posicion , size.Max + Posicion );
+
+            Colliders.Add(box);
+            
         }
 
     }

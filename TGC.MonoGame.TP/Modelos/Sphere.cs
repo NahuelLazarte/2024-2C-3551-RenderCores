@@ -49,7 +49,7 @@ namespace TGC.MonoGame.TP.Modelos
             boundingSphere = BoundingVolumesExtensions.CreateSphereFrom(Model3D);
 
             boundingSphere.Center = Position;
-            boundingSphere.Radius *= 0.007f;
+            boundingSphere.Radius *= 0.0059f;
         }
         public Sphere(Vector3 position, Matrix rotation, Color color)
             : base(position, rotation, color)

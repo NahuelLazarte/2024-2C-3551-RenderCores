@@ -81,7 +81,7 @@ namespace TGC.MonoGame.TP.PistaRecta
 
             Effect.Parameters["View"].SetValue(view);
             Effect.Parameters["Projection"].SetValue(projection);
-            Effect.Parameters["DiffuseColor"].SetValue(Color.DarkBlue.ToVector3());
+            Effect.Parameters["DiffuseColor"].SetValue(new Vector3(0.2f, 0.2f, 0.2f));
 
             // Dibujar las pistas
             foreach (var mesh in ModeloPistaRecta.Meshes)

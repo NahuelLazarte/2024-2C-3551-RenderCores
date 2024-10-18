@@ -7,19 +7,11 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using TGC.MonoGame.TP.Objects;
 
-using TGC.MonoGame.TP.PistaCurvaDerecha;
-using TGC.MonoGame.TP.PistaCurvaIzquierda;
-using TGC.MonoGame.TP.PistaRecta;
-
-using TGC.MonoGame.TP.PowerUpHamburguesa;
-
-using TGC.MonoGame.TP.ObstaculoPiedras;
-using TGC.MonoGame.TP.ObstaculoPozo;
-using TGC.MonoGame.TP.CheckPoint;
-
 using TGC.MonoGame.TP.Modelos;
 
 using TGC.MonoGame.TP.Fondo;
+using TGC.MonoGame.TP.MaterialesJuego;
+using TGC.MonoGame.TP.Constructor;
 
 
 using Vector3 = Microsoft.Xna.Framework.Vector3;
@@ -52,22 +44,15 @@ namespace TGC.MonoGame.TP
         private FollowCamera Camera { get; set; }
         private TGC.MonoGame.TP.Objects.Sphere sphere { get; set; }
         private Gizmos.Gizmos Gizmos;
-        private PistasCurvasIzquierdas _pistasCurvasIzquierdas { get; set; }
-        private PistasCurvasDerechas _pistasCurvasDerechas { get; set; }
-        private PistasRectas _pistasRectas { get; set; }
-        private PowerUpHamburguesas _hamburguesas { get; set; }
-        private CheckPoints _checkPoints { get; set; }
-        private ObstaculosPiedras _piedras { get; set; }
-        private ObstaculosPozos _pozos { get; set; }
-        private Vector3 posicionActual { get; set; }
-        private SkyBox SkyBox { get; set; }
-        float rotacionActual = 0f;
+        
+        
 
-        Vector3 posicionCheckPoint;
+        
         Modelos.Sphere esfera;
         LineDrawer lineDrawer;
-
-        Pista pistaPrueba;
+        private SkyBox SkyBox { get; set; }
+        private Materiales _materiales { get; set; }
+        private ConstructorMateriales _constructorMateriales { get; set; }   
 
 
         public TGCGame()
@@ -80,17 +65,7 @@ namespace TGC.MonoGame.TP
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
 
-            _pistasCurvasDerechas = new PistasCurvasDerechas();
-            _pistasCurvasIzquierdas = new PistasCurvasIzquierdas();
-            _pistasRectas = new PistasRectas();
-
-            _hamburguesas = new PowerUpHamburguesas();
-
-            _piedras = new ObstaculosPiedras();
-
-            _pozos = new ObstaculosPozos();
-
-            _checkPoints = new CheckPoints();
+            
         }
 
         protected override void Initialize()
@@ -101,88 +76,25 @@ namespace TGC.MonoGame.TP
             sphere.SphereCamera = Camera;
             Gizmos = new Gizmos.Gizmos();
 
-            _pistasCurvasIzquierdas.LoadContent(Content);
-            _pistasCurvasDerechas.LoadContent(Content);
-            _pistasRectas.LoadContent(Content);
+            
 
-            _hamburguesas.LoadContent(Content);
-
-            _piedras.LoadContent(Content);
-
-            _pozos.LoadContent(Content);
-
-            _checkPoints.LoadContent(Content);
-
-            posicionActual = new Vector3(0f, 0f, 0f);
-            posicionCheckPoint = new Vector3(0f, 4f, 0f);
-
-
-
-
-            AgregarPistaRecta(_pistasRectas);//CAMBIAR POR UN METODO UNICO, PARCHE
-            AgregarPozo(_pozos);
-            AgregarPistaRecta(_pistasRectas);//CAMBIAR POR UN METODO UNICO, PARCHE
-            AgregarPowerUpHamburguesa(_hamburguesas);
-            AgregarPistaRecta(_pistasRectas);//CAMBIAR POR UN METODO UNICO, PARCHE
-            AgregarPistaRecta(_pistasRectas);
-            AgregarPowerUpHamburguesa(_hamburguesas);
-            AgregarPistaCurvaDerecha(_pistasCurvasDerechas);
-            AgregarPistaRecta(_pistasRectas);//CAMBIAR POR UN METODO UNICO, PARCHE
-            AgregarPistaRecta(_pistasRectas);//CAMBIAR POR UN METODO UNICO, PARCHE
-            AgregarPowerUpHamburguesa(_hamburguesas);
-            AgregarPistaCurvaDerecha(_pistasCurvasDerechas);//CAMBIAR POR UN METODO UNICO, PARCHE
-            AgregarPistaRecta(_pistasRectas);//CAMBIAR POR UN METODO UNICO, PARCHE
-            AgregarPistaCurvaIzquierda(_pistasCurvasIzquierdas);
-            AgregarObstaculoPiedra(_piedras);
-            AgregarPistaRecta(_pistasRectas);//CAMBIAR POR UN METODO UNICO, PARCHE
-            AgregarPistaRecta(_pistasRectas);//CAMBIAR POR UN METODO UNICO, PARCHE
-            AgregarObstaculoPiedra(_piedras);
-            AgregarPistaRecta(_pistasRectas);//CAMBIAR POR UN METODO UNICO, PARCHE
-            AgregarPowerUpHamburguesa(_hamburguesas);
-            AgregarPistaRecta(_pistasRectas);//CAMBIAR POR UN METODO UNICO, PARCHE
-            AgregarPistaRecta(_pistasRectas);//CAMBIAR POR UN METODO UNICO, PARCHE
-            AgregarPistaRecta(_pistasRectas);//CAMBIAR POR UN METODO UNICO, PARCHE
-            AgregarCheckPoint(_checkPoints);
-            AgregarPistaRecta(_pistasRectas);//CAMBIAR POR UN METODO UNICO, PARCHE
-            AgregarPistaRecta(_pistasRectas);//CAMBIAR POR UN METODO UNICO, PARCHE
-            AgregarPistaRecta(_pistasRectas);//CAMBIAR POR UN METODO UNICO, PARCHE
-            AgregarPistaCurvaDerecha(_pistasCurvasDerechas);
-            AgregarPistaRecta(_pistasRectas);
-            AgregarPistaRecta(_pistasRectas);//CAMBIAR POR UN METODO UNICO, PARCHE
-            AgregarPowerUpHamburguesa(_hamburguesas);
-            AgregarPistaRecta(_pistasRectas);//CAMBIAR POR UN METODO UNICO, PARCHE
-            AgregarObstaculoPiedra(_piedras);
-            AgregarPistaRecta(_pistasRectas);//CAMBIAR POR UN METODO UNICO, PARCHE
-            AgregarPowerUpHamburguesa(_hamburguesas);
-            AgregarPistaRecta(_pistasRectas);
-            AgregarPistaRecta(_pistasRectas);//CAMBIAR POR UN METODO UNICO, PARCHE
-            AgregarPistaCurvaDerecha(_pistasCurvasDerechas);
-            AgregarPistaRecta(_pistasRectas);//CAMBIAR POR UN METODO UNICO, PARCHE
-            AgregarPistaRecta(_pistasRectas);//CAMBIAR POR UN METODO UNICO, PARCHE
-            AgregarPistaRecta(_pistasRectas);
-            AgregarPozo(_pozos);
-            AgregarPistaRecta(_pistasRectas);//CAMBIAR POR UN METODO UNICO, PARCHE
-            AgregarPistaRecta(_pistasRectas);//CAMBIAR POR UN METODO UNICO, PARCHE
-            AgregarPowerUpHamburguesa(_hamburguesas);
-            AgregarPistaRecta(_pistasRectas);//CAMBIAR POR UN METODO UNICO, PARCHE
-            AgregarPistaRecta(_pistasRectas);
-
-
-            _hamburguesas.IniciarColliders();
-            _piedras.IniciarColliders();
-            _checkPoints.IniciarColliders();
-            _pozos.IniciarColliders();
-            //sphere.Colliders = CombineColliders(_pistasRectas.Colliders, _pistasCurvasDerechas.Colliders, _pistasCurvasIzquierdas.Colliders);
-
-            // Crear una matriz de rotación con rotación 0
+            
+            
             Matrix rotation = Matrix.Identity;
-
 
             esfera = new Modelos.Sphere(new Vector3(0.0f, 10.0f, 0.0f), rotation, Color.Yellow);
             esfera.Game = this;
-            pistaPrueba = new Pista(new Vector3(50.0f, 4.0f, 0.0f), rotation, Color.White);
+            //pistaPrueba = new Pista(new Vector3(50.0f, 4.0f, 0.0f), rotation, Color.White);
 
             lineDrawer = new LineDrawer(GraphicsDevice);
+
+            BoundingSphere boundingSphere = esfera.GetBoundingSphere();
+
+            _materiales = new Materiales(Content);
+            _constructorMateriales = new ConstructorMateriales();
+            _constructorMateriales.CargarElementos(_materiales);
+            _materiales.DarCollidersEsfera(esfera);
+           
 
             base.Initialize();
         }
@@ -198,10 +110,7 @@ namespace TGC.MonoGame.TP
 
             Gizmos.LoadContent(GraphicsDevice, Content);//Gizmos.LoadContent(GraphicsDevice, new ContentManager(Content.ServiceProvider, "Content"));
 
-
-            esfera.LoadContent(Content);
-            pistaPrueba.LoadContent(Content);
-
+            esfera.LoadContent(Content);        
 
             base.LoadContent();
         }
@@ -217,17 +126,7 @@ namespace TGC.MonoGame.TP
 
             //sphere.Update(gameTime);
 
-            _pistasCurvasDerechas.Update(gameTime);
-            _pistasCurvasIzquierdas.Update(gameTime);
-            _pistasRectas.Update(gameTime);
-
-            _hamburguesas.Update(gameTime, this);
-
-            _piedras.Update(gameTime, this);
-
-            _checkPoints.Update(gameTime, this);
-
-            _pozos.Update(gameTime, this);
+            _materiales.Update(gameTime, this);
 
             Gizmos.UpdateViewProjection(Camera.ViewMatrix, Camera.ProjectionMatrix);
 
@@ -236,6 +135,11 @@ namespace TGC.MonoGame.TP
             esfera.Update(gameTime);
 
             esfera.setDirection(Camera.GetDirection());
+            
+            BoundingSphere boundingSphere = esfera.GetBoundingSphere();
+
+            _materiales.ColliderEsfera(boundingSphere);
+
 
             base.Update(gameTime);
         }
@@ -251,82 +155,16 @@ namespace TGC.MonoGame.TP
             GraphicsDevice.RasterizerState = rasterizerState;
 
             SkyBox.Draw(Camera.ViewMatrix, Camera.ProjectionMatrix, Camera.position);
-            //sphere.Draw(gameTime, Camera.ViewMatrix, Camera.ProjectionMatrix);
 
-            //esfera.Draw(View,Projection);
-
-            pistaPrueba.Draw(Camera.ViewMatrix, Camera.ProjectionMatrix);
-
-            _pistasCurvasDerechas.Draw(gameTime, Camera.ViewMatrix, Camera.ProjectionMatrix);
-            _pistasCurvasIzquierdas.Draw(gameTime, Camera.ViewMatrix, Camera.ProjectionMatrix);
-            _pistasRectas.Draw(gameTime, Camera.ViewMatrix, Camera.ProjectionMatrix);
-
-            _hamburguesas.Draw(gameTime, Camera.ViewMatrix, Camera.ProjectionMatrix);
-
-            _piedras.Draw(gameTime, Camera.ViewMatrix, Camera.ProjectionMatrix);
-
-            _checkPoints.Draw(gameTime, Camera.ViewMatrix, Camera.ProjectionMatrix);
-
-            _pozos.Draw(gameTime, Camera.ViewMatrix, Camera.ProjectionMatrix);
-
-
-
-            /*
-            foreach (var posicion in Esferas)
-            {
-                Gizmos.DrawSphere(posicion, Vector3.One * 100, Color.Yellow);
-            }*/
-
-            List<BoundingBox> CollidersPistaRecta = _pistasRectas.Colliders;
-            List<BoundingBox> CollidersPistaCurvaDerecha = _pistasCurvasDerechas.Colliders;
-            List<BoundingBox> CollidersPistaCurvaIzquierda = _pistasCurvasIzquierdas.Colliders;
-            List<BoundingBox> CollidersPiedras = _piedras.Colliders;
-            List<BoundingBox> CollidersCheckpoints = _checkPoints.Colliders;
+            _materiales.Draw(gameTime, Camera.ViewMatrix, Camera.ProjectionMatrix);
 
             BoundingSphere boundingSphere = esfera.GetBoundingSphere();
-
-            _hamburguesas._envolturaEsfera = boundingSphere;
-            _piedras._envolturaEsfera = boundingSphere;
-            _pozos._envolturaEsfera = boundingSphere;
-            _checkPoints._envolturaEsfera = boundingSphere;
-
-
-
-            esfera.Colliders.AddRange(CollidersPistaRecta);
-            esfera.Colliders.AddRange(CollidersPistaCurvaDerecha);
-            esfera.Colliders.AddRange(CollidersPistaCurvaIzquierda);
-
-            foreach (var boundingBoxPista in CollidersPistaCurvaDerecha)
-            {
-                Gizmos.DrawCube((boundingBoxPista.Max + boundingBoxPista.Min) / 2f, boundingBoxPista.Max - boundingBoxPista.Min, Color.Green);
-            }
-
-            foreach (var boundingBoxPista in CollidersPistaCurvaIzquierda)
-            {
-                Gizmos.DrawCube((boundingBoxPista.Max + boundingBoxPista.Min) / 2f, boundingBoxPista.Max - boundingBoxPista.Min, Color.Green);
-            }
-
-            foreach (var boundingBoxPista in CollidersPistaRecta)
-            {
-                Gizmos.DrawCube((boundingBoxPista.Max + boundingBoxPista.Min) / 2f, boundingBoxPista.Max - boundingBoxPista.Min, Color.Green);
-            }
-
-            foreach (var boundingBoxPista in CollidersPiedras)
-            {
-                Gizmos.DrawCube((boundingBoxPista.Max + boundingBoxPista.Min) / 2f, boundingBoxPista.Max - boundingBoxPista.Min, Color.Green);
-            }
-
-            foreach (var boundingBoxPista in CollidersCheckpoints)
-            {
-                Gizmos.DrawCube((boundingBoxPista.Max + boundingBoxPista.Min) / 2f, boundingBoxPista.Max - boundingBoxPista.Min, Color.Green);
-            }
 
             Gizmos.DrawSphere(boundingSphere.Center, boundingSphere.Radius * Vector3.One, Color.White);
 
             Gizmos.Draw();
 
             esfera.Draw(Camera.ViewMatrix, Camera.ProjectionMatrix);
-
 
             Vector3 start = new Vector3(0, 0, 0);
             Vector3 endGreen = new Vector3(50, 0, 0);
@@ -345,133 +183,25 @@ namespace TGC.MonoGame.TP
             base.UnloadContent();
         }
 
-        /*
-        void AgregarPista<T>(T pista) where T : class
-        {
-            Vector3 desplazamiento = pista.Desplazamiento();
-            float rotacion = pista.Rotacion();
-            pista.agregarNuevaPista(rotacionActual, posicionActual);
-
-            rotacionActual += rotacion;
-            posicionActual += desplazamiento;
-        }
-        */
         private List<Vector3> Esferas = new();
 
-        void AgregarPistaRecta(PistasRectas unaPista)
-        {
-            Vector3 desplazamiento = unaPista.Desplazamiento();
-            float rotacion = unaPista.Rotacion();
-            unaPista.agregarNuevaPista(rotacionActual, posicionActual);
-            Console.WriteLine($"Pista Recta dibujada: Posicion en ejes: X = {posicionActual.X}, Y = {posicionActual.Y}, Z = {posicionActual.Z}");
-
-            rotacionActual += rotacion;
-            posicionActual += Vector3.Transform(desplazamiento, Matrix.CreateRotationY(rotacionActual));
-            Esferas.Add(posicionActual);
-        }
-
-        void AgregarPistaCurvaDerecha(PistasCurvasDerechas unaPista)
-        {
-            Vector3 desplazamiento = unaPista.Desplazamiento();
-
-            float rotacion = unaPista.Rotacion();
-
-            //posicionActual = new Vector3(posicionActual.X +300f, posicionActual.Y, posicionActual.Z + 500f);
-
-            //posicionActual = new Vector3(posicionActual.X, posicionActual.Y, posicionActual.Z);
-
-            unaPista.agregarNuevaPista(rotacionActual, posicionActual);
-            Console.WriteLine($"Pista Curva dibujada: Posicion en ejes: X = {posicionActual.X}, Y = {posicionActual.Y}, Z = {posicionActual.Z}");
-
-            rotacionActual += rotacion;
-            posicionActual += Vector3.Transform(desplazamiento, Matrix.CreateRotationY(rotacionActual));
-            Esferas.Add(posicionActual);
-        }
-
-        void AgregarPistaCurvaIzquierda(PistasCurvasIzquierdas unaPista)
-        {
-            Vector3 desplazamiento = unaPista.Desplazamiento();
-
-            float rotacion = unaPista.Rotacion();
-
-            //posicionActual = new Vector3(posicionActual.X +300f, posicionActual.Y, posicionActual.Z + 500f);
-
-            //posicionActual = new Vector3(posicionActual.X, posicionActual.Y, posicionActual.Z);
-
-            unaPista.agregarNuevaPista(rotacionActual, posicionActual);
-            Console.WriteLine($"Pista Curva dibujada: Posicion en ejes: X = {posicionActual.X}, Y = {posicionActual.Y}, Z = {posicionActual.Z}");
-
-            rotacionActual += rotacion;
-            posicionActual += Vector3.Transform(desplazamiento, Matrix.CreateRotationY(rotacionActual));
-            Esferas.Add(posicionActual);
-        }
-
-        void AgregarPozo(ObstaculosPozos unPozo)
-        {
-            Vector3 desplazamiento = unPozo.Desplazamiento() * 60f;
-
-            //posicionActual = new Vector3(posicionActual.X +300f, posicionActual.Y, posicionActual.Z + 500f);
-
-            //posicionActual = new Vector3(posicionActual.X, posicionActual.Y, posicionActual.Z);
-            Vector3 posicionObstaculo = new(posicionActual.X / 68f, posicionActual.Y / 70f, posicionActual.Z / 68f);
-
-            unPozo.agregarNuevoPozo(rotacionActual, posicionObstaculo);
-            Console.WriteLine($"Pista Curva dibujada: Posicion en ejes: X = {posicionActual.X}, Y = {posicionActual.Y}, Z = {posicionActual.Z}");
-
-            posicionActual += Vector3.Transform(desplazamiento, Matrix.CreateRotationY(rotacionActual));
-            Esferas.Add(posicionActual);
-        }
-        void AgregarPowerUpHamburguesa(PowerUpHamburguesas unPowerUp)
-        {
-            Vector3 posicionObstaculo = new(posicionActual.X / 167f, posicionActual.Y / 180f + 0.5f, posicionActual.Z / 167f);
-            unPowerUp.AgregarNuevoPowerUp(rotacionActual, posicionObstaculo);
-            Console.WriteLine($"Obstaculo Pez dibujado: Posicion en ejes: X = {posicionObstaculo.X}, Y = {posicionObstaculo.Y}, Z = {posicionObstaculo.Z}");
-            //Esferas.Add(posicionObstaculo);
-        }
-
-        void AgregarObstaculoPiedra(ObstaculosPiedras unObstaculo)
-        {
-            Vector3 posicionObstaculo = new(posicionActual.X / 38f, posicionActual.Y / 38f, posicionActual.Z / 33.5f);
-            unObstaculo.AgregarNuevoObstaculo(rotacionActual, posicionObstaculo);
-            Console.WriteLine($"Obstaculo Pez dibujado: Posicion en ejes: X = {posicionObstaculo.X}, Y = {posicionObstaculo.Y}, Z = {posicionObstaculo.Z}");
-            //Esferas.Add(posicionObstaculo);
-        }
-
-        void AgregarCheckPoint(CheckPoints unCheckPoint)
-        {
-            Vector3 posicionObstaculo = new(posicionActual.X / 170f, posicionActual.Y / 185f, posicionActual.Z / 170f);
-            unCheckPoint.AgregarNuevoCheckPoint(rotacionActual, posicionObstaculo);
-            Console.WriteLine($"Obstaculo Pez dibujado: Posicion en ejes: X = {posicionObstaculo.X}, Y = {posicionObstaculo.Y}, Z = {posicionObstaculo.Z}");
-            //Esferas.Add(posicionObstaculo);
-        }
-
+        
         public void Respawn()
         {
-            esfera.RespawnAt(posicionCheckPoint);
+            esfera.RespawnAt(_constructorMateriales.posicionCheckPoint);
             // Camera = new FollowCamera(GraphicsDevice, new Vector3(0, 5, 15), Vector3.Zero, Vector3.Up);No funciona
         }
 
         public void nuevoCheckPoint(Vector3 posicion)
         {
-            posicionCheckPoint = new Vector3(posicion.X, posicion.Y +2f, posicion.Z) ;
-            // Camera = new FollowCamera(GraphicsDevice, new Vector3(0, 5, 15), Vector3.Zero, Vector3.Up);No funciona
+            _constructorMateriales.posicionCheckPoint = new Vector3(posicion.X, posicion.Y +2f, posicion.Z) ;
         }
+
 
 
         public void recibirPowerUpPez()
         {
             esfera.aumentarVelocidad(1.5f);
-        }
-
-        private BoundingBox[] CombineColliders(BoundingBox[] rectas, BoundingBox[] curvasDerechas, BoundingBox[] curvasIzquierdas)
-        {
-            var combined = new BoundingBox[curvasDerechas.Length + curvasIzquierdas.Length + rectas.Length];
-
-            rectas.CopyTo(combined, 0);
-            curvasDerechas.CopyTo(combined, rectas.Length);
-            curvasIzquierdas.CopyTo(combined, rectas.Length + curvasDerechas.Length);
-
-            return combined;
         }
 
     }

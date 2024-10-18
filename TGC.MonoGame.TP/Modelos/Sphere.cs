@@ -146,7 +146,7 @@ namespace TGC.MonoGame.TP.Modelos
             }
 
             for(int i = 0; i < Colliders.Count; i++) {
-                if(Position.Y <= 2.5f && !boundingSphere.Intersects(Colliders[i]))
+                if(Position.Y <= -50f && !boundingSphere.Intersects(Colliders[i]))
                 {
                     Game.Respawn();
                 }

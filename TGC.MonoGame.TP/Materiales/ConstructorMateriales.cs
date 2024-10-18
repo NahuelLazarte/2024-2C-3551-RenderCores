@@ -25,6 +25,7 @@ namespace TGC.MonoGame.TP.Constructor{
         private Vector3 posicionActual { get; set; }
         public Vector3 posicionCheckPoint;
         float rotacionActual = 0f;
+
         public ConstructorMateriales()
         {
 
@@ -38,61 +39,65 @@ namespace TGC.MonoGame.TP.Constructor{
 
         public void CargarElementos(Materiales _materiales) {
 
-            AgregarPistaRecta(_materiales._pistasRectas);
+            AgregarPistaRecta(_materiales._pistasRectas, _materiales);
             AgregarPozo(_materiales._pozos);
-            AgregarPistaRecta(_materiales._pistasRectas);
+            AgregarPistaRecta(_materiales._pistasRectas, _materiales);
             AgregarPowerUpHamburguesa(_materiales._hamburguesas);
-            AgregarPistaRecta(_materiales._pistasRectas);
-            AgregarPistaRecta(_materiales._pistasRectas);
-            AgregarPowerUpHamburguesa(_materiales._hamburguesas);
-            AgregarPistaCurvaDerecha(_materiales._pistasCurvasDerechas);
-            AgregarPistaRecta(_materiales._pistasRectas);
-            AgregarPistaRecta(_materiales._pistasRectas);
+            AgregarPistaRecta(_materiales._pistasRectas, _materiales); 
+            AgregarPistaRecta(_materiales._pistasRectas, _materiales);
             AgregarPowerUpHamburguesa(_materiales._hamburguesas);
             AgregarPistaCurvaDerecha(_materiales._pistasCurvasDerechas);
-            AgregarPistaRecta(_materiales._pistasRectas);
+            AgregarPistaRecta(_materiales._pistasRectas, _materiales);
+            AgregarPistaRecta(_materiales._pistasRectas, _materiales);
+            AgregarPowerUpHamburguesa(_materiales._hamburguesas);
+            AgregarPistaCurvaDerecha(_materiales._pistasCurvasDerechas);
+            AgregarPistaRecta(_materiales._pistasRectas, _materiales);
+            AgregarPistaRecta(_materiales._pistasRectas, _materiales);
             AgregarPistaCurvaIzquierda(_materiales._pistasCurvasIzquierdas);
             AgregarObstaculoPiedra(_materiales._piedras);
-            AgregarPistaRecta(_materiales._pistasRectas);
-            AgregarPistaRecta(_materiales._pistasRectas);
+            AgregarPistaRecta(_materiales._pistasRectas, _materiales);
+            AgregarPistaRecta(_materiales._pistasRectas, _materiales);
             AgregarObstaculoPiedra(_materiales._piedras);
-            AgregarPistaRecta(_materiales._pistasRectas);
+            AgregarPistaRecta(_materiales._pistasRectas, _materiales);
+            AgregarPistaRecta(_materiales._pistasRectas, _materiales);
             AgregarPowerUpHamburguesa(_materiales._hamburguesas);
-            AgregarPistaRecta(_materiales._pistasRectas);
-            AgregarPistaRecta(_materiales._pistasRectas);
-            AgregarPistaRecta(_materiales._pistasRectas);
+            AgregarPistaRecta(_materiales._pistasRectas, _materiales);
+            AgregarPistaRecta(_materiales._pistasRectas, _materiales);
+            AgregarPistaRecta(_materiales._pistasRectas, _materiales);
+            
             AgregarCheckPoint(_materiales._checkPoints);
-            AgregarPistaRecta(_materiales._pistasRectas);
-            AgregarPistaRecta(_materiales._pistasRectas);
-            AgregarPistaRecta(_materiales._pistasRectas);
+            AgregarPistaRecta(_materiales._pistasRectas, _materiales);
+            AgregarPistaRecta(_materiales._pistasRectas, _materiales);
+            AgregarPistaRecta(_materiales._pistasRectas, _materiales);
+            
             AgregarPistaCurvaDerecha(_materiales._pistasCurvasDerechas);
-            AgregarPistaRecta(_materiales._pistasRectas);
-            AgregarPistaRecta(_materiales._pistasRectas);
+            AgregarPistaRecta(_materiales._pistasRectas, _materiales);
+            AgregarPistaRecta(_materiales._pistasRectas, _materiales);
             AgregarPowerUpHamburguesa(_materiales._hamburguesas);
-            AgregarPistaRecta(_materiales._pistasRectas);
-            AgregarObstaculoPiedra(_materiales._piedras);
-            AgregarPistaRecta(_materiales._pistasRectas);
+            AgregarPistaRecta(_materiales._pistasRectas, _materiales);
+             AgregarObstaculoPiedra(_materiales._piedras);
+            AgregarPistaRecta(_materiales._pistasRectas, _materiales);
+             
             AgregarPowerUpHamburguesa(_materiales._hamburguesas);
-            AgregarPistaRecta(_materiales._pistasRectas);
-            AgregarPistaRecta(_materiales._pistasRectas);
+            AgregarPistaRecta(_materiales._pistasRectas, _materiales);
+            AgregarPistaRecta(_materiales._pistasRectas, _materiales);
             AgregarPistaCurvaDerecha(_materiales._pistasCurvasDerechas);
-            AgregarPistaRecta(_materiales._pistasRectas);
-            AgregarPistaRecta(_materiales._pistasRectas);
-            AgregarPistaRecta(_materiales._pistasRectas);
+            AgregarPistaRecta(_materiales._pistasRectas, _materiales);
+            AgregarPistaRecta(_materiales._pistasRectas, _materiales);
             AgregarPozo(_materiales._pozos);
-            AgregarPistaRecta(_materiales._pistasRectas);
-            AgregarPistaRecta(_materiales._pistasRectas);
+            AgregarPistaRecta(_materiales._pistasRectas, _materiales);
+            AgregarPistaRecta(_materiales._pistasRectas, _materiales);
             AgregarPowerUpHamburguesa(_materiales._hamburguesas);
-            AgregarPistaRecta(_materiales._pistasRectas);
-            AgregarPistaRecta(_materiales._pistasRectas);
+            AgregarPistaRecta(_materiales._pistasRectas, _materiales);
+            AgregarPistaRecta(_materiales._pistasRectas, _materiales);
 
         }
 
-        void AgregarPistaRecta(PistasRectas unaPista)
+        void AgregarPistaRecta(PistasRectas unaPista, Materiales _materialesAux)
         {
             Vector3 desplazamiento = unaPista.Desplazamiento();
             float rotacion = unaPista.Rotacion();
-            unaPista.agregarNuevaPista(rotacionActual, posicionActual);
+            unaPista.agregarNuevaPista(rotacionActual, posicionActual, _materialesAux);
             //Console.WriteLine($"Pista Recta dibujada: Posicion en ejes: X = {posicionActual.X}, Y = {posicionActual.Y}, Z = {posicionActual.Z}");
 
             rotacionActual += rotacion;

@@ -13,7 +13,6 @@ using TGC.MonoGame.TP.Fondo;
 using TGC.MonoGame.TP.MaterialesJuego;
 using TGC.MonoGame.TP.Constructor;
 
-
 using Vector3 = Microsoft.Xna.Framework.Vector3;
 using System.Net.Http.Headers;
 using TGC.MonoGame.TP.Collisions;
@@ -72,25 +71,18 @@ namespace TGC.MonoGame.TP
         {
             Camera = new FollowCamera(GraphicsDevice, new Vector3(0, 5, 15), Vector3.Zero, Vector3.Up);
 
-            sphere = new TGC.MonoGame.TP.Objects.Sphere(new Vector3(0f, 30f, 0f));
-            sphere.SphereCamera = Camera;
             Gizmos = new Gizmos.Gizmos();
 
-            
-
-            
-            
             Matrix rotation = Matrix.Identity;
 
             esfera = new Modelos.Sphere(new Vector3(0.0f, 10.0f, 0.0f), rotation, Color.Yellow);
             esfera.Game = this;
-            //pistaPrueba = new Pista(new Vector3(50.0f, 4.0f, 0.0f), rotation, Color.White);
 
             lineDrawer = new LineDrawer(GraphicsDevice);
 
             BoundingSphere boundingSphere = esfera.GetBoundingSphere();
 
-            _materiales = new Materiales(Content);
+            _materiales = new Materiales(Content, GraphicsDevice);
             _constructorMateriales = new ConstructorMateriales();
             _constructorMateriales.CargarElementos(_materiales);
             _materiales.DarCollidersEsfera(esfera);
@@ -101,14 +93,13 @@ namespace TGC.MonoGame.TP
 
         protected override void LoadContent()
         {
-            sphere.LoadContent(Content);
 
             var skyBox = Content.Load<Model>("Models/skybox/cube");
             var skyBoxTexture = Content.Load<TextureCube>(ContentFolderTextures + "/skybox/skybox");
             var skyBoxEffect = Content.Load<Effect>(ContentFolderEffects + "SkyBox");
             SkyBox = new SkyBox(skyBox, skyBoxTexture, skyBoxEffect, 500);
 
-            Gizmos.LoadContent(GraphicsDevice, Content);//Gizmos.LoadContent(GraphicsDevice, new ContentManager(Content.ServiceProvider, "Content"));
+            Gizmos.LoadContent(GraphicsDevice, Content);
 
             esfera.LoadContent(Content);        
 
@@ -124,9 +115,12 @@ namespace TGC.MonoGame.TP
                 Exit();
             }
 
-            //sphere.Update(gameTime);
 
-            _materiales.Update(gameTime, this);
+            _materiales.Update(gameTime, this, Camera.ViewMatrix, Camera.ProjectionMatrix);
+
+            BoundingSphere boundingSphere = esfera.GetBoundingSphere();
+
+            _materiales.ColliderEsfera(boundingSphere);
 
             Gizmos.UpdateViewProjection(Camera.ViewMatrix, Camera.ProjectionMatrix);
 
@@ -136,9 +130,7 @@ namespace TGC.MonoGame.TP
 
             esfera.setDirection(Camera.GetDirection());
             
-            BoundingSphere boundingSphere = esfera.GetBoundingSphere();
-
-            _materiales.ColliderEsfera(boundingSphere);
+            
 
 
             base.Update(gameTime);

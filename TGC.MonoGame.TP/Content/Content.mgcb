@@ -898,6 +898,20 @@
 /processorParam:TextureFormat=Compressed
 /build:Models/Spheres/wave_A.fbx
 
+#begin SpriteFonts/CascadiaCodePL.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:SpriteFonts/CascadiaCodePL.spritefont
+
+#begin SpriteFonts/CascadiaMonoPL.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:SpriteFonts/CascadiaMonoPL.spritefont
+
 #begin Textures/skybox/skybox.dds
 /importer:TextureImporter
 /processor:TextureProcessor

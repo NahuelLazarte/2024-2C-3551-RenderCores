@@ -5,18 +5,15 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Vector3 = Microsoft.Xna.Framework.Vector3;
+using System.Net.Http.Headers;
 using TGC.MonoGame.TP.Objects;
-
 using TGC.MonoGame.TP.Modelos;
-
 using TGC.MonoGame.TP.Fondo;
 using TGC.MonoGame.TP.MaterialesJuego;
 using TGC.MonoGame.TP.Constructor;
-
-using Vector3 = Microsoft.Xna.Framework.Vector3;
-using System.Net.Http.Headers;
 using TGC.MonoGame.TP.Collisions;
-
+using TGC.MonoGame.MenuPrincipal;
 
 namespace TGC.MonoGame.TP
 {
@@ -28,32 +25,29 @@ namespace TGC.MonoGame.TP
         public const string ContentFolderSounds = "Sounds/";
         public const string ContentFolderSpriteFonts = "SpriteFonts/";
         public const string ContentFolderTextures = "Textures/";
-
         private GraphicsDeviceManager Graphics { get; }
         private SpriteBatch SpriteBatch { get; set; }
+        
         private Model Model { get; set; }
         private Effect Effect { get; set; }
-
         private Matrix World { get; set; }
         private Matrix View { get; set; }
         private Matrix Projection { get; set; }
         private VertexBuffer VertexBuffer { get; set; }
         private IndexBuffer IndexBuffer { get; set; }
-
         private FollowCamera Camera { get; set; }
         private TGC.MonoGame.TP.Objects.Sphere sphere { get; set; }
         private Gizmos.Gizmos Gizmos;
-        
-        
-
-        
         Modelos.Sphere esfera;
         LineDrawer lineDrawer;
         private SkyBox SkyBox { get; set; }
         private Materiales _materiales { get; set; }
-        private ConstructorMateriales _constructorMateriales { get; set; }   
-
-
+        private ConstructorMateriales _constructorMateriales { get; set; }
+        //   
+        private Menu menu;
+        public bool isMenuActive = true;
+        private SpriteFont menuFont; // Asegúrate de cargar una fuente para el menú
+        
         public TGCGame()
         {
             Graphics = new GraphicsDeviceManager(this);
@@ -63,20 +57,16 @@ namespace TGC.MonoGame.TP
 
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
-
-            
         }
 
         protected override void Initialize()
         {
             Camera = new FollowCamera(GraphicsDevice, new Vector3(0, 5, 15), Vector3.Zero, Vector3.Up);
-
             Gizmos = new Gizmos.Gizmos();
-
             Matrix rotation = Matrix.Identity;
-
             esfera = new Modelos.Sphere(new Vector3(0.0f, 10.0f, 0.0f), rotation, Color.Yellow);
             esfera.Game = this;
+            menu = new Menu();
 
             lineDrawer = new LineDrawer(GraphicsDevice);
 
@@ -93,16 +83,16 @@ namespace TGC.MonoGame.TP
 
         protected override void LoadContent()
         {
-
             var skyBox = Content.Load<Model>("Models/skybox/cube");
             var skyBoxTexture = Content.Load<TextureCube>(ContentFolderTextures + "/skybox/skybox");
             var skyBoxEffect = Content.Load<Effect>(ContentFolderEffects + "SkyBox");
+
+            SpriteBatch = new SpriteBatch(GraphicsDevice); // Inicializa SpriteBatch
+            menuFont = Content.Load<SpriteFont>(ContentFolderSpriteFonts + "CascadiaCodePl"); // Cambia "YourFont" por el nombre de tu fuente
+
             SkyBox = new SkyBox(skyBox, skyBoxTexture, skyBoxEffect, 500);
-
             Gizmos.LoadContent(GraphicsDevice, Content);
-
             esfera.LoadContent(Content);        
-
             base.LoadContent();
         }
 
@@ -110,29 +100,28 @@ namespace TGC.MonoGame.TP
         {
             var keyboardState = Keyboard.GetState();
 
-            if (keyboardState.IsKeyDown(Keys.Escape))
+            if (isMenuActive)
             {
-                Exit();
+                menu.Update(this);
             }
+            else {
 
+                
 
-            _materiales.Update(gameTime, this, Camera.ViewMatrix, Camera.ProjectionMatrix);
+                if (keyboardState.IsKeyDown(Keys.Escape))
+                {
+                    isMenuActive = true;
+                }
 
-            BoundingSphere boundingSphere = esfera.GetBoundingSphere();
-
-            _materiales.ColliderEsfera(boundingSphere);
-
-            Gizmos.UpdateViewProjection(Camera.ViewMatrix, Camera.ProjectionMatrix);
-
-            Camera.Update(esfera.GetPosition());
-
-            esfera.Update(gameTime);
-
-            esfera.setDirection(Camera.GetDirection());
+                _materiales.Update(gameTime, this, Camera.ViewMatrix, Camera.ProjectionMatrix);
+                BoundingSphere boundingSphere = esfera.GetBoundingSphere();
+                _materiales.ColliderEsfera(boundingSphere);
+                Gizmos.UpdateViewProjection(Camera.ViewMatrix, Camera.ProjectionMatrix);
+                Camera.Update(esfera.GetPosition());
+                esfera.Update(gameTime);
+                esfera.setDirection(Camera.GetDirection());
             
-            
-
-
+            }
             base.Update(gameTime);
         }
 
@@ -146,25 +135,34 @@ namespace TGC.MonoGame.TP
             };
             GraphicsDevice.RasterizerState = rasterizerState;
 
-            SkyBox.Draw(Camera.ViewMatrix, Camera.ProjectionMatrix, Camera.position);
+            if (isMenuActive)
+            {
+                menu.Draw(SpriteBatch, menuFont);
+            } else {
+                
 
-            _materiales.Draw(gameTime, Camera.ViewMatrix, Camera.ProjectionMatrix);
+                SkyBox.Draw(Camera.ViewMatrix, Camera.ProjectionMatrix, Camera.position);
 
-            BoundingSphere boundingSphere = esfera.GetBoundingSphere();
+                _materiales.Draw(gameTime, Camera.ViewMatrix, Camera.ProjectionMatrix);
 
-            Gizmos.DrawSphere(boundingSphere.Center, boundingSphere.Radius * Vector3.One, Color.White);
+                BoundingSphere boundingSphere = esfera.GetBoundingSphere();
 
-            Gizmos.Draw();
+                Gizmos.DrawSphere(boundingSphere.Center, boundingSphere.Radius * Vector3.One, Color.White);
 
-            esfera.Draw(Camera.ViewMatrix, Camera.ProjectionMatrix);
+                Gizmos.Draw();
 
-            Vector3 start = new Vector3(0, 0, 0);
-            Vector3 endGreen = new Vector3(50, 0, 0);
-            Vector3 endRed = new Vector3(0, 0, 50);
+                esfera.Draw(Camera.ViewMatrix, Camera.ProjectionMatrix);
 
-            lineDrawer.DrawLine(start, endGreen, Color.Green, Camera.ViewMatrix, Camera.ProjectionMatrix);
-            lineDrawer.DrawLine(start, endRed, Color.Red, Camera.ViewMatrix, Camera.ProjectionMatrix);
+                Vector3 start = new Vector3(0, 0, 0);
+                Vector3 endGreen = new Vector3(50, 0, 0);
+                Vector3 endRed = new Vector3(0, 0, 50);
 
+                lineDrawer.DrawLine(start, endGreen, Color.Green, Camera.ViewMatrix, Camera.ProjectionMatrix);
+                lineDrawer.DrawLine(start, endRed, Color.Red, Camera.ViewMatrix, Camera.ProjectionMatrix);
+
+                
+
+            }
             GraphicsDevice.RasterizerState = originalRasterizerState;
 
         }
@@ -176,20 +174,16 @@ namespace TGC.MonoGame.TP
         }
 
         private List<Vector3> Esferas = new();
-
         
         public void Respawn()
         {
             esfera.RespawnAt(_constructorMateriales.posicionCheckPoint);
             // Camera = new FollowCamera(GraphicsDevice, new Vector3(0, 5, 15), Vector3.Zero, Vector3.Up);No funciona
         }
-
         public void nuevoCheckPoint(Vector3 posicion)
         {
             _constructorMateriales.posicionCheckPoint = new Vector3(posicion.X, posicion.Y +2f, posicion.Z) ;
         }
-
-
 
         public void recibirPowerUpPez()
         {

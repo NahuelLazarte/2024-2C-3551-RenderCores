@@ -7,13 +7,13 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Vector3 = Microsoft.Xna.Framework.Vector3;
 using System.Net.Http.Headers;
-using TGC.MonoGame.TP.Objects;
 using TGC.MonoGame.TP.Modelos;
 using TGC.MonoGame.TP.Fondo;
 using TGC.MonoGame.TP.MaterialesJuego;
 using TGC.MonoGame.TP.Constructor;
 using TGC.MonoGame.TP.Collisions;
 using TGC.MonoGame.MenuPrincipal;
+using TGC.MonoGame.TP.Pelotas;
 
 namespace TGC.MonoGame.TP
 {
@@ -47,7 +47,7 @@ namespace TGC.MonoGame.TP
         private Menu menu;
         public bool isMenuActive = true;
         private SpriteFont menuFont; // Asegúrate de cargar una fuente para el menú
-        
+        //
         public TGCGame()
         {
             Graphics = new GraphicsDeviceManager(this);
@@ -64,8 +64,10 @@ namespace TGC.MonoGame.TP
             Camera = new FollowCamera(GraphicsDevice, new Vector3(0, 5, 15), Vector3.Zero, Vector3.Up);
             Gizmos = new Gizmos.Gizmos();
             Matrix rotation = Matrix.Identity;
-            esfera = new Modelos.Sphere(new Vector3(0.0f, 10.0f, 0.0f), rotation, Color.Yellow);
+            
+            esfera = new Modelos.Sphere(new Vector3(0.0f, 10.0f, 0.0f), rotation,new Vector3(0.5f, 0.5f, 0.5f));
             esfera.Game = this;
+
             menu = new Menu();
 
             lineDrawer = new LineDrawer(GraphicsDevice);
@@ -105,8 +107,6 @@ namespace TGC.MonoGame.TP
                 menu.Update(this);
             }
             else {
-
-                
 
                 if (keyboardState.IsKeyDown(Keys.Escape))
                 {

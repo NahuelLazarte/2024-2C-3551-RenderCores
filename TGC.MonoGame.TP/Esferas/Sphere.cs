@@ -6,17 +6,15 @@ using Microsoft.Xna.Framework.Input;
 using System.Collections.Generic;
 using TGC.MonoGame.TP;
 using TGC.MonoGame.TP.Collisions;
+using TGC.MonoGame.TP.Pelotas;
 
 namespace TGC.MonoGame.TP.Modelos
 {
     class Sphere : Modelo
     {
-        float LinearSpeed = 40f;
-        private float RotationSpeed = 20f;
+        public float escala;
         Vector3 _velocity;
-
-        float escala;
-
+        Pelota pelota;
         Vector3 direction;
 
         BoundingSphere boundingSphere;
@@ -41,6 +39,7 @@ namespace TGC.MonoGame.TP.Modelos
 
         public override void LoadContent(ContentManager content)
         {
+            pelota = new Pelota();
             Model3D = content.Load<Model>("Models/" + "Spheres/sphere");
             Effect = content.Load<Effect>("Effects/" + "BasicShader");
 
@@ -51,7 +50,7 @@ namespace TGC.MonoGame.TP.Modelos
             boundingSphere.Center = Position;
             boundingSphere.Radius *= 0.0059f;
         }
-        public Sphere(Vector3 position, Matrix rotation, Color color)
+        public Sphere(Vector3 position, Matrix rotation, Vector3 color)
             : base(position, rotation, color)
         {
             escala = 0.01f;
@@ -70,17 +69,17 @@ namespace TGC.MonoGame.TP.Modelos
             Vector3 acceleration = Vector3.Zero;
 
             bool accelerating = false;
-
+            
             if (keyboardState.IsKeyDown(Keys.W))
             {
-                acceleration += LinearSpeed * direction;
+                acceleration += pelota.LinearSpeed * direction;
                 accelerating = true;
                 ApplyRotation(elapsedTime, direction);
             }
 
             if (keyboardState.IsKeyDown(Keys.S))
             {
-                acceleration -= LinearSpeed * direction;
+                acceleration -= pelota.LinearSpeed * direction;
                 accelerating = true;
                 ApplyRotation(elapsedTime, -direction);
             }
@@ -88,7 +87,7 @@ namespace TGC.MonoGame.TP.Modelos
             if (keyboardState.IsKeyDown(Keys.D))
             {
                 Vector3 rightDirection = Vector3.Cross(direction, Vector3.Up);
-                acceleration += LinearSpeed * rightDirection;
+                acceleration += pelota.LinearSpeed * rightDirection;
                 accelerating = true;
                 ApplyRotation(elapsedTime, rightDirection);
             }
@@ -96,7 +95,7 @@ namespace TGC.MonoGame.TP.Modelos
             if (keyboardState.IsKeyDown(Keys.A))
             {
                 Vector3 leftDirection = Vector3.Cross(Vector3.Up, direction);
-                acceleration += LinearSpeed * leftDirection;
+                acceleration += pelota.LinearSpeed * leftDirection;
                 accelerating = true;
                 ApplyRotation(elapsedTime, leftDirection);
             }
@@ -168,10 +167,12 @@ namespace TGC.MonoGame.TP.Modelos
             World = Scale * Rotation * Matrix.CreateTranslation(Position);
 
             SolveVerticalMovement();
+
+            pelota.Update(gameTime, this);
         }
         private void ApplyRotation(float elapsedTime, Vector3 direction)
         {
-            float rotationAngle = RotationSpeed * elapsedTime;
+            float rotationAngle = pelota.RotationSpeed * elapsedTime;
             Matrix rotationMatrix = Matrix.CreateFromAxisAngle(Vector3.Cross(Vector3.Up, direction), rotationAngle);
             Rotation *= rotationMatrix;
         }

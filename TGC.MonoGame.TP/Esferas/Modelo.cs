@@ -6,13 +6,13 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace TGC.MonoGame.TP.Modelos
 {
-    abstract class Modelo
+    public abstract class Modelo
     {
         protected Model Model3D { get; set; } // variable del modelo
         protected Vector3 Position { get; set; } // posicion del modelo 
         protected Matrix Rotation { get; set; } // rotacion del modelo
         protected Matrix Scale { get; set; } // escala del modelo 
-        private Color Color { get; set; } // color del modelo
+        private Vector3 Color { get; set; } // color del modelo
         public Matrix World { get; set; }
         public Effect Effect { get; set; }
 
@@ -20,12 +20,13 @@ namespace TGC.MonoGame.TP.Modelos
         public void SetPosition(Vector3 newPosition) { Position = newPosition; }
         public void SetRotation(Matrix newRotation) { Rotation = newRotation; }
         public void SetScale(Matrix newScale) { Scale = newScale; }
-        public void SetColor(Color newColor) { Color = newColor; }
+        public void SetColor(Vector3 newColor) { Color = newColor; }
+
 
         public Vector3 GetPosition() { return Position; }
         public Matrix GetRotation() { return Rotation; }
         public Matrix GetScale() { return Scale; }
-        public Color GetColor() { return Color; }
+        public Vector3 GetColor() { return Color; }
 
         public virtual void LoadContent(ContentManager content)
         {
@@ -38,7 +39,7 @@ namespace TGC.MonoGame.TP.Modelos
             }
         }
 
-        public Modelo(Vector3 _position, Matrix _rotation, Color _color)
+        public Modelo(Vector3 _position, Matrix _rotation, Vector3 _color)
         {
             Color = _color;
             Position = _position;
@@ -54,7 +55,7 @@ namespace TGC.MonoGame.TP.Modelos
         {
             Effect.Parameters["View"].SetValue(view);
             Effect.Parameters["Projection"].SetValue(projection);
-            Effect.Parameters["DiffuseColor"].SetValue(Color.ToVector3());
+            Effect.Parameters["DiffuseColor"].SetValue(Color);
             foreach (var mesh in Model3D.Meshes)
             {
                 Effect.Parameters["World"].SetValue(mesh.ParentBone.Transform * World);

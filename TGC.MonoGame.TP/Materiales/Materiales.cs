@@ -105,7 +105,7 @@ namespace TGC.MonoGame.TP.MaterialesJuego
                 Gizmos.DrawCube((boundingBoxPista.Max + boundingBoxPista.Min) / 2f, boundingBoxPista.Max - boundingBoxPista.Min, Color.Green);
             }
 
-            // Gizmos.Draw(); // PARA DIBUJAR LOS CUBOS DE GIZMOS
+             Gizmos.Draw(); // PARA DIBUJAR LOS CUBOS DE GIZMOS
 
         }
 
@@ -123,7 +123,7 @@ namespace TGC.MonoGame.TP.MaterialesJuego
             List<BoundingBox> CollidersPistaCurvaIzquierda = _pistasCurvasIzquierdas.Colliders;
             List<BoundingBox> CollidersPiedras = _piedras.Colliders;
             List<BoundingBox> CollidersCheckpoints = _checkPoints.Colliders;
-            CollidersMuros = _muros.Colliders;
+            CollidersMuros = _pistasRectas.Colliders;
 
             esfera.Colliders.AddRange(CollidersPistaRecta);
             esfera.Colliders.AddRange(CollidersPistaCurvaDerecha);

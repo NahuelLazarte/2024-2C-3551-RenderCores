@@ -105,7 +105,7 @@ namespace TGC.MonoGame.TP.MaterialesJuego
                 Gizmos.DrawCube((boundingBoxPista.Max + boundingBoxPista.Min) / 2f, boundingBoxPista.Max - boundingBoxPista.Min, Color.Green);
             }
 
-            Gizmos.Draw();
+            // Gizmos.Draw(); // PARA DIBUJAR LOS CUBOS DE GIZMOS
 
         }
 

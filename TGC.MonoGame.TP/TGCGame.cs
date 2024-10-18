@@ -127,20 +127,26 @@ namespace TGC.MonoGame.TP
 
         protected override void Draw(GameTime gameTime)
         {
+
             GraphicsDevice.Clear(Color.CornflowerBlue);
-            var originalRasterizerState = GraphicsDevice.RasterizerState;
             var rasterizerState = new RasterizerState
             {
                 CullMode = CullMode.None
             };
+            
             GraphicsDevice.RasterizerState = rasterizerState;
+
+            // Guarda los estados actuales
+            var originalRasterizerState = GraphicsDevice.RasterizerState;
+            var originalBlendState = GraphicsDevice.BlendState;
+            var originalDepthStencilState = GraphicsDevice.DepthStencilState;
 
             if (isMenuActive)
             {
                 menu.Draw(SpriteBatch, menuFont);
             } else {
                 
-
+               
                 SkyBox.Draw(Camera.ViewMatrix, Camera.ProjectionMatrix, Camera.position);
 
                 _materiales.Draw(gameTime, Camera.ViewMatrix, Camera.ProjectionMatrix);
@@ -163,8 +169,11 @@ namespace TGC.MonoGame.TP
                 
 
             }
-            GraphicsDevice.RasterizerState = originalRasterizerState;
 
+            // Restaura los estados originales
+            GraphicsDevice.RasterizerState = originalRasterizerState;
+            GraphicsDevice.BlendState = originalBlendState;
+            GraphicsDevice.DepthStencilState = originalDepthStencilState;
         }
 
         protected override void UnloadContent()

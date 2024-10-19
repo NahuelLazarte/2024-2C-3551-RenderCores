@@ -26,7 +26,6 @@ namespace TGC.MonoGame.TP.Modelos
         private bool OnGround = false;
         private KeyboardState previousKeyboardState;
         public TGCGame Game;
-        ContentManager contento;
 
         public void setDirection(Vector3 newDirection)
         {
@@ -40,7 +39,6 @@ namespace TGC.MonoGame.TP.Modelos
 
         public override void LoadContent(ContentManager content, GraphicsDevice graphicsDevice)
         {
-            contento = content;
             pelota = new Pelota();
             Model3D = content.Load<Model>("Models/" + "Spheres/sphere");
             Effect = content.Load<Effect>("Effects/" + "BasicShader");
@@ -61,7 +59,7 @@ namespace TGC.MonoGame.TP.Modelos
             Colliders = new List<BoundingBox>();
         }
 
-        public override void Update(GameTime gameTime)
+        public override void Update(GameTime gameTime, ContentManager content)
         {
 
             var keyboardState = Keyboard.GetState();
@@ -170,7 +168,7 @@ namespace TGC.MonoGame.TP.Modelos
 
             SolveVerticalMovement();
 
-            pelota.Update(gameTime, this, contento);
+            pelota.Update(gameTime, this, content);
         }
         private void ApplyRotation(float elapsedTime, Vector3 direction)
         {

@@ -118,7 +118,7 @@ namespace TGC.MonoGame.TP
                 _materiales.ColliderEsfera(boundingSphere);
                 Gizmos.UpdateViewProjection(Camera.ViewMatrix, Camera.ProjectionMatrix);
                 Camera.Update(esfera.GetPosition());
-                esfera.Update(gameTime);
+                esfera.Update(gameTime, Content);
                 esfera.setDirection(Camera.GetDirection());
             
             }

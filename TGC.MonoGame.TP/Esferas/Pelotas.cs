@@ -25,16 +25,16 @@ namespace TGC.MonoGame.TP.Pelotas
         if (keyboardState.IsKeyDown(Keys.D1)) // Metal
         {
             Texture = content.Load<Texture2D>("Textures/texturaMetal");
-                esfera.SetTexture(Texture);
-                esfera.SetColor(new Vector3(0.75f, 0.75f, 0.75f));
+            esfera.SetTexture(Texture);
+            esfera.SetColor(new Vector3(0.75f, 0.75f, 0.75f));
             LinearSpeed  = 15f;
             RotationSpeed = 50f;
         }
         if (keyboardState.IsKeyDown(Keys.D2)) // Madera
         {
             Texture = content.Load<Texture2D>("Textures/texturaMadera");
-                esfera.SetTexture(Texture);
-                esfera.SetColor(new Vector3(0.54f, 0.27f, 0.07f));
+            esfera.SetTexture(Texture);
+            esfera.SetColor(new Vector3(0.54f, 0.27f, 0.07f));
             LinearSpeed  = 30f;
             RotationSpeed = 20f;
         }

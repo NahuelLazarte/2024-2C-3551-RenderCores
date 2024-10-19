@@ -15,7 +15,7 @@ using TGC.MonoGame.TP.ObstaculoPozo;
 using TGC.MonoGame.TP.CheckPoint;
 using TGC.MonoGame.TP.Modelos;
 using TGC.MonoGame.TP.MurosExtra;
-
+using TGC.MonoGame.TP.ObstaculoCarretilla;
 
 namespace TGC.MonoGame.TP.MaterialesJuego
 {
@@ -31,6 +31,8 @@ namespace TGC.MonoGame.TP.MaterialesJuego
         public CheckPoints _checkPoints { get; set; }
         public ObstaculosPiedras _piedras { get; set; }
         public ObstaculosPozos _pozos { get; set; }
+        public ObstaculosCarretillas _carretillas { get; set; }
+
         public Muros _muros { get; set; }
 
         private List<BoundingBox> CollidersMuros { get; set; }
@@ -48,6 +50,7 @@ namespace TGC.MonoGame.TP.MaterialesJuego
             _pozos = new ObstaculosPozos();
             _checkPoints = new CheckPoints();
             _muros = new Muros();
+            _carretillas = new ObstaculosCarretillas();
 
             CollidersMuros = new List<BoundingBox>();
 
@@ -68,6 +71,7 @@ namespace TGC.MonoGame.TP.MaterialesJuego
             _pozos.LoadContent(Content);
             _checkPoints.LoadContent(Content);
             _muros.LoadContent(Content, graphicsDevice);
+            _carretillas.LoadContent(Content);
         }
 
 
@@ -85,6 +89,7 @@ namespace TGC.MonoGame.TP.MaterialesJuego
             _piedras.Update(gameTime, Game);
             _pozos.Update(gameTime, Game);
             _muros.Update(gameTime, Game);
+            _carretillas.Update(gameTime, Game);
 
             Gizmos.UpdateViewProjection(view, projection);
         }
@@ -99,6 +104,7 @@ namespace TGC.MonoGame.TP.MaterialesJuego
             _checkPoints.Draw(gameTime, view, projection);
             _pozos.Draw(gameTime, view, projection);
             _muros.Draw(gameTime, view, projection);
+            _carretillas.Draw(gameTime, view, projection);
 
             foreach (var boundingBoxPista in CollidersMuros)
             {
@@ -115,6 +121,7 @@ namespace TGC.MonoGame.TP.MaterialesJuego
             _pozos._envolturaEsfera = boundingSphere;
             _muros._envolturaEsfera = boundingSphere;
             _checkPoints._envolturaEsfera = boundingSphere;
+            _carretillas._envolturaEsfera = boundingSphere;
         }
 
         internal void DarCollidersEsfera(Modelos.Sphere esfera){

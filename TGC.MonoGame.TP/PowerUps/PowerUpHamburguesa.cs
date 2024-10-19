@@ -43,7 +43,7 @@ namespace TGC.MonoGame.TP.PowerUpHamburguesa{
         }
 
         public void LoadContent(ContentManager Content){
-            ModeloHamburguesa = Content.Load<Model>("Models/" + "obstaculos/burger"); // HAY QUE MOVERLO DE CARPETA
+            ModeloHamburguesa = Content.Load<Model>("Models/" + "PowerUps/burger"); // HAY QUE MOVERLO DE CARPETA
             Effect = Content.Load<Effect>("Effects/" + "BasicShader");
 
             foreach (var mesh in ModeloHamburguesa.Meshes){

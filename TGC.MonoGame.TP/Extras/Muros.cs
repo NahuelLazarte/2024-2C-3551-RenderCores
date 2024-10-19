@@ -84,8 +84,8 @@ namespace TGC.MonoGame.TP.MurosExtra
             {
                 if (_envolturaEsfera.Intersects(Colliders[i]))
                 {
-                    Game.Respawn();
-                    MediaPlayer.Play(CollisionSound);
+                    //Game.Respawn(); //TODAVIA NO FUNCIONA BIEN EL POSICIONAMIENTO DE LOS COLLIDERS
+                    //MediaPlayer.Play(CollisionSound);
                     Console.WriteLine("Colisión detectada con el muro");
                     break;
                 }

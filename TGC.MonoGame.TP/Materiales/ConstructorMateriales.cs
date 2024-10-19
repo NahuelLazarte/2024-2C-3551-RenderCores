@@ -1,7 +1,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Media; // Asegúrate de tener esta directiva
+using Microsoft.Xna.Framework.Media; 
 
 using System.Collections.Generic;
 using TGC.MonoGame.TP.Collisions;
@@ -15,9 +15,9 @@ using TGC.MonoGame.TP.PowerUpHamburguesa;
 using TGC.MonoGame.TP.ObstaculoPiedras;
 using TGC.MonoGame.TP.ObstaculoPozo;
 using TGC.MonoGame.TP.CheckPoint;
+using TGC.MonoGame.TP.ObstaculoCarretilla;
 
-using System; // Asegúrate de que esto esté presente en la parte superior de tu archivo
-
+using System; 
 
 namespace TGC.MonoGame.TP.Constructor{
     public class ConstructorMateriales{
@@ -39,6 +39,11 @@ namespace TGC.MonoGame.TP.Constructor{
 
         public void CargarElementos(Materiales _materiales) {
 
+            AgregarPistaRecta(_materiales._pistasRectas, _materiales);
+            AgregarPistaRecta(_materiales._pistasRectas, _materiales);
+            AgregarPistaRecta(_materiales._pistasRectas, _materiales);
+            AgregarObstaculoCarretilla(_materiales._carretillas);
+            AgregarPistaRecta(_materiales._pistasRectas, _materiales);
             AgregarPistaRecta(_materiales._pistasRectas, _materiales);
             AgregarPozo(_materiales._pozos);
             AgregarPistaRecta(_materiales._pistasRectas, _materiales);
@@ -169,6 +174,13 @@ namespace TGC.MonoGame.TP.Constructor{
             
         }
 
+        void AgregarObstaculoCarretilla(ObstaculosCarretillas unObstaculo)
+        {
+            Vector3 posicionObstaculo = new(posicionActual.X / 100f, posicionActual.Y / 100f, posicionActual.Z / 100f);
+            unObstaculo.AgregarNuevoObstaculo(rotacionActual, posicionObstaculo);
+            //Console.WriteLine($"Obstaculo Pez dibujado: Posicion en ejes: X = {posicionObstaculo.X}, Y = {posicionObstaculo.Y}, Z = {posicionObstaculo.Z}");
+            
+        }
         
 
     }

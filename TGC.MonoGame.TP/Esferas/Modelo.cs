@@ -19,13 +19,11 @@ namespace TGC.MonoGame.TP.Modelos
         private BasicEffect Efecto { get; set; }
         private Texture2D Texture { get; set; }
 
-
         public void SetPosition(Vector3 newPosition) { Position = newPosition; }
         public void SetRotation(Matrix newRotation) { Rotation = newRotation; }
         public void SetScale(Matrix newScale) { Scale = newScale; }
         public void SetColor(Vector3 newColor) { Color = newColor; }
         public void SetTexture(Texture2D newTexture) { Efecto.Texture = newTexture; }
-
 
         public Vector3 GetPosition() { return Position; }
         public Matrix GetRotation() { return Rotation; }

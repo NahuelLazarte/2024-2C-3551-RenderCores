@@ -35,7 +35,7 @@ namespace TGC.MonoGame.TP.MaterialesJuego
 
         public Muros _muros { get; set; }
 
-        private List<BoundingBox> CollidersMuros { get; set; }
+        private List<BoundingBox> CollidersDibujo { get; set; }
 
 
 
@@ -52,7 +52,7 @@ namespace TGC.MonoGame.TP.MaterialesJuego
             _muros = new Muros();
             _carretillas = new ObstaculosCarretillas();
 
-            CollidersMuros = new List<BoundingBox>();
+            CollidersDibujo = new List<BoundingBox>();
 
             Initialize(Content, graphicsDevice);
         }
@@ -78,8 +78,6 @@ namespace TGC.MonoGame.TP.MaterialesJuego
         public void Update(GameTime gameTime, TGCGame Game, Matrix view, Matrix projection)
         {
             
-
-
             _pistasCurvasDerechas.Update(gameTime);
             _pistasCurvasIzquierdas.Update(gameTime);
             _pistasRectas.Update(gameTime);
@@ -106,7 +104,7 @@ namespace TGC.MonoGame.TP.MaterialesJuego
             _muros.Draw(gameTime, view, projection);
             _carretillas.Draw(gameTime, view, projection);
 
-            foreach (var boundingBoxPista in CollidersMuros)
+            foreach (var boundingBoxPista in CollidersDibujo)
             {
                 Gizmos.DrawCube((boundingBoxPista.Max + boundingBoxPista.Min) / 2f, boundingBoxPista.Max - boundingBoxPista.Min, Color.Green);
             }
@@ -130,7 +128,7 @@ namespace TGC.MonoGame.TP.MaterialesJuego
             List<BoundingBox> CollidersPistaCurvaIzquierda = _pistasCurvasIzquierdas.Colliders;
             List<BoundingBox> CollidersPiedras = _piedras.Colliders;
             List<BoundingBox> CollidersCheckpoints = _checkPoints.Colliders;
-            CollidersMuros = _pistasRectas.Colliders;
+            CollidersDibujo = _muros.Colliders;
 
             esfera.Colliders.AddRange(CollidersPistaRecta);
             esfera.Colliders.AddRange(CollidersPistaCurvaDerecha);

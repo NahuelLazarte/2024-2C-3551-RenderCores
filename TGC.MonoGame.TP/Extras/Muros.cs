@@ -122,40 +122,90 @@ namespace TGC.MonoGame.TP.MurosExtra
             }
         }
 
-        public void AgregarMurosPistaRecta(float Rotacion, Vector3 Posicion)
-        {
+        public void AgregarMurosPistaRecta(float Rotacion, Vector3 Posicion) {
             var posicionMuros = new Vector3(Posicion.X / 100f, Posicion.Y / 100f, Posicion.Z / 100f);
-            var posicionIzquierda = posicionMuros;
-            var posicionDerecha = posicionMuros;
             var desplazamientoDerecha = new Vector3(25.22f, -12f, 9f);
             var desplazamientoIzquierda = new Vector3(-25.22f, -12f, -9f);
 
-            posicionIzquierda += Vector3.Transform(desplazamientoIzquierda, Matrix.CreateRotationY(Rotacion));
-            posicionDerecha += Vector3.Transform(desplazamientoDerecha, Matrix.CreateRotationY(Rotacion));
+            // Calcular las posiciones de los muros aplicando la rotación
+            var posicionDerecha = posicionMuros + Vector3.Transform(desplazamientoDerecha, Matrix.CreateRotationY(Rotacion));
+            var posicionIzquierda = posicionMuros + Vector3.Transform(desplazamientoIzquierda, Matrix.CreateRotationY(Rotacion));
+
+            // Crear las matrices de transformación para los muros
+            Matrix muroDerecha = Matrix.CreateRotationY(Rotacion + MathHelper.ToRadians(-90)) * Matrix.CreateTranslation(posicionDerecha) * Matrix.CreateScale(escalaMuros);
+            Matrix muroIzquierda = Matrix.CreateRotationY(Rotacion + MathHelper.ToRadians(90)) * Matrix.CreateTranslation(posicionIzquierda) * Matrix.CreateScale(escalaMuros);
+
+            _muros.Add(muroDerecha);
+            _muros.Add(muroIzquierda);
+
+            // Crear y agregar los BoundingBox
+            BoundingBox boxDerecha = CreateTransformedBoundingBox(muroDerecha);
+            Colliders.Add(boxDerecha);
+
+            BoundingBox boxIzquierda = CreateTransformedBoundingBox(muroIzquierda);
+            Colliders.Add(boxIzquierda);
+        }
+
+        public void AgregarMurosPozo(float Rotacion, Vector3 Posicion) {
+            
+            var posicionMuros = new Vector3(Posicion.X / 1.47f , (Posicion.Y + 15f)/  1.47f  , Posicion.Z/  1.47f );
+            
+            var desplazamientoDerecha = new Vector3(25.22f , -12f , 9f);
+            var desplazamientoIzquierda = new Vector3(-25.22f , -12f, -9f);
+            
+            var posicionDerecha = posicionMuros + Vector3.Transform(desplazamientoDerecha, Matrix.CreateRotationY(Rotacion));
+            var posicionIzquierda = posicionMuros + Vector3.Transform(desplazamientoIzquierda, Matrix.CreateRotationY(Rotacion));
 
             Matrix muroDerecha = Matrix.CreateRotationY(Rotacion + MathHelper.ToRadians(-90)) * Matrix.CreateTranslation(posicionDerecha) * Matrix.CreateScale(escalaMuros);
             Matrix muroIzquierda = Matrix.CreateRotationY(Rotacion + MathHelper.ToRadians(90)) * Matrix.CreateTranslation(posicionIzquierda) * Matrix.CreateScale(escalaMuros);
 
             _muros.Add(muroDerecha);
             _muros.Add(muroIzquierda);
-            /*
-            BoundingBox boxIzquierda = new BoundingBox(Rocksize.Min * escalaMuros + posicionIzquierda * escalaMuros, Rocksize.Max * escalaMuros + posicionIzquierda * escalaMuros);
-            BoundingBox boxDerecha = new BoundingBox(Rocksize.Min * escalaMuros + posicionDerecha * escalaMuros, Rocksize.Max * escalaMuros + posicionDerecha * escalaMuros);
 
-            Colliders.Add(boxIzquierda);
+            // Crear y agregar los BoundingBox
+            BoundingBox boxDerecha = CreateTransformedBoundingBox(muroDerecha);
             Colliders.Add(boxDerecha);
-            */
-            
-            Vector3 minIzquierda = Vector3.Transform(Rocksize.Min, muroIzquierda);
-            Vector3 maxIzquierda = Vector3.Transform(Rocksize.Max, muroIzquierda);
-            BoundingBox boxIzquierda = new BoundingBox(minIzquierda, maxIzquierda );
-            Colliders.Add(boxIzquierda);
 
-            Vector3 minDerecha = Vector3.Transform(Rocksize.Min , muroDerecha);
-            Vector3 maxDerecha = Vector3.Transform(Rocksize.Max , muroDerecha);
-            BoundingBox boxDerecha = new BoundingBox(minDerecha , maxDerecha);            
-            Colliders.Add(boxDerecha);
-            
+            BoundingBox boxIzquierda = CreateTransformedBoundingBox(muroIzquierda);
+            Colliders.Add(boxIzquierda);
+        }
+
+        private BoundingBox CreateTransformedBoundingBox(Matrix transform) {
+            // funcion de google, basicamente separa en modelo en esquinas, asigna el tipo que es cada esquina (maximo o minimo en el eje)
+            // una vez asigna las propiedades, aplica la transformacion sobre la matriz, es decir saca los valorez de la matriz
+            // al sacarlos pone los maximos y minimos en cada indice en base a los maximos y minimos predefinidos
+            // una vez seteadas las 8 esquinas, agarra todos los minimos y los posiciona en el vector newMin, todos lo maximos en newMax
+
+            Vector3[] corners = new Vector3[8];
+            Vector3 min = Rocksize.Min;
+            Vector3 max = Rocksize.Max;
+
+            corners[0] = new Vector3(min.X, min.Y, min.Z);
+            corners[1] = new Vector3(max.X, min.Y, min.Z);
+            corners[2] = new Vector3(min.X, max.Y, min.Z);
+            corners[3] = new Vector3(max.X, max.Y, min.Z);
+            corners[4] = new Vector3(min.X, min.Y, max.Z);
+            corners[5] = new Vector3(max.X, min.Y, max.Z);
+            corners[6] = new Vector3(min.X, max.Y, max.Z);
+            corners[7] = new Vector3(max.X, max.Y, max.Z);
+
+            for (int i = 0; i < corners.Length; i++) {
+                corners[i] = Vector3.Transform(corners[i], transform);
+            }            
+
+            Vector3 newMin = new Vector3(float.MaxValue);
+            Vector3 newMax = new Vector3(float.MinValue);
+
+            foreach (var corner in corners) {
+                newMin = Vector3.Min(newMin, corner);
+                newMax = Vector3.Max(newMax, corner);
+            }
+
+            //Agrego esto asi achico el boundingBox en el eje Y que queda muy alto
+            float yDecrement = 1.0f; 
+            newMax.Y -= yDecrement;
+
+            return new BoundingBox(newMin, newMax);
         }
 
     }

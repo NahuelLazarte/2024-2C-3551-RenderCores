@@ -110,7 +110,6 @@ namespace TGC.MonoGame.TP.PistaRecta
 
             _materiales._muros.AgregarMurosPistaRecta(Rotacion, Posicion);
 
-
             _pistasRectas.Add(worldPista);   
             
             BoundingBox box = new BoundingBox(Pistasize.Min * escala + Posicion * escala , Pistasize.Max * escala + Posicion * escala);

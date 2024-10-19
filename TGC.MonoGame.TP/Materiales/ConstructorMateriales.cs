@@ -45,7 +45,7 @@ namespace TGC.MonoGame.TP.Constructor{
             AgregarObstaculoCarretilla(_materiales._carretillas);
             AgregarPistaRecta(_materiales._pistasRectas, _materiales);
             AgregarPistaRecta(_materiales._pistasRectas, _materiales);
-            AgregarPozo(_materiales._pozos);
+            AgregarObstaculoPozo(_materiales._pozos, _materiales);
             AgregarPistaRecta(_materiales._pistasRectas, _materiales);
             AgregarPowerUpHamburguesa(_materiales._hamburguesas);
             AgregarPistaRecta(_materiales._pistasRectas, _materiales); 
@@ -80,7 +80,7 @@ namespace TGC.MonoGame.TP.Constructor{
             AgregarPistaRecta(_materiales._pistasRectas, _materiales);
             AgregarPowerUpHamburguesa(_materiales._hamburguesas);
             AgregarPistaRecta(_materiales._pistasRectas, _materiales);
-             AgregarObstaculoPiedra(_materiales._piedras);
+            AgregarObstaculoPiedra(_materiales._piedras);
             AgregarPistaRecta(_materiales._pistasRectas, _materiales);
              
             AgregarPowerUpHamburguesa(_materiales._hamburguesas);
@@ -89,7 +89,7 @@ namespace TGC.MonoGame.TP.Constructor{
             AgregarPistaCurvaDerecha(_materiales._pistasCurvasDerechas);
             AgregarPistaRecta(_materiales._pistasRectas, _materiales);
             AgregarPistaRecta(_materiales._pistasRectas, _materiales);
-            AgregarPozo(_materiales._pozos);
+            AgregarObstaculoPozo(_materiales._pozos, _materiales);
             AgregarPistaRecta(_materiales._pistasRectas, _materiales);
             AgregarPistaRecta(_materiales._pistasRectas, _materiales);
             AgregarPowerUpHamburguesa(_materiales._hamburguesas);
@@ -138,13 +138,13 @@ namespace TGC.MonoGame.TP.Constructor{
             //Esferas.Add(posicionActual);
         }
 
-        void AgregarPozo(ObstaculosPozos unPozo)
+        void AgregarObstaculoPozo(ObstaculosPozos unPozo,  Materiales _materialesAux)
         {
             Vector3 desplazamiento = unPozo.Desplazamiento() * 60f;
 
             Vector3 posicionObstaculo = new(posicionActual.X / 68f, posicionActual.Y / 70f, posicionActual.Z / 68f);
 
-            unPozo.agregarNuevoPozo(rotacionActual, posicionObstaculo);
+            unPozo.agregarNuevoPozo(rotacionActual, posicionObstaculo, _materialesAux);
             //Console.WriteLine($"Pista Curva dibujada: Posicion en ejes: X = {posicionActual.X}, Y = {posicionActual.Y}, Z = {posicionActual.Z}");
 
             posicionActual += Vector3.Transform(desplazamiento, Matrix.CreateRotationY(rotacionActual));

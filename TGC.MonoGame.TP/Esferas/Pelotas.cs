@@ -13,10 +13,11 @@ namespace TGC.MonoGame.TP.Pelotas
 {
     private string[] options = { "Play", "Exit" };
     private int selectedIndex = 0;
-    public float LinearSpeed;
-    public float RotationSpeed;
+    public float LinearSpeed = 30f;
+    public float RotationSpeed = 30f;
     public float escala;
     private Texture2D Texture { get; set; }
+    bool primera = true;
 
     internal void Update(GameTime gameTime, Modelos.Sphere esfera, ContentManager content)
     {
@@ -24,6 +25,7 @@ namespace TGC.MonoGame.TP.Pelotas
         
         if (keyboardState.IsKeyDown(Keys.D1)) // Metal
         {
+            primera= false;
             Texture = content.Load<Texture2D>("Textures/texturaMetal");
             esfera.SetTexture(Texture);
             esfera.SetColor(new Vector3(0.75f, 0.75f, 0.75f));
@@ -32,7 +34,8 @@ namespace TGC.MonoGame.TP.Pelotas
         }
         if (keyboardState.IsKeyDown(Keys.D2)) // Madera
         {
-            Texture = content.Load<Texture2D>("Textures/texturaMadera");
+            primera= false;
+            Texture = content.Load<Texture2D>("Textures/texturaIA");
             esfera.SetTexture(Texture);
             esfera.SetColor(new Vector3(0.54f, 0.27f, 0.07f));
             LinearSpeed  = 30f;
@@ -41,6 +44,7 @@ namespace TGC.MonoGame.TP.Pelotas
 
         if (keyboardState.IsKeyDown(Keys.D3)) // Plastico
         {
+            primera= false;
             Texture = content.Load<Texture2D>("Textures/texturaPlastico");
             esfera.SetTexture(Texture);
             esfera.SetColor(new Vector3(0.9f, 0.9f, 0.9f));
@@ -48,7 +52,16 @@ namespace TGC.MonoGame.TP.Pelotas
             RotationSpeed = 15f;
         }
 
-    }
+        if(keyboardState.IsKeyDown(Keys.D4) && !primera){ 
+            Texture = content.Load<Texture2D>("Textures/texturaGolf");
+            esfera.SetTexture(Texture);
+            esfera.SetColor(new Vector3(0.9f, 0.9f, 0.9f));
+            LinearSpeed  = 30f;
+            RotationSpeed = 30f;
+        }
+
+
+        }
 
     public void Draw(SpriteBatch spriteBatch, SpriteFont font)
     {

@@ -19,6 +19,11 @@ namespace TGC.MonoGame.TP.MurosExtra
         public const string ContentFolder3D = "Models/";
         public const string ContentFolderEffects = "Effects/";
         public Effect Effect { get; set; }
+        
+        private BasicEffect Efecto { get; set; }
+        private Texture2D Texture { get; set; }
+        
+
         public Model ModeloMuro { get; set; }
         public List<BoundingBox> Colliders { get; set; }
         private float Rotation { get; set; }
@@ -46,16 +51,23 @@ namespace TGC.MonoGame.TP.MurosExtra
 
         }
 
-        public void LoadContent(ContentManager Content)
+        public void LoadContent(ContentManager Content, GraphicsDevice graphicsDevice)
         {
             ModeloMuro = Content.Load<Model>("Models/" + "pistas/wallHalf");
             Effect = Content.Load<Effect>("Effects/" + "BasicShader");
+
+
+            Texture = Content.Load<Texture2D>("Textures/texturaPiedra");
+
+            Efecto = new BasicEffect(graphicsDevice);
+            Efecto.TextureEnabled = true;
+            Efecto.Texture = Texture;
 
             foreach (var mesh in ModeloMuro.Meshes)
             {
                 foreach (var meshPart in mesh.MeshParts)
                 {
-                    meshPart.Effect = Effect;
+                    meshPart.Effect = Efecto;
                 }
             }
 
@@ -88,6 +100,9 @@ namespace TGC.MonoGame.TP.MurosExtra
         {
             Effect.Parameters["View"].SetValue(view);
             Effect.Parameters["Projection"].SetValue(projection);
+            Efecto.Projection = projection;
+            Efecto.View = view;
+
 
             // Dibujar los muros
             Effect.Parameters["DiffuseColor"].SetValue(Color.Gray.ToVector3()); // Color para los muros
@@ -95,9 +110,14 @@ namespace TGC.MonoGame.TP.MurosExtra
             {
                 for (int i = 0; i < _muros.Count; i++)
                 {
+
                     Matrix _muroWorld = _muros[i];
-                    Effect.Parameters["World"].SetValue(mesh.ParentBone.Transform * _muroWorld);
+                    //Effect.Parameters["World"].SetValue(mesh.ParentBone.Transform * _muroWorld);
+
+                    Efecto.World = mesh.ParentBone.Transform * _muroWorld;
                     mesh.Draw();
+
+                    
                 }
             }
         }

@@ -75,18 +75,6 @@
 /processorParam:DebugMode=Auto
 /build:Effects/Gizmos.fx
 
-#begin Effects/PelotaShader.fx
-/importer:EffectImporter
-/processor:EffectProcessor
-/processorParam:DebugMode=Auto
-/build:Effects/PelotaShader.fx
-
-#begin Effects/PelotaShader.fx
-/importer:EffectImporter
-/processor:EffectProcessor
-/processorParam:DebugMode=Auto
-/build:Effects/PelotaShader.fx
-
 #begin Effects/SkyBox.fx
 /importer:EffectImporter
 /processor:EffectProcessor
@@ -948,6 +936,18 @@
 /processorParam:TextureFormat=Color
 /build:Textures/texturaGolf.jpg
 
+#begin Textures/texturaIA.jpeg
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Textures/texturaIA.jpeg
+
 #begin Textures/texturaMadera.jpg
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -971,6 +971,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:Textures/texturaMetal.jpg
+
+#begin Textures/texturaPiedra.jpg
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Textures/texturaPiedra.jpg
 
 #begin Textures/texturaPlastico.jpg
 /importer:TextureImporter

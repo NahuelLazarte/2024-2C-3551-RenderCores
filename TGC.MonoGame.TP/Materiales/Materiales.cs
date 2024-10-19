@@ -67,7 +67,7 @@ namespace TGC.MonoGame.TP.MaterialesJuego
             _piedras.LoadContent(Content);
             _pozos.LoadContent(Content);
             _checkPoints.LoadContent(Content);
-            _muros.LoadContent(Content);
+            _muros.LoadContent(Content, graphicsDevice);
         }
 
 

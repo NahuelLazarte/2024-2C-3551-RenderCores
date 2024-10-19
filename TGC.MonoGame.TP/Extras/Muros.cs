@@ -202,7 +202,7 @@ namespace TGC.MonoGame.TP.MurosExtra
             }
 
             //Agrego esto asi achico el boundingBox en el eje Y que queda muy alto
-            float yDecrement = 1.0f; 
+            float yDecrement = 5.0f; 
             newMax.Y -= yDecrement;
 
             return new BoundingBox(newMin, newMax);

@@ -109,6 +109,8 @@ namespace TGC.MonoGame.TP.ObstaculoPozo
 
             _materiales._muros.AgregarMurosPozo(Rotacion, Posicion);
 
+            _pozos.Add(transform);
+
             Vector3 transformedMin = Vector3.Transform(size.Min, transform);
             Vector3 transformedMax = Vector3.Transform(size.Max, transform);
 

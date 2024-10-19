@@ -16,26 +16,33 @@ namespace TGC.MonoGame.TP.Pelotas
     public float LinearSpeed;
     public float RotationSpeed;
     public float escala;
-    internal void Update(GameTime gameTime, Modelos.Sphere esfera)
+    private Texture2D Texture { get; set; }
+
+    internal void Update(GameTime gameTime, Modelos.Sphere esfera, ContentManager content)
     {
         var keyboardState = Keyboard.GetState();
         
         if (keyboardState.IsKeyDown(Keys.D1)) // Metal
         {
-            esfera.SetColor(new Vector3(0.75f, 0.75f, 0.75f));
+            Texture = content.Load<Texture2D>("Textures/texturaMetal");
+                esfera.SetTexture(Texture);
+                esfera.SetColor(new Vector3(0.75f, 0.75f, 0.75f));
             LinearSpeed  = 15f;
             RotationSpeed = 50f;
         }
         if (keyboardState.IsKeyDown(Keys.D2)) // Madera
         {
-            
-            esfera.SetColor(new Vector3(0.54f, 0.27f, 0.07f));
+            Texture = content.Load<Texture2D>("Textures/texturaMadera");
+                esfera.SetTexture(Texture);
+                esfera.SetColor(new Vector3(0.54f, 0.27f, 0.07f));
             LinearSpeed  = 30f;
             RotationSpeed = 20f;
         }
 
         if (keyboardState.IsKeyDown(Keys.D3)) // Plastico
         {
+            Texture = content.Load<Texture2D>("Textures/texturaPlastico");
+            esfera.SetTexture(Texture);
             esfera.SetColor(new Vector3(0.9f, 0.9f, 0.9f));
             LinearSpeed  = 40f;
             RotationSpeed = 15f;

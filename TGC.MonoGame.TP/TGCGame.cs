@@ -94,7 +94,7 @@ namespace TGC.MonoGame.TP
 
             SkyBox = new SkyBox(skyBox, skyBoxTexture, skyBoxEffect, 500);
             Gizmos.LoadContent(GraphicsDevice, Content);
-            esfera.LoadContent(Content);        
+            esfera.LoadContent(Content, GraphicsDevice);        
             base.LoadContent();
         }
 

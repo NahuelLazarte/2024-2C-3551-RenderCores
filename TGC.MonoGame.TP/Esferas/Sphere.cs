@@ -26,6 +26,7 @@ namespace TGC.MonoGame.TP.Modelos
         private bool OnGround = false;
         private KeyboardState previousKeyboardState;
         public TGCGame Game;
+        ContentManager contento;
 
         public void setDirection(Vector3 newDirection)
         {
@@ -37,13 +38,14 @@ namespace TGC.MonoGame.TP.Modelos
             return boundingSphere;
         }
 
-        public override void LoadContent(ContentManager content)
+        public override void LoadContent(ContentManager content, GraphicsDevice graphicsDevice)
         {
+            contento = content;
             pelota = new Pelota();
             Model3D = content.Load<Model>("Models/" + "Spheres/sphere");
             Effect = content.Load<Effect>("Effects/" + "BasicShader");
 
-            base.LoadContent(content);
+            base.LoadContent(content, graphicsDevice);
 
             boundingSphere = BoundingVolumesExtensions.CreateSphereFrom(Model3D);
 
@@ -168,7 +170,7 @@ namespace TGC.MonoGame.TP.Modelos
 
             SolveVerticalMovement();
 
-            pelota.Update(gameTime, this);
+            pelota.Update(gameTime, this, contento);
         }
         private void ApplyRotation(float elapsedTime, Vector3 direction)
         {

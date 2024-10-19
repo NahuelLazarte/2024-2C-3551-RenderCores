@@ -16,11 +16,15 @@ namespace TGC.MonoGame.TP.Modelos
         public Matrix World { get; set; }
         public Effect Effect { get; set; }
 
+        private BasicEffect Efecto { get; set; }
+        private Texture2D Texture { get; set; }
+
 
         public void SetPosition(Vector3 newPosition) { Position = newPosition; }
         public void SetRotation(Matrix newRotation) { Rotation = newRotation; }
         public void SetScale(Matrix newScale) { Scale = newScale; }
         public void SetColor(Vector3 newColor) { Color = newColor; }
+        public void SetTexture(Texture2D newTexture) { Efecto.Texture = newTexture; }
 
 
         public Vector3 GetPosition() { return Position; }
@@ -28,13 +32,18 @@ namespace TGC.MonoGame.TP.Modelos
         public Matrix GetScale() { return Scale; }
         public Vector3 GetColor() { return Color; }
 
-        public virtual void LoadContent(ContentManager content)
+        public virtual void LoadContent(ContentManager content,GraphicsDevice graphicsDevice)
         {
+            Texture = content.Load<Texture2D>("Textures/texturaGolf");
+            Efecto = new BasicEffect(graphicsDevice);
+            Efecto.TextureEnabled = true;
+            Efecto.Texture = Texture;
+
             foreach (var mesh in Model3D.Meshes)
             {
                 foreach (var meshPart in mesh.MeshParts)
                 {
-                    meshPart.Effect = Effect;
+                    meshPart.Effect = Efecto;
                 }
             }
         }
@@ -56,9 +65,15 @@ namespace TGC.MonoGame.TP.Modelos
             Effect.Parameters["View"].SetValue(view);
             Effect.Parameters["Projection"].SetValue(projection);
             Effect.Parameters["DiffuseColor"].SetValue(Color);
+            
+            
+            Efecto.Projection = projection;
+            Efecto.View = view;
+
+
             foreach (var mesh in Model3D.Meshes)
             {
-                Effect.Parameters["World"].SetValue(mesh.ParentBone.Transform * World);
+                Efecto.World = mesh.ParentBone.Transform * World;
                 mesh.Draw();
             }
         }

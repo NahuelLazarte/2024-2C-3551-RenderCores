@@ -25,15 +25,19 @@ namespace TGC.MonoGame.TP.MurosExtra
         
 
         public Model ModeloMuro { get; set; }
+        public Model ModeloMuroEsquina { get; set; }
         public List<BoundingBox> Colliders { get; set; }
         private float Rotation { get; set; }
         private List<Matrix> _muros { get; set; }
+        private List<Matrix> _murosEsquina { get; set; }
         public BoundingSphere _envolturaEsfera { get; set; }
         public Song CollisionSound { get; set; }
 
-        BoundingBox Rocksize;
+        BoundingBox MuroSize;
+        BoundingBox MuroEsquinaSize;
 
         float escalaMuros = 3f;
+        float escalaMurosEsquina = 10f;
 
         public Muros()
         {
@@ -43,6 +47,7 @@ namespace TGC.MonoGame.TP.MurosExtra
         private void Initialize()
         {
             _muros = new List<Matrix>();
+            _murosEsquina = new List<Matrix>();
             Colliders = new List<BoundingBox>();
         }
 
@@ -53,7 +58,8 @@ namespace TGC.MonoGame.TP.MurosExtra
 
         public void LoadContent(ContentManager Content, GraphicsDevice graphicsDevice)
         {
-            ModeloMuro = Content.Load<Model>("Models/" + "pistas/wallHalf");
+            ModeloMuro = Content.Load<Model>("Models/" + "Muros/wallHalf");
+            ModeloMuroEsquina = Content.Load<Model>("Models/" + "Muros/wallCornerSlant_exclusive");
             Effect = Content.Load<Effect>("Effects/" + "BasicShader");
 
 
@@ -70,17 +76,26 @@ namespace TGC.MonoGame.TP.MurosExtra
                     meshPart.Effect = Efecto;
                 }
             }
+            // aca se puede cambiarla textura del efecto para darle otra onda
+            foreach (var mesh in ModeloMuroEsquina.Meshes)
+            {
+                foreach (var meshPart in mesh.MeshParts)
+                {
+                    meshPart.Effect = Efecto;
+                }
+            }
 
             CollisionSound = Content.Load<Song>("Audio/ColisionPez"); // Ajusta la ruta seg�n sea necesario
             
-            Rocksize = BoundingVolumesExtensions.CreateAABBFrom(ModeloMuro);
+            MuroSize = BoundingVolumesExtensions.CreateAABBFrom(ModeloMuro);
+            MuroEsquinaSize = BoundingVolumesExtensions.CreateAABBFrom(ModeloMuroEsquina);
 
         }
 
         public void Update(GameTime gameTime, TGCGame Game)
         {
 
-            for (int i = 0; i < _muros.Count; i++)
+            for (int i = 0; i < _muros.Count + _murosEsquina.Count; i++)
             {
                 if (_envolturaEsfera.Intersects(Colliders[i]))
                 {
@@ -110,14 +125,20 @@ namespace TGC.MonoGame.TP.MurosExtra
             {
                 for (int i = 0; i < _muros.Count; i++)
                 {
-
                     Matrix _muroWorld = _muros[i];
                     //Effect.Parameters["World"].SetValue(mesh.ParentBone.Transform * _muroWorld);
-
                     Efecto.World = mesh.ParentBone.Transform * _muroWorld;
-                    mesh.Draw();
-
-                    
+                    mesh.Draw();  
+                }
+            }
+            foreach (var mesh in ModeloMuroEsquina.Meshes)
+            {
+                for (int i = 0; i < _murosEsquina.Count; i++)
+                {
+                    Matrix _muroWorld = _murosEsquina[i];
+                    //Effect.Parameters["World"].SetValue(mesh.ParentBone.Transform * _muroWorld);
+                    Efecto.World = mesh.ParentBone.Transform * _muroWorld;
+                    mesh.Draw();  
                 }
             }
         }
@@ -139,15 +160,30 @@ namespace TGC.MonoGame.TP.MurosExtra
             _muros.Add(muroIzquierda);
 
             // Crear y agregar los BoundingBox
-            BoundingBox boxDerecha = CreateTransformedBoundingBox(muroDerecha);
+            BoundingBox boxDerecha = CreateTransformedBoundingBox(muroDerecha, MuroSize, 5.0f);
             Colliders.Add(boxDerecha);
 
-            BoundingBox boxIzquierda = CreateTransformedBoundingBox(muroIzquierda);
+            BoundingBox boxIzquierda = CreateTransformedBoundingBox(muroIzquierda, MuroSize, 5.0f);
+            Colliders.Add(boxIzquierda);
+        }
+        public void AgregarMurosPistaCurvaDerecha(float Rotacion, Vector3 Posicion) {
+            var posicionMuros = new Vector3(Posicion.X / 334f, Posicion.Y / 250f, Posicion.Z / 334f);
+            var desplazamientoIzquierda = new Vector3(-29.9f, -12f, +37.5f);
+
+            // Calcular las posiciones de los muros aplicando la rotación
+            var posicionIzquierda = posicionMuros + Vector3.Transform(desplazamientoIzquierda, Matrix.CreateRotationY(Rotacion));
+
+            // Crear las matrices de transformación para los muros
+            Matrix muroIzquierda = Matrix.CreateRotationY(Rotacion + MathHelper.ToRadians(-180)) * Matrix.CreateTranslation(posicionIzquierda) * Matrix.CreateScale(escalaMurosEsquina);
+
+            _murosEsquina.Add(muroIzquierda);
+
+            BoundingBox boxIzquierda = CreateTransformedBoundingBox(muroIzquierda, MuroEsquinaSize, 14.0f);
             Colliders.Add(boxIzquierda);
         }
 
-        public void AgregarMurosPozo(float Rotacion, Vector3 Posicion) {
-            
+        public void AgregarMurosPistaCurvaIzquierda(float Rotacion, Vector3 Posicion) {
+            /*
             var posicionMuros = new Vector3(Posicion.X / 1.47f , (Posicion.Y + 15f)/  1.47f  , Posicion.Z/  1.47f );
             
             var desplazamientoDerecha = new Vector3(25.22f , -12f , 9f);
@@ -168,17 +204,44 @@ namespace TGC.MonoGame.TP.MurosExtra
 
             BoundingBox boxIzquierda = CreateTransformedBoundingBox(muroIzquierda);
             Colliders.Add(boxIzquierda);
+            */
         }
 
-        private BoundingBox CreateTransformedBoundingBox(Matrix transform) {
+        public void AgregarMurosPozo(float Rotacion, Vector3 Posicion) {
+            
+            var posicionMuros = new Vector3(Posicion.X / 1.47f , (Posicion.Y + 15f)/  1.47f  , Posicion.Z/  1.47f );
+            
+            var desplazamientoDerecha = new Vector3(25.22f , -12f , 9f);
+            var desplazamientoIzquierda = new Vector3(-25.22f , -12f, -9f);
+            
+            var posicionDerecha = posicionMuros + Vector3.Transform(desplazamientoDerecha, Matrix.CreateRotationY(Rotacion));
+            var posicionIzquierda = posicionMuros + Vector3.Transform(desplazamientoIzquierda, Matrix.CreateRotationY(Rotacion));
+
+            Matrix muroDerecha = Matrix.CreateRotationY(Rotacion + MathHelper.ToRadians(-90)) * Matrix.CreateTranslation(posicionDerecha) * Matrix.CreateScale(escalaMuros);
+            Matrix muroIzquierda = Matrix.CreateRotationY(Rotacion + MathHelper.ToRadians(90)) * Matrix.CreateTranslation(posicionIzquierda) * Matrix.CreateScale(escalaMuros);
+
+            _muros.Add(muroDerecha);
+            _muros.Add(muroIzquierda);
+
+            // Crear y agregar los BoundingBox
+            BoundingBox boxDerecha = CreateTransformedBoundingBox(muroDerecha, MuroSize, 5.0f);
+            Colliders.Add(boxDerecha);
+
+            BoundingBox boxIzquierda = CreateTransformedBoundingBox(muroIzquierda, MuroSize, 5.0f);
+            Colliders.Add(boxIzquierda);
+        }
+
+
+
+        private BoundingBox CreateTransformedBoundingBox(Matrix transform, BoundingBox size, float yDecrement) {
             // funcion de google, basicamente separa en modelo en esquinas, asigna el tipo que es cada esquina (maximo o minimo en el eje)
             // una vez asigna las propiedades, aplica la transformacion sobre la matriz, es decir saca los valorez de la matriz
             // al sacarlos pone los maximos y minimos en cada indice en base a los maximos y minimos predefinidos
             // una vez seteadas las 8 esquinas, agarra todos los minimos y los posiciona en el vector newMin, todos lo maximos en newMax
 
             Vector3[] corners = new Vector3[8];
-            Vector3 min = Rocksize.Min;
-            Vector3 max = Rocksize.Max;
+            Vector3 min = size.Min;
+            Vector3 max = size.Max;
 
             corners[0] = new Vector3(min.X, min.Y, min.Z);
             corners[1] = new Vector3(max.X, min.Y, min.Z);
@@ -202,7 +265,7 @@ namespace TGC.MonoGame.TP.MurosExtra
             }
 
             //Agrego esto asi achico el boundingBox en el eje Y que queda muy alto
-            float yDecrement = 5.0f; 
+             
             newMax.Y -= yDecrement;
 
             return new BoundingBox(newMin, newMax);

@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
 using TGC.MonoGame.TP.Collisions;
 using System; // Asegúrate de que esto esté presente en la parte superior de tu archivo
+using TGC.MonoGame.TP.MaterialesJuego;
 
 namespace TGC.MonoGame.TP.PistaCurvaDerecha
 {
@@ -83,7 +84,7 @@ namespace TGC.MonoGame.TP.PistaCurvaDerecha
         {
             PistaCurvaBox = BoundingVolumesExtensions.CreateAABBFrom(ModeloPistaCurva); // HACER UNA SOLA VEZ
             desplazamientoEnEjes = PistaCurvaBox.Max - PistaCurvaBox.Min;
-            desplazamientoEnEjes = new Vector3(desplazamientoEnEjes.X - 100, 0, desplazamientoEnEjes.Z - 2800);
+            desplazamientoEnEjes = new Vector3(desplazamientoEnEjes.X-2f, 0, desplazamientoEnEjes.Z - 3000);
             Console.WriteLine($"Pista Curva: Desplazamiento en ejes: X = {desplazamientoEnEjes.X}, Y = {desplazamientoEnEjes.Y}, Z = {desplazamientoEnEjes.Z}");
 
             return desplazamientoEnEjes;
@@ -94,11 +95,13 @@ namespace TGC.MonoGame.TP.PistaCurvaDerecha
             return MathHelper.ToRadians(-90);
         }
 
-        public void agregarNuevaPista(float Rotacion, Vector3 Posicion)
+        public void agregarNuevaPista(float Rotacion, Vector3 Posicion, Materiales _materiales)
         {
 
-            Posicion += Vector3.Transform(new Vector3(300, 0, 500), Matrix.CreateRotationY(Rotacion));
+            Posicion += Vector3.Transform(new Vector3(495, 0, 500), Matrix.CreateRotationY(Rotacion));
             Matrix transform = Matrix.CreateRotationY(Rotacion) * Matrix.CreateTranslation(Posicion) * scale;
+
+            _materiales._muros.AgregarMurosPistaCurvaDerecha(Rotacion, Posicion);
 
             _pistasCurvas.Add(transform);
 

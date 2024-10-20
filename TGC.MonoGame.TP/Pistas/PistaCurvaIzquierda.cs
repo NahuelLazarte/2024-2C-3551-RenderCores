@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
 using TGC.MonoGame.TP.Collisions;
 using System; // Asegúrate de que esto esté presente en la parte superior de tu archivo
+using TGC.MonoGame.TP.MaterialesJuego;
 
 namespace TGC.MonoGame.TP.PistaCurvaIzquierda
 {
@@ -94,13 +95,15 @@ namespace TGC.MonoGame.TP.PistaCurvaIzquierda
             return MathHelper.ToRadians(90);
         }
 
-        public void agregarNuevaPista(float Rotacion, Vector3 Posicion)
+        public void agregarNuevaPista(float Rotacion, Vector3 Posicion, Materiales _materiales)
         {
             Posicion += Vector3.Transform(new Vector3(500, 0, -500), Matrix.CreateRotationY(Rotacion));
 
             Matrix world = Matrix.CreateRotationY(Rotacion) * Matrix.CreateRotationX(MathHelper.Pi) * Matrix.CreateTranslation(Posicion) * scale;
 
             BoundingBox box = new BoundingBox(size.Min * escala + Posicion * escala , size.Max * escala + Posicion * escala);
+
+            _materiales._muros.AgregarMurosPistaCurvaIzquierda(Rotacion, Posicion);
 
             _pistasCurvas.Add(world);
             Colliders.Add(box);

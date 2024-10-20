@@ -140,7 +140,7 @@ namespace TGC.MonoGame.TP
             var originalRasterizerState = GraphicsDevice.RasterizerState;
             var originalBlendState = GraphicsDevice.BlendState;
             var originalDepthStencilState = GraphicsDevice.DepthStencilState;
-
+            
             if (isMenuActive)
             {
                 menu.Draw(SpriteBatch, menuFont);
@@ -149,7 +149,7 @@ namespace TGC.MonoGame.TP
                
                 SkyBox.Draw(Camera.ViewMatrix, Camera.ProjectionMatrix, Camera.position);
 
-                _materiales.Draw(gameTime, Camera.ViewMatrix, Camera.ProjectionMatrix);
+                _materiales.Draw(gameTime, Camera.ViewMatrix, Camera.ProjectionMatrix, GraphicsDevice);
 
                 BoundingSphere boundingSphere = esfera.GetBoundingSphere();
 

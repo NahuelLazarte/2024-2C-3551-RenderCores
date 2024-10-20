@@ -24,13 +24,16 @@ namespace TGC.MonoGame.TP.PowerUpHamburguesa{
         private List<Matrix> _hamburguesas { get; set; }
         public BoundingSphere _envolturaEsfera{ get; set; }
         public Song CollisionSound { get; set; }
-
+        private SpriteBatch spriteBatch;
+        private SpriteFont spriteFont;
+        private int hamburguesasCount;
         public PowerUpHamburguesas() {
             Initialize();
         }
 
         private void Initialize() {
             _hamburguesas = new List<Matrix>();
+            hamburguesasCount = 0;
         }
 
         public void IniciarColliders() {
@@ -42,9 +45,11 @@ namespace TGC.MonoGame.TP.PowerUpHamburguesa{
             
         }
 
-        public void LoadContent(ContentManager Content){
+        public void LoadContent(ContentManager Content, GraphicsDevice graphicsDevice){
             ModeloHamburguesa = Content.Load<Model>("Models/" + "PowerUps/burger"); // HAY QUE MOVERLO DE CARPETA
             Effect = Content.Load<Effect>("Effects/" + "BasicShader");
+            spriteBatch = new SpriteBatch(graphicsDevice); // Inicializa SpriteBatch
+            spriteFont = Content.Load<SpriteFont>("SpriteFonts/" + "CascadiaCodePl"); // Cambia "YourFont" por el nombre de tu fuente
 
             foreach (var mesh in ModeloHamburguesa.Meshes){
                 
@@ -80,7 +85,7 @@ namespace TGC.MonoGame.TP.PowerUpHamburguesa{
                 // Aquí puedes realizar la acción que desees, como eliminar el pez, reducir vida, etc.
                 MediaPlayer.Play(CollisionSound);
                 _hamburguesas.RemoveAt(i);
-                
+                hamburguesasCount++;
                 Game.recibirPowerUpPez();
 
             }
@@ -92,7 +97,7 @@ namespace TGC.MonoGame.TP.PowerUpHamburguesa{
 
 
 
-        public void Draw(GameTime gameTime, Matrix view, Matrix projection)
+        public void Draw(GameTime gameTime, Matrix view, Matrix projection, GraphicsDevice graphicsDevice)
         {
             Effect.Parameters["View"].SetValue(view);
             Effect.Parameters["Projection"].SetValue(projection);
@@ -132,6 +137,22 @@ namespace TGC.MonoGame.TP.PowerUpHamburguesa{
                     mesh.Draw();
                 }
             }
+            /*
+
+            var originalRasterizerState = graphicsDevice.RasterizerState;
+            var originalBlendState = graphicsDevice.BlendState;
+            var originalDepthStencilState = graphicsDevice.DepthStencilState;
+            //var originalEffect = graphicsDevice.Effect;
+
+            spriteBatch.Begin();
+            spriteBatch.DrawString(spriteFont, $"Hamburguesas: {hamburguesasCount}", new Vector2(10, 10), Color.White);
+            spriteBatch.End();
+
+            graphicsDevice.RasterizerState = originalRasterizerState;
+            graphicsDevice.BlendState = originalBlendState;
+            graphicsDevice.DepthStencilState = originalDepthStencilState;
+            //graphicsDevice.Effect = originalEffect;
+            */
         }
 
 

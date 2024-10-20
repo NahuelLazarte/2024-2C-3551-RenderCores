@@ -66,7 +66,7 @@ namespace TGC.MonoGame.TP.MaterialesJuego
             _pistasCurvasIzquierdas.LoadContent(Content);
             _pistasCurvasDerechas.LoadContent(Content);
             _pistasRectas.LoadContent(Content);
-            _hamburguesas.LoadContent(Content);
+            _hamburguesas.LoadContent(Content, graphicsDevice);
             _piedras.LoadContent(Content);
             _pozos.LoadContent(Content);
             _checkPoints.LoadContent(Content);
@@ -92,12 +92,12 @@ namespace TGC.MonoGame.TP.MaterialesJuego
             Gizmos.UpdateViewProjection(view, projection);
         }
 
-        public void Draw(GameTime gameTime, Matrix view, Matrix projection)
+        public void Draw(GameTime gameTime, Matrix view, Matrix projection, GraphicsDevice graphicsDevice )
         {
             _pistasCurvasDerechas.Draw(gameTime, view, projection);
             _pistasCurvasIzquierdas.Draw(gameTime, view, projection);
             _pistasRectas.Draw(gameTime, view, projection);
-            _hamburguesas.Draw(gameTime, view, projection);
+            _hamburguesas.Draw(gameTime, view, projection, graphicsDevice);
             _piedras.Draw(gameTime, view, projection);
             _checkPoints.Draw(gameTime, view, projection);
             _pozos.Draw(gameTime, view, projection);

@@ -183,28 +183,19 @@ namespace TGC.MonoGame.TP.MurosExtra
         }
 
         public void AgregarMurosPistaCurvaIzquierda(float Rotacion, Vector3 Posicion) {
-            /*
-            var posicionMuros = new Vector3(Posicion.X / 1.47f , (Posicion.Y + 15f)/  1.47f  , Posicion.Z/  1.47f );
-            
-            var desplazamientoDerecha = new Vector3(25.22f , -12f , 9f);
-            var desplazamientoIzquierda = new Vector3(-25.22f , -12f, -9f);
-            
-            var posicionDerecha = posicionMuros + Vector3.Transform(desplazamientoDerecha, Matrix.CreateRotationY(Rotacion));
+            var posicionMuros = new Vector3(Posicion.X / 334f, Posicion.Y / 250f, Posicion.Z / 334f);
+            var desplazamientoIzquierda = new Vector3(-37.5f, -12f, -29.9f);
+
+            // Calcular las posiciones de los muros aplicando la rotación
             var posicionIzquierda = posicionMuros + Vector3.Transform(desplazamientoIzquierda, Matrix.CreateRotationY(Rotacion));
 
-            Matrix muroDerecha = Matrix.CreateRotationY(Rotacion + MathHelper.ToRadians(-90)) * Matrix.CreateTranslation(posicionDerecha) * Matrix.CreateScale(escalaMuros);
-            Matrix muroIzquierda = Matrix.CreateRotationY(Rotacion + MathHelper.ToRadians(90)) * Matrix.CreateTranslation(posicionIzquierda) * Matrix.CreateScale(escalaMuros);
+            // Crear las matrices de transformación para los muros
+            Matrix muroIzquierda = Matrix.CreateRotationY(Rotacion + MathHelper.ToRadians(-270)) * Matrix.CreateTranslation(posicionIzquierda) * Matrix.CreateScale(escalaMurosEsquina);
 
-            _muros.Add(muroDerecha);
-            _muros.Add(muroIzquierda);
+            _murosEsquina.Add(muroIzquierda);
 
-            // Crear y agregar los BoundingBox
-            BoundingBox boxDerecha = CreateTransformedBoundingBox(muroDerecha);
-            Colliders.Add(boxDerecha);
-
-            BoundingBox boxIzquierda = CreateTransformedBoundingBox(muroIzquierda);
+            BoundingBox boxIzquierda = CreateTransformedBoundingBox(muroIzquierda, MuroEsquinaSize, 14.0f);
             Colliders.Add(boxIzquierda);
-            */
         }
 
         public void AgregarMurosPozo(float Rotacion, Vector3 Posicion) {

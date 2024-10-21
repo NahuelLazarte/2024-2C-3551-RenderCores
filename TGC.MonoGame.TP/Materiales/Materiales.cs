@@ -97,12 +97,13 @@ namespace TGC.MonoGame.TP.MaterialesJuego
             _pistasCurvasDerechas.Draw(gameTime, view, projection);
             _pistasCurvasIzquierdas.Draw(gameTime, view, projection);
             _pistasRectas.Draw(gameTime, view, projection);
-            _hamburguesas.Draw(gameTime, view, projection, graphicsDevice);
+            
             _piedras.Draw(gameTime, view, projection);
             _checkPoints.Draw(gameTime, view, projection);
             _pozos.Draw(gameTime, view, projection);
             _muros.Draw(gameTime, view, projection);
             _carretillas.Draw(gameTime, view, projection);
+            _hamburguesas.Draw(gameTime, view, projection, graphicsDevice);
 
             /*
             foreach (var boundingBoxPista in CollidersDibujo)

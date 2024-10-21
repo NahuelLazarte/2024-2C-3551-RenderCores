@@ -48,12 +48,13 @@ namespace TGC.MonoGame.TP.Modelos
             boundingSphere = BoundingVolumesExtensions.CreateSphereFrom(Model3D);
 
             boundingSphere.Center = Position;
-            boundingSphere.Radius *= 0.0059f;
+            //boundingSphere.Radius *= 0.0059f;
+            boundingSphere.Radius *= 0.026f;
         }
         public Sphere(Vector3 position, Matrix rotation, Vector3 color)
             : base(position, rotation, color)
         {
-            escala = 0.01f;
+            escala = 0.045f;
             SetScale(Matrix.CreateScale(escala));
             World = Scale * rotation * Matrix.CreateTranslation(position);
             Colliders = new List<BoundingBox>();

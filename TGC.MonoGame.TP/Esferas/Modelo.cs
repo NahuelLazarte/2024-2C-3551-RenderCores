@@ -14,7 +14,7 @@ namespace TGC.MonoGame.TP.Modelos
         protected Matrix Scale { get; set; } // escala del modelo 
         protected Vector3 Color { get; set; } // color del modelo
         public Matrix World { get; set; }
-        protected Effect Effect { get; set; }
+        public Effect Effect { get; set; } // mejorar
         protected Texture Texture { get; set; }
 
         public void SetPosition(Vector3 newPosition) { Position = newPosition; }
@@ -51,8 +51,11 @@ namespace TGC.MonoGame.TP.Modelos
             World = Scale * Rotation * Matrix.CreateTranslation(Position);
         }
 
-        public virtual void Draw(Matrix view, Matrix projection)
+        public virtual void Draw(Matrix view, Matrix projection, Vector3 cameraPosition)
         {
+
+            var viewProjection = view * projection;
+
             Effect.Parameters["View"].SetValue(view);
             Effect.Parameters["Projection"].SetValue(projection);
             //Effect.Parameters["DiffuseColor"].SetValue(Color);
@@ -60,13 +63,13 @@ namespace TGC.MonoGame.TP.Modelos
 
             Effect.Parameters["Texture"]?.SetValue(Texture);
 
-            /* Todavía no terminado, haciendo para la luz
-            var viewProjection = Camera.View * Camera.Projection;
-            Effect.Parameters["eyePosition"].SetValue(Camera.Position);
+            // Todavía no terminado, haciendo para la luz
+            Effect.Parameters["eyePosition"].SetValue(cameraPosition);
             
+            Effect.Parameters["InverseTransposeWorld"]?.SetValue(Matrix.Invert(Matrix.Transpose(World)));
             Effect.Parameters["WorldViewProjection"].SetValue(World * viewProjection);
-            Effect.Parameters["InverseTransposeWorld"]?.SetValue(Matrix.Invert(Matrix.Transpose(World)));*/
 
+            Effect.Parameters["Tiling"].SetValue(Vector2.One);
 
             foreach (var mesh in Model3D.Meshes)
             {

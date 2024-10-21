@@ -77,7 +77,7 @@ namespace TGC.MonoGame.TP.Modelos
             Effect.Parameters["KSpecular"]?.SetValue(0f);
             Effect.Parameters["shininess"]?.SetValue(1f);
 
-            //Effect.CurrentTechnique = Effect.Techniques["LightingTechnique"];
+            Effect.CurrentTechnique = Effect.Techniques["LightingTechnique"];
 
     
 

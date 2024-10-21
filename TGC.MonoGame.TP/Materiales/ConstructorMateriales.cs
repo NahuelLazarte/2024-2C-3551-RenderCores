@@ -42,6 +42,11 @@ namespace TGC.MonoGame.TP.Constructor{
             //AgregarPistaCurvaDerecha(_materiales._pistasCurvasDerechas, _materiales);
             
             AgregarPistaRecta(_materiales._pistasRectas, _materiales);
+            AgregarObstaculoCarretilla(_materiales._carretillas);
+            AgregarPistaRecta(_materiales._pistasRectas, _materiales);
+            AgregarObstaculoCarretilla(_materiales._carretillas);
+            
+            
             AgregarPistaRecta(_materiales._pistasRectas, _materiales);
             AgregarPistaRecta(_materiales._pistasRectas, _materiales);
             AgregarObstaculoCarretilla(_materiales._carretillas);
@@ -55,6 +60,7 @@ namespace TGC.MonoGame.TP.Constructor{
             AgregarPowerUpHamburguesa(_materiales._hamburguesas);
             AgregarPistaCurvaDerecha(_materiales._pistasCurvasDerechas, _materiales);
             AgregarPistaRecta(_materiales._pistasRectas, _materiales);
+            AgregarObstaculoCarretilla(_materiales._carretillas);
             AgregarPistaRecta(_materiales._pistasRectas, _materiales);
             AgregarPowerUpHamburguesa(_materiales._hamburguesas);
             AgregarPistaCurvaDerecha(_materiales._pistasCurvasDerechas, _materiales);
@@ -96,6 +102,8 @@ namespace TGC.MonoGame.TP.Constructor{
             AgregarPistaRecta(_materiales._pistasRectas, _materiales);
             AgregarPowerUpHamburguesa(_materiales._hamburguesas);
             AgregarPistaRecta(_materiales._pistasRectas, _materiales);
+            //AgregarObstaculoCarretilla(_materiales._carretillas);
+
             AgregarPistaRecta(_materiales._pistasRectas, _materiales);
             
         }
@@ -178,7 +186,7 @@ namespace TGC.MonoGame.TP.Constructor{
 
         void AgregarObstaculoCarretilla(ObstaculosCarretillas unObstaculo)
         {
-            Vector3 posicionObstaculo = new(posicionActual.X / 100f, posicionActual.Y / 100f, posicionActual.Z / 100f);
+            Vector3 posicionObstaculo = new(posicionActual.X / 40f, posicionActual.Y / 100f, posicionActual.Z / 40f);
             unObstaculo.AgregarNuevoObstaculo(rotacionActual, posicionObstaculo);
             //Console.WriteLine($"Obstaculo Pez dibujado: Posicion en ejes: X = {posicionObstaculo.X}, Y = {posicionObstaculo.Y}, Z = {posicionObstaculo.Z}");
             

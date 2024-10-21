@@ -1,7 +1,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Media; // Aseg�rate de tener esta directiva
+using Microsoft.Xna.Framework.Media; 
 using Microsoft.Xna.Framework.Input;
 using System.Collections.Generic;
 using TGC.MonoGame.TP.Collisions;
@@ -75,18 +75,34 @@ namespace TGC.MonoGame.MenuPrincipal
         public void Draw(SpriteBatch spriteBatch, SpriteFont font)
         {
             spriteBatch.Begin();
+
+            // Obtener el tamaño de la ventana
+            var screenWidth = spriteBatch.GraphicsDevice.Viewport.Width;
+            var screenHeight = spriteBatch.GraphicsDevice.Viewport.Height;
+
+            // Establecer el tamaño del texto (ajusta esto según sea necesario)
+            float scale = 1.0f; // Aumenta el tamaño del texto
+
+            // Calcular la posición inicial para centrar el menú
+            Vector2 startPosition = new Vector2(screenWidth / 2, screenHeight / 2 - (options.Length * 40 * scale) / 2);
+
             for (int i = 0; i < options.Length; i++)
             {
                 Color color = (i == selectedIndex) ? Color.Yellow : Color.White;
-                spriteBatch.DrawString(font, options[i], new Vector2(100, 100 + i * 40), color);
+
+                // Dibujar el texto con escalado
+                spriteBatch.DrawString(font, options[i], startPosition + new Vector2(0, i * 40 * scale), color, 0f, 
+                font.MeasureString(options[i]) / 2, new Vector2(scale), SpriteEffects.None, 0f);
             }
 
             // Mostrar el estado de GodMode en el menú
-            spriteBatch.DrawString(font, $"GodMode: {(isGodModeActive ? "ON" : "OFF")}", 
-                new Vector2(100, 100 + options.Length * 40), 
-                isGodModeActive ? Color.Red : Color.Gray);
+            string godModeText = $"GodMode: {(isGodModeActive ? "ON" : "OFF")}";
+            spriteBatch.DrawString(font, godModeText, startPosition + new Vector2(0, options.Length * 40 * scale), 
+            isGodModeActive ? Color.Red : Color.Gray, 0f, 
+            font.MeasureString(godModeText) / 2, new Vector2(scale), SpriteEffects.None, 0f);
 
             spriteBatch.End();
         }
+
     }
 }

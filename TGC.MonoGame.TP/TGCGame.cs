@@ -7,6 +7,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Vector3 = Microsoft.Xna.Framework.Vector3;
 using System.Net.Http.Headers;
+using Microsoft.Xna.Framework.Media;
 using TGC.MonoGame.TP.Modelos;
 using TGC.MonoGame.TP.Fondo;
 using TGC.MonoGame.TP.MaterialesJuego;
@@ -21,13 +22,13 @@ namespace TGC.MonoGame.TP
     {
         public const string ContentFolder3D = "Models/";
         public const string ContentFolderEffects = "Effects/";
-        public const string ContentFolderMusic = "Music/";
+        public const string ContentFolderMusic = "Audio/";
         public const string ContentFolderSounds = "Sounds/";
         public const string ContentFolderSpriteFonts = "SpriteFonts/";
         public const string ContentFolderTextures = "Textures/";
         private GraphicsDeviceManager Graphics { get; }
         private SpriteBatch SpriteBatch { get; set; }
-        
+        private Song backgroundMusic;
         private Model Model { get; set; }
         private Effect Effect { get; set; }
         private Matrix World { get; set; }
@@ -48,6 +49,8 @@ namespace TGC.MonoGame.TP
         public bool isMenuActive = true;
         public bool isGodModeActive = false;
         private SpriteFont menuFont; // Asegúrate de cargar una fuente para el menú
+        
+        private bool isMusicPlaying = false;
         //
         public TGCGame()
         {
@@ -90,8 +93,13 @@ namespace TGC.MonoGame.TP
             var skyBoxTexture = Content.Load<TextureCube>(ContentFolderTextures + "/skybox/skybox");
             var skyBoxEffect = Content.Load<Effect>(ContentFolderEffects + "SkyBox");
 
-            SpriteBatch = new SpriteBatch(GraphicsDevice); // Inicializa SpriteBatch
-            menuFont = Content.Load<SpriteFont>(ContentFolderSpriteFonts + "CascadiaCodePl"); // Cambia "YourFont" por el nombre de tu fuente
+            SpriteBatch = new SpriteBatch(GraphicsDevice); 
+            menuFont = Content.Load<SpriteFont>(ContentFolderSpriteFonts + "CascadiaCodePl"); 
+            
+            backgroundMusic = Content.Load<Song>(ContentFolderMusic + "Sad Town"); 
+            MediaPlayer.IsRepeating = true; 
+            MediaPlayer.Volume = 0.3f; 
+
 
             SkyBox = new SkyBox(skyBox, skyBoxTexture, skyBoxEffect, 500);
             Gizmos.LoadContent(GraphicsDevice, Content);
@@ -102,12 +110,24 @@ namespace TGC.MonoGame.TP
         protected override void Update(GameTime gameTime)
         {
             var keyboardState = Keyboard.GetState();
+            
+
+            if (!isMusicPlaying)
+            {       
+                MediaPlayer.Play(backgroundMusic);
+                isMusicPlaying = true;
+            }
 
             if (isMenuActive)
             {
+                if(!(MediaPlayer.Volume == 0.3f)) MediaPlayer.Volume = 0.3f;
+                
+                _materiales.Update(gameTime, this, Camera.ViewMatrix, Camera.ProjectionMatrix);
                 menu.Update(this, gameTime);
+
             }
             else {
+                if(!(MediaPlayer.Volume == 0.1f)) MediaPlayer.Volume = 0.1f;
 
                 if (keyboardState.IsKeyDown(Keys.Escape))
                 {
@@ -129,7 +149,7 @@ namespace TGC.MonoGame.TP
 
         protected override void Draw(GameTime gameTime)
         {
-
+            
             GraphicsDevice.Clear(Color.CornflowerBlue);
             var rasterizerState = new RasterizerState
             {
@@ -143,9 +163,32 @@ namespace TGC.MonoGame.TP
             var originalBlendState = GraphicsDevice.BlendState;
             var originalDepthStencilState = GraphicsDevice.DepthStencilState;
             
+            // Calcula el tiempo para girar la cámara
+            float elapsedTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
+            float rotationSpeed = 0.3f; // Velocidad de rotación
+            float radius = 100f; // Distancia de la cámara a la pelota
+
             if (isMenuActive)
             {
+                float angle = rotationSpeed * (float)gameTime.TotalGameTime.TotalSeconds;
+
+                // Calcula la posición de la cámara en un círculo inclinado a 45 grados
+                float height = radius * (float)Math.Sin(MathHelper.PiOver4); // Altura a 45 grados
+                float distance = radius * (float)Math.Cos(MathHelper.PiOver4 - 10); // Distancia horizontal a 45 grados
+
+                var position = new Vector3((float)Math.Cos(angle) * distance, height, (float)Math.Sin(angle) * distance);
+                
+                Camera = new FollowCamera(GraphicsDevice,  position, Vector3.One, Vector3.Up);
+
+                SkyBox.Draw(Camera.ViewMatrix, Camera.ProjectionMatrix, Camera.position);
+
+                _materiales.Draw(gameTime, Camera.ViewMatrix, Camera.ProjectionMatrix, GraphicsDevice);
+
+                esfera.Draw(Camera.ViewMatrix, Camera.ProjectionMatrix);
+
+
                 menu.Draw(SpriteBatch, menuFont);
+                
             } else {
                 
                
@@ -157,7 +200,7 @@ namespace TGC.MonoGame.TP
 
                 Gizmos.DrawSphere(boundingSphere.Center, boundingSphere.Radius * Vector3.One, Color.White);
 
-                Gizmos.Draw();
+                //Gizmos.Draw();
 
                 esfera.Draw(Camera.ViewMatrix, Camera.ProjectionMatrix);
 
@@ -167,8 +210,6 @@ namespace TGC.MonoGame.TP
 
                 lineDrawer.DrawLine(start, endGreen, Color.Green, Camera.ViewMatrix, Camera.ProjectionMatrix);
                 lineDrawer.DrawLine(start, endRed, Color.Red, Camera.ViewMatrix, Camera.ProjectionMatrix);
-
-                
 
             }
 

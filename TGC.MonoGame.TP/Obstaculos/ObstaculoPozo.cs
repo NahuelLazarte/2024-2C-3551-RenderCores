@@ -4,8 +4,7 @@ using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
 using TGC.MonoGame.TP.Collisions;
 using TGC.MonoGame.TP.MaterialesJuego;
-using System; // Asegúrate de que esto esté presente en la parte superior de tu archivo
-
+using System; 
 namespace TGC.MonoGame.TP.ObstaculoPozo
 {
     public class ObstaculosPozos

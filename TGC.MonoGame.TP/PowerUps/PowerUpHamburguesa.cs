@@ -1,14 +1,14 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Media; // Asegúrate de tener esta directiva
+using Microsoft.Xna.Framework.Media; 
 
 using System.Collections.Generic;
 using TGC.MonoGame.TP.Collisions;
 using TGC.MonoGame.TP.Modelos;
 using TGC.MonoGame.TP;
 
-using System; // Asegúrate de que esto esté presente en la parte superior de tu archivo
+using System; 
 
 
 namespace TGC.MonoGame.TP.PowerUpHamburguesa{
@@ -46,10 +46,10 @@ namespace TGC.MonoGame.TP.PowerUpHamburguesa{
         }
 
         public void LoadContent(ContentManager Content, GraphicsDevice graphicsDevice){
-            ModeloHamburguesa = Content.Load<Model>("Models/" + "PowerUps/burger"); // HAY QUE MOVERLO DE CARPETA
+            ModeloHamburguesa = Content.Load<Model>("Models/" + "PowerUps/burger"); 
             Effect = Content.Load<Effect>("Effects/" + "BasicShader");
             spriteBatch = new SpriteBatch(graphicsDevice); // Inicializa SpriteBatch
-            spriteFont = Content.Load<SpriteFont>("SpriteFonts/" + "CascadiaCodePl"); // Cambia "YourFont" por el nombre de tu fuente
+            spriteFont = Content.Load<SpriteFont>("SpriteFonts/" + "CascadiaCodePl"); 
 
             foreach (var mesh in ModeloHamburguesa.Meshes){
                 
@@ -59,7 +59,7 @@ namespace TGC.MonoGame.TP.PowerUpHamburguesa{
                 }
             }
 
-            CollisionSound = Content.Load<Song>("Audio/ColisionPez"); // Ajusta la ruta según sea necesario
+            CollisionSound = Content.Load<Song>("Audio/ColisionPez"); 
 
 
             Console.WriteLine(ModeloHamburguesa != null ? "Modelo cargado exitosamente" : "Error al cargar el modelo");
@@ -70,7 +70,7 @@ namespace TGC.MonoGame.TP.PowerUpHamburguesa{
             
             Rotation += Convert.ToSingle(gameTime.ElapsedGameTime.TotalSeconds);
             
-            float sinOffset = (float)Math.Sin(Rotation) * 0.8f; // Ajusta el multiplicador para la amplitud
+            float sinOffset = (float)Math.Sin(Rotation) * 0.8f; // multiplicador para la amplitud
 
             for (int i = 0; i < _hamburguesas.Count; i++) {
                 var originalPosition = _hamburguesas[i].Translation; // Obtener la posición original
@@ -82,7 +82,7 @@ namespace TGC.MonoGame.TP.PowerUpHamburguesa{
             if (_envolturaEsfera.Intersects(fishBoundingSphere)) {
                 // Acción al tocar el modelo
                 Console.WriteLine($"¡Colisión con el pez en la posición {originalPosition}!");
-                // Aquí puedes realizar la acción que desees, como eliminar el pez, reducir vida, etc.
+                
                 MediaPlayer.Play(CollisionSound);
                 _hamburguesas.RemoveAt(i);
                 hamburguesasCount++;
@@ -105,7 +105,7 @@ namespace TGC.MonoGame.TP.PowerUpHamburguesa{
 
             
             foreach (var mesh in ModeloHamburguesa.Meshes){
-                string meshName = mesh.Name.ToLower(); // Asegúrate de comparar en minúsculas
+                string meshName = mesh.Name.ToLower(); 
 
                 for (int i=0; i < _hamburguesas.Count; i++){
                     Matrix _pisoWorld = _hamburguesas[i];

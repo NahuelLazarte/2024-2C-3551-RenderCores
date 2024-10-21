@@ -63,6 +63,18 @@
 /processorParam:Quality=Best
 /build:Audio/ColisionPez.ogg
 
+#begin Audio/prueba.mp3
+/importer:Mp3Importer
+/processor:SongProcessor
+/processorParam:Quality=Best
+/build:Audio/prueba.mp3
+
+#begin Audio/Sad Town.ogg
+/importer:OggImporter
+/processor:SongProcessor
+/processorParam:Quality=Best
+/build:Audio/Sad Town.ogg
+
 #begin Effects/BasicShader.fx
 /importer:EffectImporter
 /processor:EffectProcessor

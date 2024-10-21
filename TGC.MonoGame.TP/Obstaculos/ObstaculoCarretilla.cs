@@ -49,7 +49,7 @@ namespace TGC.MonoGame.TP.ObstaculoCarretilla {
                 }
             }
             size = BoundingVolumesExtensions.CreateAABBFrom(ModeloCarretilla);
-            CollisionSound = Content.Load<Song>("Audio/ColisionPez"); // Ajusta la ruta según sea necesario
+            CollisionSound = Content.Load<Song>("Audio/ColisionPez"); 
         }
 
         public void Update(GameTime gameTime, TGCGame Game) {
@@ -109,10 +109,10 @@ namespace TGC.MonoGame.TP.ObstaculoCarretilla {
                     switch (meshName)
                     {
                         case "wheel":
-                            Effect.Parameters["DiffuseColor"].SetValue(new Vector3(0f, 0f, 0f)); // Color para el pan de abajo
+                            Effect.Parameters["DiffuseColor"].SetValue(new Vector3(0f, 0f, 0f)); 
                             break;
                         case "cart":
-                            Effect.Parameters["DiffuseColor"].SetValue(new Vector3(0.545f, 0.271f, 0.075f)); // Color para el pan de arriba
+                            Effect.Parameters["DiffuseColor"].SetValue(new Vector3(0.545f, 0.271f, 0.075f)); 
                             break;
                         
                     }

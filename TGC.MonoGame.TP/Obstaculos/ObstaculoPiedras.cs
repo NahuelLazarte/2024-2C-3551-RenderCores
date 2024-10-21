@@ -1,14 +1,13 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Media; // Asegúrate de tener esta directiva
-
+using Microsoft.Xna.Framework.Media; 
+using System; 
 using System.Collections.Generic;
 using TGC.MonoGame.TP.Collisions;
 using TGC.MonoGame.TP.Modelos;
 using TGC.MonoGame.TP;
 
-using System; // Asegúrate de que esto esté presente en la parte superior de tu archivo
 
 
 namespace TGC.MonoGame.TP.ObstaculoPiedras{

@@ -3,7 +3,7 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
 using TGC.MonoGame.TP.Collisions;
-using System; // Asegúrate de que esto esté presente en la parte superior de tu archivo
+using System; 
 using TGC.MonoGame.TP.MaterialesJuego;
 
 namespace TGC.MonoGame.TP.PistaRecta
@@ -90,8 +90,8 @@ namespace TGC.MonoGame.TP.PistaRecta
 
         public Vector3 Desplazamiento()
         {
-            PistaRectaBox = BoundingVolumesExtensions.CreateAABBFrom(ModeloPistaRecta);
-            desplazamientoEnEjes = PistaRectaBox.Max - PistaRectaBox.Min; // aca consigo el tamaño el largo de la pista para que coincida son 3/4, el ancho es el mismo.
+            
+            desplazamientoEnEjes = Pistasize.Max - Pistasize.Min; // aca consigo el tamaño el largo de la pista para que coincida son 3/4, el ancho es el mismo.
             desplazamientoEnEjes = new Vector3(desplazamientoEnEjes.X, 0, 0);
 
             Console.WriteLine($"Pista Recta: Desplazamiento en ejes: X = {desplazamientoEnEjes.X}, Y = {desplazamientoEnEjes.Y}, Z = {desplazamientoEnEjes.Z}");

@@ -3,7 +3,7 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
 using TGC.MonoGame.TP.Collisions;
-using System; // Asegúrate de que esto esté presente en la parte superior de tu archivo
+using System; 
 using TGC.MonoGame.TP.MaterialesJuego;
 
 namespace TGC.MonoGame.TP.PistaCurvaDerecha
@@ -82,8 +82,8 @@ namespace TGC.MonoGame.TP.PistaCurvaDerecha
 
         public Vector3 Desplazamiento()
         {
-            PistaCurvaBox = BoundingVolumesExtensions.CreateAABBFrom(ModeloPistaCurva); // HACER UNA SOLA VEZ
-            desplazamientoEnEjes = PistaCurvaBox.Max - PistaCurvaBox.Min;
+            
+            desplazamientoEnEjes = size.Max - size.Min;
             desplazamientoEnEjes = new Vector3(desplazamientoEnEjes.X-2f, 0, desplazamientoEnEjes.Z - 3000);
             Console.WriteLine($"Pista Curva: Desplazamiento en ejes: X = {desplazamientoEnEjes.X}, Y = {desplazamientoEnEjes.Y}, Z = {desplazamientoEnEjes.Z}");
 

@@ -52,7 +52,7 @@ struct VertexShaderInput
 	float4 Position : POSITION0;
 	//float3 Color : COLOR0;
 
-	float3 Normal : NORMAL0;
+	float4 Normal : NORMAL;
 	float2 TextureCoordinates : TEXCOORD0;
 	
 };
@@ -88,17 +88,6 @@ VertexShaderOutput MainVS(in VertexShaderInput input)
 	output.TextureCoordinates = input.TextureCoordinates;
 
     return output;
-
-
-
-
-	/* AGREGADO PARA LA ILUMINACIÓN
-    output.Position = mul(input.Position, WorldViewProjection);
-    output.WorldPosition = mul(input.Position, World);
-    output.Normal = mul(float4(normalize(input.Normal.xyz), 1.0), InverseTransposeWorld);
-    output.TextureCoordinates = input.TextureCoordinates * Tiling;
-	
-	return output;*/
 }
 
 float4 MainPS(VertexShaderOutput input) : COLOR
@@ -108,16 +97,31 @@ float4 MainPS(VertexShaderOutput input) : COLOR
 
 	float4 sample = tex2D(TextureSampler, input.TextureCoordinates);
 	return float4(sample.rgb,1.0);
+}
 
-	/* AGREGADO PARA LA ILUMINACIÓN
-	// Base vectors
+
+VertexShaderOutput MainVS_Lighting(in VertexShaderInput input)
+{
+    VertexShaderOutput output = (VertexShaderOutput)0;
+
+    output.Position = mul(input.Position, WorldViewProjection);
+    output.WorldPosition = mul(input.Position, World);
+    output.Normal = mul(float4(normalize(input.Normal.xyz), 1.0), InverseTransposeWorld);
+    output.TextureCoordinates = input.TextureCoordinates * Tiling;
+	
+	return output;
+}
+
+float4 MainPS_Lighting(VertexShaderOutput input) : COLOR
+{
+    // Base vectors
     float3 lightDirection = normalize(lightPosition - input.WorldPosition.xyz);
     float3 viewDirection = normalize(eyePosition - input.WorldPosition.xyz);
     float3 halfVector = normalize(lightDirection + viewDirection);
     float3 normal = normalize(input.Normal.xyz);
     
 	// Get the texture texel
-    float4 texelColor = tex2D(textureSampler, input.TextureCoordinates);
+    float4 texelColor = tex2D(TextureSampler, input.TextureCoordinates);
     
 	// Calculate the diffuse light
     float NdotL = saturate(dot(normal, lightDirection));
@@ -129,9 +133,8 @@ float4 MainPS(VertexShaderOutput input) : COLOR
     
     // Final calculation
     float4 finalColor = float4(saturate(ambientColor * KAmbient + diffuseLight) * texelColor.rgb + specularLight, texelColor.a);
-    
-    return finalColor;
-	*/
+
+    return finalColor;  
 }
 
 technique BasicColorDrawing
@@ -144,11 +147,11 @@ technique BasicColorDrawing
 };
 
 //ESTA TÉCNICA SERA LA USADA PARA LA ILUMINACIÓN
-technique Default
+technique LightingTechnique
 {
-    pass Pass0
+    pass P0
     {
-        VertexShader = compile VS_SHADERMODEL MainVS();
-        PixelShader = compile PS_SHADERMODEL MainPS();
+        VertexShader = compile VS_SHADERMODEL MainVS_Lighting();
+        PixelShader = compile PS_SHADERMODEL MainPS_Lighting();
     }
 };

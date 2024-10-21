@@ -21,20 +21,15 @@ namespace TGC.MonoGame.TP.Modelos
         public void SetRotation(Matrix newRotation) { Rotation = newRotation; }
         public void SetScale(Matrix newScale) { Scale = newScale; }
         public void SetColor(Vector3 newColor) { Color = newColor; }
-        public void SetTexture(Texture newTexture) {Texture=newTexture;}
+        public void SetTexture(Texture newTexture) { Texture = newTexture; }
 
         public Vector3 GetPosition() { return Position; }
         public Matrix GetRotation() { return Rotation; }
         public Matrix GetScale() { return Scale; }
         public Vector3 GetColor() { return Color; }
 
-        public virtual void LoadContent(ContentManager content,GraphicsDevice graphicsDevice)
+        public virtual void LoadContent(ContentManager content, GraphicsDevice graphicsDevice)
         {
-            //Texture = content.Load<Texture2D>("Textures/texturaGolf");
-            /*Efecto = new BasicEffect(graphicsDevice);
-            Efecto.TextureEnabled = true;
-            Efecto.Texture = Texture;*/
-
             foreach (var mesh in Model3D.Meshes)
             {
                 foreach (var meshPart in mesh.MeshParts)
@@ -48,7 +43,7 @@ namespace TGC.MonoGame.TP.Modelos
         {
             Color = _color;
             Position = _position;
-            Rotation = _rotation;            
+            Rotation = _rotation;
         }
 
         public virtual void Update(GameTime gameTime, ContentManager content)
@@ -65,13 +60,16 @@ namespace TGC.MonoGame.TP.Modelos
 
             Effect.Parameters["Texture"]?.SetValue(Texture);
 
-            /*Efecto.Projection = projection;
-            Efecto.View = view;*/
+            /* Todavía no terminado, haciendo para la luz
+            var viewProjection = Camera.View * Camera.Projection;
+            Effect.Parameters["eyePosition"].SetValue(Camera.Position);
+            
+            Effect.Parameters["WorldViewProjection"].SetValue(World * viewProjection);
+            Effect.Parameters["InverseTransposeWorld"]?.SetValue(Matrix.Invert(Matrix.Transpose(World)));*/
 
-            //Effect.Parameters["World"].SetValue(mesh.ParentBone.Transform * World);
+
             foreach (var mesh in Model3D.Meshes)
             {
-                //Efecto.World = mesh.ParentBone.Transform * World;
                 mesh.Draw();
             }
         }

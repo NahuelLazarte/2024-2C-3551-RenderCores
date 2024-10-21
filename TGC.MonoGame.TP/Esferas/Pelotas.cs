@@ -16,7 +16,6 @@ namespace TGC.MonoGame.TP.Pelotas
         public float LinearSpeed = 30f;
         public float RotationSpeed = 30f;
         public float escala;
-        //private Texture Texture { get; set; }
 
         public Texture Texture1, Texture2, Texture3, Texture4;
         bool primera = true;

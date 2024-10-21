@@ -2,11 +2,12 @@ using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+
 using Microsoft.Xna.Framework.Input;
 using System.Collections.Generic;
-using TGC.MonoGame.TP;
 using TGC.MonoGame.TP.Collisions;
 using TGC.MonoGame.TP.Pelotas;
+
 
 namespace TGC.MonoGame.TP.Modelos
 {
@@ -51,7 +52,6 @@ namespace TGC.MonoGame.TP.Modelos
             pelota.Texture3 = content.Load<Texture2D>("Textures/texturaIA");
             pelota.Texture4 = content.Load<Texture2D>("Textures/texturaPlastico");
 
-            /*SetTexture(pelota.Texture1);*/
             Texture = pelota.Texture1;
 
             base.LoadContent(content, graphicsDevice);
@@ -64,38 +64,25 @@ namespace TGC.MonoGame.TP.Modelos
             boundingSphere.Radius *= 0.023f;
 
 
-            /*
-            (SetLightPosition, Vector3.Up * 45f);
-            Effect.Parameters["ambientColor"].SetValue(new Color(0f, 0f, 1f));
-            Effect.Parameters["diffuseColor"].SetValue(new Color(0.1f, 0.1f, 0.6f));
-            Effect.Parameters["specularColor"].SetValue(Color.White.ToVector3());
+            //(SetLightPosition, Vector3.Up * 45f);
+            
 
-            Effect.Parameters["KAmbient"].SetValue(0.1f);
-            Effect.Parameters["KDiffuse"].SetValue(0.1f);
-            Effect.Parameters["KSpecular"].SetValue(0.1f);
-            Effect.Parameters["shininess"].SetValue(0.1f);
+            Effect.Parameters["ambientColor"].SetValue(Microsoft.Xna.Framework.Color.White.ToVector3());
+            Effect.Parameters["diffuseColor"].SetValue(Microsoft.Xna.Framework.Color.White.ToVector3());
 
-            Effect.CurrentTechnique = Effect.Techniques["Default"];*/
+            Effect.Parameters["specularColor"].SetValue(Microsoft.Xna.Framework.Color.White.ToVector3());
+            
+            Effect.Parameters["KAmbient"]?.SetValue(0.860f);
+            Effect.Parameters["KDiffuse"]?.SetValue(1f);
+            Effect.Parameters["KSpecular"]?.SetValue(0f);
+            Effect.Parameters["shininess"]?.SetValue(1f);
+
+            //Effect.CurrentTechnique = Effect.Techniques["LightingTechnique"];
+
+    
 
         }
-        /*
-        public override void Draw(Matrix view, Matrix projection)
-        {
-            Efecto.Parameters["View"].SetValue(view);
-            Efecto.Parameters["Projection"].SetValue(projection);
-            Efecto.Parameters["DiffuseColor"].SetValue(Color);       
 
-            Effect.Parameters["View"].SetValue(view);
-
-            
-            
-            
-            foreach (var mesh in Model3D.Meshes)
-            {
-                Efecto.World = mesh.ParentBone.Transform * World;
-                mesh.Draw();
-            }
-        }*/
         public Sphere(Vector3 position, Matrix rotation, Vector3 color)
             : base(position, rotation, color)
         {
@@ -190,8 +177,8 @@ namespace TGC.MonoGame.TP.Modelos
             {
                 _velocity.Y += 30f;
 
-                Console.WriteLine($"Saltando");
-                Console.WriteLine($"_velocity.Y = {_velocity.Y}");
+                //Console.WriteLine($"Saltando");
+                //Console.WriteLine($"_velocity.Y = {_velocity.Y}");
             }
 
             if (!OnGround)

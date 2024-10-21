@@ -111,7 +111,7 @@ namespace TGC.MonoGame.TP
         {
             var keyboardState = Keyboard.GetState();
             
-
+            
             if (!isMusicPlaying)
             {       
                 MediaPlayer.Play(backgroundMusic);
@@ -127,6 +127,7 @@ namespace TGC.MonoGame.TP
 
             }
             else {
+
                 if(!(MediaPlayer.Volume == 0.1f)) MediaPlayer.Volume = 0.1f;
 
                 if (keyboardState.IsKeyDown(Keys.Escape))

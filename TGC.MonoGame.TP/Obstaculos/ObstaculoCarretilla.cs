@@ -11,7 +11,7 @@ using TGC.MonoGame.TP;
 using System;
 
 namespace TGC.MonoGame.TP.ObstaculoCarretilla {
-    public class ObstaculosCarretillas{
+    public class ObstaculosCarretillas {
         public Gizmos.Gizmos Gizmos { get; }
         public const string ContentFolder3D = "Models/";
         public const string ContentFolderEffects = "Effects/";
@@ -19,22 +19,30 @@ namespace TGC.MonoGame.TP.ObstaculoCarretilla {
         public Matrix scale = Matrix.CreateScale(1f);
         public Model ModeloCarretilla { get; set; }
         public List<BoundingBox> Colliders { get; set; }
-        private List<Matrix> _obstaculosCarretilla { get; set; }
+        
+        // Clase para representar el estado de cada carretilla
+        private class Carretilla {
+            public Matrix Transform;
+            public Vector3 Position;
+            public float MovementDirection = 1f; // 1: adelante, -1: atrás
+            public bool IsTurning = false;
+            public float TurnAngle = 0f; // Ángulo actual de giro
+            public const float TurnSpeed = MathHelper.Pi / 2; // Velocidad de giro (180 grados en 1 segundo)
+        }
+
+        private List<Carretilla> _obstaculosCarretilla;
         public BoundingSphere _envolturaEsfera { get; set; }
         public Song CollisionSound { get; set; }
         private float moveSpeed = 50f; // Velocidad de movimiento
-        private float movementDirection = 1f; // 1: adelante, -1: atrás
         private float movementRange = 30f; // Rango de movimiento en el eje Z
-        private bool isTurning = false; // Estado de giro
-        private float turnAngle = 0f; // Ángulo actual de giro
-        private const float turnSpeed = MathHelper.Pi / 2; // Velocidad de giro (180 grados en 1 segundo)
         BoundingBox size;
+
         public ObstaculosCarretillas() {
             Initialize();
         }
 
         private void Initialize() {
-            _obstaculosCarretilla = new List<Matrix>();
+            _obstaculosCarretilla = new List<Carretilla>();
             Colliders = new List<BoundingBox>();
         }
 
@@ -54,33 +62,33 @@ namespace TGC.MonoGame.TP.ObstaculoCarretilla {
 
         public void Update(GameTime gameTime, TGCGame Game) {
             for (int i = 0; i < _obstaculosCarretilla.Count; i++) {
-                var position = _obstaculosCarretilla[i].Translation;
+                var carretilla = _obstaculosCarretilla[i];
 
-                if (isTurning) {
+                if (carretilla.IsTurning) {
                     // Girar la carretilla
-                    turnAngle += turnSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
-                    if (turnAngle >= MathHelper.Pi) {
+                    carretilla.TurnAngle += Carretilla.TurnSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                    if (carretilla.TurnAngle >= MathHelper.Pi) {
                         // Finaliza el giro
-                        turnAngle = 0f;
-                        isTurning = false;
-                        movementDirection *= -1; // Cambia dirección al completar el giro
+                        carretilla.TurnAngle = 0f;
+                        carretilla.IsTurning = false;
+                        carretilla.MovementDirection *= -1; // Cambia dirección al completar el giro
                     }
                 } else {
                     // Mover en el eje Z según la dirección
-                    position.Z += movementDirection * moveSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                    carretilla.Position.Z += carretilla.MovementDirection * moveSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
 
                     // Cambiar dirección al llegar al límite
-                    if (position.Z > movementRange || position.Z < -movementRange) {
-                        position.Z = MathHelper.Clamp(position.Z, -movementRange, movementRange);
-                        isTurning = true; // Iniciar giro
+                    if (carretilla.Position.Z > movementRange || carretilla.Position.Z < -movementRange) {
+                        carretilla.Position.Z = MathHelper.Clamp(carretilla.Position.Z, -movementRange, movementRange);
+                        carretilla.IsTurning = true; // Iniciar giro
                     }
                 }
 
                 // Crear la matriz de transformación
-                var transform = Matrix.CreateRotationY(turnAngle) * Matrix.CreateTranslation(position) * scale;
-                _obstaculosCarretilla[i] = transform;
+                carretilla.Transform = Matrix.CreateRotationY(carretilla.TurnAngle) * Matrix.CreateTranslation(carretilla.Position) * scale;
+                _obstaculosCarretilla[i] = carretilla;
 
-                UpdateCollider(i, position);
+                UpdateCollider(i, carretilla.Position);
 
                 // Colisión
                 if (_envolturaEsfera.Intersects(Colliders[i])) {
@@ -91,7 +99,6 @@ namespace TGC.MonoGame.TP.ObstaculoCarretilla {
         }
         
         private void UpdateCollider(int index, Vector3 position) {
-            
             BoundingBox box = new BoundingBox(size.Min + position, size.Max + position);
             Colliders[index] = box;
         }
@@ -103,18 +110,16 @@ namespace TGC.MonoGame.TP.ObstaculoCarretilla {
 
             foreach (var mesh in ModeloCarretilla.Meshes) {
                 for (int i = 0; i < _obstaculosCarretilla.Count; i++) {
-                    Matrix _carretillaWorld = _obstaculosCarretilla[i];
-                    Effect.Parameters["World"].SetValue(mesh.ParentBone.Transform * _carretillaWorld);
+                    var carretilla = _obstaculosCarretilla[i];
+                    Effect.Parameters["World"].SetValue(mesh.ParentBone.Transform * carretilla.Transform);
                     string meshName = mesh.Name.ToLower();
-                    switch (meshName)
-                    {
+                    switch (meshName) {
                         case "wheel":
                             Effect.Parameters["DiffuseColor"].SetValue(new Vector3(0f, 0f, 0f)); 
                             break;
                         case "cart":
                             Effect.Parameters["DiffuseColor"].SetValue(new Vector3(0.545f, 0.271f, 0.075f)); 
                             break;
-                        
                     }
                     mesh.Draw();
                 }
@@ -123,8 +128,12 @@ namespace TGC.MonoGame.TP.ObstaculoCarretilla {
 
         public void AgregarNuevoObstaculo(float rotationY, Vector3 Posicion) {
             // Crear transformación inicial
-            var transform = Matrix.CreateRotationY(rotationY) * Matrix.CreateTranslation(Posicion) * scale;
-            _obstaculosCarretilla.Add(transform);
+            Posicion += new Vector3(-17.5f, 0, 0);
+            var carretilla = new Carretilla {
+                Transform = Matrix.CreateRotationY(rotationY) * Matrix.CreateTranslation(Posicion) * scale,
+                Position = Posicion
+            };
+            _obstaculosCarretilla.Add(carretilla);
 
             BoundingBox box = new BoundingBox(size.Min + Posicion, size.Max + Posicion);
             Colliders.Add(box);

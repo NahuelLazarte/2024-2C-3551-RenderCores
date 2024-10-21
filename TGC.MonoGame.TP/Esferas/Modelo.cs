@@ -15,13 +15,13 @@ namespace TGC.MonoGame.TP.Modelos
         protected Vector3 Color { get; set; } // color del modelo
         public Matrix World { get; set; }
         protected Effect Effect { get; set; }
-        protected Texture2D Texture { get; set; }
+        protected Texture Texture { get; set; }
 
         public void SetPosition(Vector3 newPosition) { Position = newPosition; }
         public void SetRotation(Matrix newRotation) { Rotation = newRotation; }
         public void SetScale(Matrix newScale) { Scale = newScale; }
         public void SetColor(Vector3 newColor) { Color = newColor; }
-        public void SetTexture(Texture2D newTexture) {/* Efecto.Parameters["Texture"].SetValue(newTexture);*/ }
+        public void SetTexture(Texture newTexture) {Texture=newTexture;}
 
         public Vector3 GetPosition() { return Position; }
         public Matrix GetRotation() { return Rotation; }
@@ -62,6 +62,8 @@ namespace TGC.MonoGame.TP.Modelos
             Effect.Parameters["Projection"].SetValue(projection);
             Effect.Parameters["DiffuseColor"].SetValue(Color);
             Effect.Parameters["World"].SetValue(World);
+
+            Effect.Parameters["Texture"]?.SetValue(Texture);
 
             /*Efecto.Projection = projection;
             Efecto.View = view;*/

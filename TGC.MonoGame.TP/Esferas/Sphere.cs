@@ -26,6 +26,8 @@ namespace TGC.MonoGame.TP.Modelos
 
         private bool OnGround = false;
         private KeyboardState previousKeyboardState;
+        
+
         public TGCGame Game;
 
         public void setDirection(Vector3 newDirection)
@@ -43,7 +45,14 @@ namespace TGC.MonoGame.TP.Modelos
             pelota = new Pelota();
             Model3D = content.Load<Model>("Models/" + "Spheres/sphere");
             Effect = content.Load<Effect>("Effects/" + "SphereShader");
-            //Texture = content.Load<Texture2D>("Textures/texturaGolf");
+
+            pelota.Texture1 = content.Load<Texture2D>("Textures/texturaGolf");
+            pelota.Texture2 = content.Load<Texture2D>("Textures/texturaMetal");
+            pelota.Texture3 = content.Load<Texture2D>("Textures/texturaIA");
+            pelota.Texture4 = content.Load<Texture2D>("Textures/texturaPlastico");
+
+            /*SetTexture(pelota.Texture1);*/
+            Texture = pelota.Texture1;
 
             base.LoadContent(content, graphicsDevice);
 

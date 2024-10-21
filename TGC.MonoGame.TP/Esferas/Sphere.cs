@@ -22,6 +22,7 @@ namespace TGC.MonoGame.TP.Modelos
         public List<BoundingBox> Colliders { get; set; }
 
         Vector3 posicionNueva;
+        public bool isGodModeActive { get; set; }
 
         private bool OnGround = false;
         private KeyboardState previousKeyboardState;
@@ -71,6 +72,14 @@ namespace TGC.MonoGame.TP.Modelos
 
             bool accelerating = false;
             
+
+            if (isGodModeActive)
+            {
+                acceleration = new Vector3(0,0,0);
+                MovimientoGodMode(gameTime, content);
+                return;
+            }
+
             if (keyboardState.IsKeyDown(Keys.W))
             {
                 acceleration += pelota.LinearSpeed * direction;
@@ -101,7 +110,6 @@ namespace TGC.MonoGame.TP.Modelos
                 ApplyRotation(elapsedTime, leftDirection);
             }
 
-
             if (!accelerating && (_velocity.X != 0f || _velocity.Z != 0f))
             {
                 acceleration.X -= _velocity.X * 0.95f;
@@ -128,8 +136,6 @@ namespace TGC.MonoGame.TP.Modelos
                 SolveVerticalMovement();
             }*/
 
-
-
             // Mejorar la condición de salto
             
             //if (keyboardState.IsKeyDown(Keys.Space) && Math.Abs(Position.Y - 4f) < 0.1f)
@@ -152,7 +158,6 @@ namespace TGC.MonoGame.TP.Modelos
                 }
             }
 
-
             //acceleration.Y = -10f;
 
             _velocity += acceleration * elapsedTime;
@@ -160,8 +165,6 @@ namespace TGC.MonoGame.TP.Modelos
             Position += _velocity * elapsedTime;
 
             previousKeyboardState = keyboardState;
-
-            
 
             boundingSphere.Center = Position;
 
@@ -171,6 +174,83 @@ namespace TGC.MonoGame.TP.Modelos
 
             pelota.Update(gameTime, this, content);
         }
+
+        private void MovimientoGodMode(GameTime gameTime, ContentManager content){
+            var keyboardState = Keyboard.GetState();
+            var mouseState = Mouse.GetState(); // Obtener el estado del mouse
+            
+            float elapsedTime = Convert.ToSingle(gameTime.ElapsedGameTime.TotalSeconds);
+            Vector3 acceleration = Vector3.Zero;
+            _velocity = Vector3.Zero;
+            Vector3 movVertical = new Vector3(0,40,0);
+            bool accelerating = false;
+            var velocidadLineal = 100;
+
+            if (keyboardState.IsKeyDown(Keys.W))
+            {
+                acceleration += velocidadLineal * direction;
+                accelerating = true;
+                //ApplyRotation(elapsedTime, direction);
+            }
+
+            if (keyboardState.IsKeyDown(Keys.S))
+            {
+                acceleration -= velocidadLineal * direction;
+                accelerating = true;
+                //ApplyRotation(elapsedTime, -direction);
+            }
+
+            if (keyboardState.IsKeyDown(Keys.D))
+            {
+                Vector3 rightDirection = Vector3.Cross(direction, Vector3.Up);
+                acceleration += velocidadLineal * rightDirection;
+                accelerating = true;
+                //ApplyRotation(elapsedTime, rightDirection);
+            }
+
+            if (keyboardState.IsKeyDown(Keys.A))
+            {
+                Vector3 leftDirection = Vector3.Cross(Vector3.Up, direction);
+                acceleration += velocidadLineal * leftDirection;
+                accelerating = true;
+                //ApplyRotation(elapsedTime, leftDirection);
+            }
+
+            if (mouseState.RightButton == ButtonState.Pressed)
+            {
+                Vector3 leftDirection = Vector3.Cross(Vector3.Up, direction);
+                acceleration += movVertical;
+                accelerating = true;
+                //ApplyRotation(elapsedTime, leftDirection);
+            }
+
+            if (mouseState.LeftButton == ButtonState.Pressed)
+            {
+                Vector3 leftDirection = Vector3.Cross(Vector3.Up, direction);
+                acceleration -= movVertical;
+                accelerating = true;
+                //ApplyRotation(elapsedTime, leftDirection);
+            }
+
+            if (!accelerating && (_velocity.X != 0f || _velocity.Z != 0f))
+            {
+                acceleration.X -= _velocity.X * 0.95f;
+                acceleration.Z -= _velocity.Z * 0.95f;
+            }
+
+            //acceleration.Y = -10f;
+
+            Position += acceleration * elapsedTime;
+
+            previousKeyboardState = keyboardState;
+
+            //boundingSphere.Center = Position;
+
+            World = Scale * Rotation * Matrix.CreateTranslation(Position);
+
+            pelota.Update(gameTime, this, content);
+        }
+
         private void ApplyRotation(float elapsedTime, Vector3 direction)
         {
             float rotationAngle = pelota.RotationSpeed * elapsedTime;

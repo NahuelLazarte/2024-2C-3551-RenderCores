@@ -46,6 +46,7 @@ namespace TGC.MonoGame.TP
         //   
         private Menu menu;
         public bool isMenuActive = true;
+        public bool isGodModeActive = false;
         private SpriteFont menuFont; // Asegúrate de cargar una fuente para el menú
         //
         public TGCGame()
@@ -104,7 +105,7 @@ namespace TGC.MonoGame.TP
 
             if (isMenuActive)
             {
-                menu.Update(this);
+                menu.Update(this, gameTime);
             }
             else {
 
@@ -112,6 +113,7 @@ namespace TGC.MonoGame.TP
                 {
                     isMenuActive = true;
                 }
+                esfera.isGodModeActive = isGodModeActive;
 
                 _materiales.Update(gameTime, this, Camera.ViewMatrix, Camera.ProjectionMatrix);
                 BoundingSphere boundingSphere = esfera.GetBoundingSphere();

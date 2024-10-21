@@ -60,7 +60,7 @@ namespace TGC.MonoGame.TP.Modelos
         {
             Effect.Parameters["View"].SetValue(view);
             Effect.Parameters["Projection"].SetValue(projection);
-            Effect.Parameters["DiffuseColor"].SetValue(Color);
+            //Effect.Parameters["DiffuseColor"].SetValue(Color);
             Effect.Parameters["World"].SetValue(World);
 
             Effect.Parameters["Texture"]?.SetValue(Texture);

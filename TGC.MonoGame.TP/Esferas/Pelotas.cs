@@ -18,7 +18,7 @@ namespace TGC.MonoGame.TP.Pelotas
         public float escala;
         //private Texture Texture { get; set; }
 
-        public Texture Texture1, Texture2, Texture3, Texture4, Texture5;
+        public Texture Texture1, Texture2, Texture3, Texture4;
         bool primera = true;
 
         internal void Update(GameTime gameTime, Modelos.Sphere esfera, ContentManager content)
@@ -58,8 +58,6 @@ namespace TGC.MonoGame.TP.Pelotas
                 LinearSpeed = 30f;
                 RotationSpeed = 30f;
             }
-
-
         }
 
         public void Draw(SpriteBatch spriteBatch, SpriteFont font)

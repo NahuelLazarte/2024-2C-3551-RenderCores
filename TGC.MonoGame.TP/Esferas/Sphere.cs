@@ -26,7 +26,7 @@ namespace TGC.MonoGame.TP.Modelos
 
         private bool OnGround = false;
         private KeyboardState previousKeyboardState;
-        
+
 
         public TGCGame Game;
 
@@ -62,6 +62,21 @@ namespace TGC.MonoGame.TP.Modelos
             //boundingSphere.Radius *= 0.0059f;
             //boundingSphere.Radius *= 0.026f;
             boundingSphere.Radius *= 0.023f;
+
+
+            /*
+            (SetLightPosition, Vector3.Up * 45f);
+            Effect.Parameters["ambientColor"].SetValue(new Color(0f, 0f, 1f));
+            Effect.Parameters["diffuseColor"].SetValue(new Color(0.1f, 0.1f, 0.6f));
+            Effect.Parameters["specularColor"].SetValue(Color.White.ToVector3());
+
+            Effect.Parameters["KAmbient"].SetValue(0.1f);
+            Effect.Parameters["KDiffuse"].SetValue(0.1f);
+            Effect.Parameters["KSpecular"].SetValue(0.1f);
+            Effect.Parameters["shininess"].SetValue(0.1f);
+
+            Effect.CurrentTechnique = Effect.Techniques["Default"];*/
+
         }
         /*
         public override void Draw(Matrix view, Matrix projection)
@@ -85,7 +100,7 @@ namespace TGC.MonoGame.TP.Modelos
             : base(position, rotation, color)
         {
             //escala = 0.045f;
-            
+
             escala = 4.2f;
 
             SetScale(Matrix.CreateScale(escala));
@@ -103,11 +118,11 @@ namespace TGC.MonoGame.TP.Modelos
             Vector3 acceleration = Vector3.Zero;
 
             bool accelerating = false;
-            
+
 
             if (isGodModeActive)
             {
-                acceleration = new Vector3(0,0,0);
+                acceleration = new Vector3(0, 0, 0);
                 MovimientoGodMode(gameTime, content);
                 return;
             }
@@ -169,22 +184,24 @@ namespace TGC.MonoGame.TP.Modelos
             }*/
 
             // Mejorar la condición de salto
-            
+
             //if (keyboardState.IsKeyDown(Keys.Space) && Math.Abs(Position.Y - 4f) < 0.1f)
-            if (keyboardState.IsKeyDown(Keys.Space) && Position.Y <= posicionNueva.Y && OnGround)  
+            if (keyboardState.IsKeyDown(Keys.Space) && Position.Y <= posicionNueva.Y && OnGround)
             {
                 _velocity.Y += 30f;
 
                 Console.WriteLine($"Saltando");
-                Console.WriteLine($"_velocity.Y = {_velocity.Y}");                
+                Console.WriteLine($"_velocity.Y = {_velocity.Y}");
             }
 
-            if(!OnGround){
+            if (!OnGround)
+            {
                 acceleration.Y = -50f;
             }
 
-            for(int i = 0; i < Colliders.Count; i++) {
-                if(Position.Y <= -50f && !boundingSphere.Intersects(Colliders[i]))
+            for (int i = 0; i < Colliders.Count; i++)
+            {
+                if (Position.Y <= -50f && !boundingSphere.Intersects(Colliders[i]))
                 {
                     Game.Respawn();
                 }
@@ -207,14 +224,15 @@ namespace TGC.MonoGame.TP.Modelos
             pelota.Update(gameTime, this, content);
         }
 
-        private void MovimientoGodMode(GameTime gameTime, ContentManager content){
+        private void MovimientoGodMode(GameTime gameTime, ContentManager content)
+        {
             var keyboardState = Keyboard.GetState();
             var mouseState = Mouse.GetState(); // Obtener el estado del mouse
-            
+
             float elapsedTime = Convert.ToSingle(gameTime.ElapsedGameTime.TotalSeconds);
             Vector3 acceleration = Vector3.Zero;
             _velocity = Vector3.Zero;
-            Vector3 movVertical = new Vector3(0,40,0);
+            Vector3 movVertical = new Vector3(0, 40, 0);
             bool accelerating = false;
             var velocidadLineal = 100;
 
@@ -313,11 +331,13 @@ namespace TGC.MonoGame.TP.Modelos
                     //Console.WriteLine($"BoundingBox {contador} Min: {collider.Min}, Max: {collider.Max} " + (hayIntersecion ? "Hay interseccion" : "No hay interseccion"));
                     float posicionMinY = collider.Min.Y;
                     float posicionMaxY = collider.Max.Y;
-                    
-                    if(posicionMinY >= posicionMaxY){
+
+                    if (posicionMinY >= posicionMaxY)
+                    {
                         posicionNueva = new Vector3(Position.X, posicionMinY + boundingSphere.Radius - 0.01f, Position.Z);
                     }
-                    else{
+                    else
+                    {
                         posicionNueva = new Vector3(Position.X, posicionMaxY + boundingSphere.Radius - 0.01f, Position.Z);
                     }
                     //Console.WriteLine($"posicionMinY: {posicionMinY}, posicionMaxY: {posicionMaxY}");
@@ -328,7 +348,8 @@ namespace TGC.MonoGame.TP.Modelos
                     //Console.WriteLine($"Interseccion");
                     return;
                 }
-                else{
+                else
+                {
                     OnGround = false;
                 }
                 /*

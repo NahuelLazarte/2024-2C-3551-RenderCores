@@ -42,7 +42,8 @@ namespace TGC.MonoGame.TP.Modelos
         {
             pelota = new Pelota();
             Model3D = content.Load<Model>("Models/" + "Spheres/sphere");
-            Effect = content.Load<Effect>("Effects/" + "BasicShader");
+            Effect = content.Load<Effect>("Effects/" + "SphereShader");
+            //Texture = content.Load<Texture2D>("Textures/texturaGolf");
 
             base.LoadContent(content, graphicsDevice);
 
@@ -50,12 +51,34 @@ namespace TGC.MonoGame.TP.Modelos
 
             boundingSphere.Center = Position;
             //boundingSphere.Radius *= 0.0059f;
-            boundingSphere.Radius *= 0.026f;
+            //boundingSphere.Radius *= 0.026f;
+            boundingSphere.Radius *= 0.023f;
         }
+        /*
+        public override void Draw(Matrix view, Matrix projection)
+        {
+            Efecto.Parameters["View"].SetValue(view);
+            Efecto.Parameters["Projection"].SetValue(projection);
+            Efecto.Parameters["DiffuseColor"].SetValue(Color);       
+
+            Effect.Parameters["View"].SetValue(view);
+
+            
+            
+            
+            foreach (var mesh in Model3D.Meshes)
+            {
+                Efecto.World = mesh.ParentBone.Transform * World;
+                mesh.Draw();
+            }
+        }*/
         public Sphere(Vector3 position, Matrix rotation, Vector3 color)
             : base(position, rotation, color)
         {
-            escala = 0.045f;
+            //escala = 0.045f;
+            
+            escala = 4.2f;
+
             SetScale(Matrix.CreateScale(escala));
             World = Scale * rotation * Matrix.CreateTranslation(position);
             Colliders = new List<BoundingBox>();

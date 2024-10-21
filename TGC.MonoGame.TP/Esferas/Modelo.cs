@@ -1,4 +1,4 @@
-using System;
+//using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -12,18 +12,16 @@ namespace TGC.MonoGame.TP.Modelos
         protected Vector3 Position { get; set; } // posicion del modelo 
         protected Matrix Rotation { get; set; } // rotacion del modelo
         protected Matrix Scale { get; set; } // escala del modelo 
-        private Vector3 Color { get; set; } // color del modelo
+        protected Vector3 Color { get; set; } // color del modelo
         public Matrix World { get; set; }
-        public Effect Effect { get; set; }
-
-        private BasicEffect Efecto { get; set; }
-        private Texture2D Texture { get; set; }
+        protected Effect Effect { get; set; }
+        protected Texture2D Texture { get; set; }
 
         public void SetPosition(Vector3 newPosition) { Position = newPosition; }
         public void SetRotation(Matrix newRotation) { Rotation = newRotation; }
         public void SetScale(Matrix newScale) { Scale = newScale; }
         public void SetColor(Vector3 newColor) { Color = newColor; }
-        public void SetTexture(Texture2D newTexture) { Efecto.Texture = newTexture; }
+        public void SetTexture(Texture2D newTexture) {/* Efecto.Parameters["Texture"].SetValue(newTexture);*/ }
 
         public Vector3 GetPosition() { return Position; }
         public Matrix GetRotation() { return Rotation; }
@@ -32,16 +30,16 @@ namespace TGC.MonoGame.TP.Modelos
 
         public virtual void LoadContent(ContentManager content,GraphicsDevice graphicsDevice)
         {
-            Texture = content.Load<Texture2D>("Textures/texturaGolf");
-            Efecto = new BasicEffect(graphicsDevice);
+            //Texture = content.Load<Texture2D>("Textures/texturaGolf");
+            /*Efecto = new BasicEffect(graphicsDevice);
             Efecto.TextureEnabled = true;
-            Efecto.Texture = Texture;
+            Efecto.Texture = Texture;*/
 
             foreach (var mesh in Model3D.Meshes)
             {
                 foreach (var meshPart in mesh.MeshParts)
                 {
-                    meshPart.Effect = Efecto;
+                    meshPart.Effect = Effect;
                 }
             }
         }
@@ -63,15 +61,15 @@ namespace TGC.MonoGame.TP.Modelos
             Effect.Parameters["View"].SetValue(view);
             Effect.Parameters["Projection"].SetValue(projection);
             Effect.Parameters["DiffuseColor"].SetValue(Color);
-            
-            
-            Efecto.Projection = projection;
-            Efecto.View = view;
+            Effect.Parameters["World"].SetValue(World);
 
+            /*Efecto.Projection = projection;
+            Efecto.View = view;*/
 
+            //Effect.Parameters["World"].SetValue(mesh.ParentBone.Transform * World);
             foreach (var mesh in Model3D.Meshes)
             {
-                Efecto.World = mesh.ParentBone.Transform * World;
+                //Efecto.World = mesh.ParentBone.Transform * World;
                 mesh.Draw();
             }
         }

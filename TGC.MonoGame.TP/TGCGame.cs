@@ -200,7 +200,7 @@ namespace TGC.MonoGame.TP
 
                 Gizmos.DrawSphere(boundingSphere.Center, boundingSphere.Radius * Vector3.One, Color.White);
 
-                //Gizmos.Draw();
+                Gizmos.Draw();
 
                 esfera.Draw(Camera.ViewMatrix, Camera.ProjectionMatrix);
 

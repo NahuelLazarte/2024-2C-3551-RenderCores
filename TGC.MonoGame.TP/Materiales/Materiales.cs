@@ -10,6 +10,8 @@ using TGC.MonoGame.TP.PistaCurvaDerecha;
 using TGC.MonoGame.TP.PistaCurvaIzquierda;
 using TGC.MonoGame.TP.PistaRecta;
 using TGC.MonoGame.TP.PowerUpHamburguesa;
+using TGC.MonoGame.TP.PowerUpEspada;
+
 using TGC.MonoGame.TP.ObstaculoPiedras;
 using TGC.MonoGame.TP.ObstaculoPozo;
 using TGC.MonoGame.TP.CheckPoint;
@@ -32,6 +34,7 @@ namespace TGC.MonoGame.TP.MaterialesJuego
         public ObstaculosPiedras _piedras { get; set; }
         public ObstaculosPozos _pozos { get; set; }
         public ObstaculosCarretillas _carretillas { get; set; }
+        public PowerUpEspadas _espadas { get; set; }
 
         public Muros _muros { get; set; }
 
@@ -46,6 +49,7 @@ namespace TGC.MonoGame.TP.MaterialesJuego
             _pistasCurvasIzquierdas = new PistasCurvasIzquierdas();
             _pistasRectas = new PistasRectas();
             _hamburguesas = new PowerUpHamburguesas();
+            _espadas = new PowerUpEspadas();
             _piedras = new ObstaculosPiedras();
             _pozos = new ObstaculosPozos();
             _checkPoints = new CheckPoints();
@@ -67,6 +71,7 @@ namespace TGC.MonoGame.TP.MaterialesJuego
             _pistasCurvasDerechas.LoadContent(Content);
             _pistasRectas.LoadContent(Content);
             _hamburguesas.LoadContent(Content, graphicsDevice);
+            _espadas.LoadContent(Content, graphicsDevice);
             _piedras.LoadContent(Content);
             _pozos.LoadContent(Content);
             _checkPoints.LoadContent(Content);
@@ -81,7 +86,7 @@ namespace TGC.MonoGame.TP.MaterialesJuego
             _pistasCurvasDerechas.Update(gameTime);
             _pistasCurvasIzquierdas.Update(gameTime);
             _pistasRectas.Update(gameTime);
-
+            _espadas.Update(gameTime, Game);
             _hamburguesas.Update(gameTime, Game);
             _checkPoints.Update(gameTime, Game);
             _piedras.Update(gameTime, Game);
@@ -104,7 +109,7 @@ namespace TGC.MonoGame.TP.MaterialesJuego
             _muros.Draw(gameTime, view, projection);
             _carretillas.Draw(gameTime, view, projection);
             _hamburguesas.Draw(gameTime, view, projection, graphicsDevice);
-
+            _espadas.Draw(gameTime, view, projection, graphicsDevice);
             /*
             foreach (var boundingBoxPista in CollidersDibujo)
             {
@@ -117,6 +122,7 @@ namespace TGC.MonoGame.TP.MaterialesJuego
 
         public void ColliderEsfera(BoundingSphere boundingSphere){
             _hamburguesas._envolturaEsfera = boundingSphere;
+            _espadas._envolturaEsfera = boundingSphere;
             _piedras._envolturaEsfera = boundingSphere;
             _pozos._envolturaEsfera = boundingSphere;
             _muros._envolturaEsfera = boundingSphere;

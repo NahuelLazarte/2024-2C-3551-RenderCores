@@ -258,6 +258,12 @@ namespace TGC.MonoGame.TP
             esfera.aumentarVelocidad(1.5f);
         }
 
+        public void recibirPowerUpEspada()
+        {
+            // por ahora nada, luego rompera obstaculos
+            //esfera.aumentarVelocidad(1.5f);
+        }
+
     }
 
 

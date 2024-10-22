@@ -63,18 +63,20 @@ namespace TGC.MonoGame.MenuPrincipal
                 }
                 else if (selectedIndex == 2)
                 {
+                    isMusicActive = !isMusicActive; // Alternar el estado de la música
+
                     if (isMusicActive)
                     {
                         // Activar la música
-                        MediaPlayer.Resume(); // O MediaPlayer.Play(...) según tu implementación
+                        MediaPlayer.Resume();
                     }
                     else
                     {
                         // Desactivar la música
-                        MediaPlayer.Stop();
+                        MediaPlayer.Pause();
                     }
                     
-                    isMusicActive = !isMusicActive; // Alternar el estado de la música
+                    
                     // Aquí podrías añadir lógica para activar/desactivar la música
                     
                 }

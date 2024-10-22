@@ -16,6 +16,7 @@ using TGC.MonoGame.TP.ObstaculoPiedras;
 using TGC.MonoGame.TP.ObstaculoPozo;
 using TGC.MonoGame.TP.CheckPoint;
 using TGC.MonoGame.TP.ObstaculoCarretilla;
+using TGC.MonoGame.TP.PowerUpEspada;
 
 using System; 
 
@@ -168,6 +169,13 @@ namespace TGC.MonoGame.TP.Constructor{
             
         }
 
+        void AgregarPowerUpEspada(PowerUpEspadas unPowerUp)
+        {
+            Vector3 posicionObstaculo = posicionActual;
+            unPowerUp.AgregarNuevoPowerUp(rotacionActual, posicionObstaculo);
+            //Console.WriteLine($"Obstaculo Pez dibujado: Posicion en ejes: X = {posicionObstaculo.X}, Y = {posicionObstaculo.Y}, Z = {posicionObstaculo.Z}"); 
+        }
+        
         void AgregarObstaculoPiedra(ObstaculosPiedras unObstaculo)
         {
             Vector3 posicionObstaculo = new(posicionActual.X / 38f, posicionActual.Y / 38f, posicionActual.Z / 33.5f);

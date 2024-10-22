@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using TGC.MonoGame.TP.Collisions;
 using TGC.MonoGame.TP.Modelos;
 using TGC.MonoGame.TP;
+using Microsoft.Xna.Framework.Audio;
 
 using System; // Aseg�rate de que esto est� presente en la parte superior de tu archivo
 
@@ -31,7 +32,7 @@ namespace TGC.MonoGame.TP.MurosExtra
         private List<Matrix> _muros { get; set; }
         private List<Matrix> _murosEsquina { get; set; }
         public BoundingSphere _envolturaEsfera { get; set; }
-        public Song CollisionSound { get; set; }
+        public SoundEffect CollisionSound { get; set; }
 
         BoundingBox MuroSize;
         BoundingBox MuroEsquinaSize;
@@ -85,7 +86,7 @@ namespace TGC.MonoGame.TP.MurosExtra
                 }
             }
 
-            CollisionSound = Content.Load<Song>("Audio/ColisionPez"); // Ajusta la ruta seg�n sea necesario
+            CollisionSound = Content.Load<SoundEffect>("Audio/ColisionPez"); // Ajusta la ruta seg�n sea necesario
             
             MuroSize = BoundingVolumesExtensions.CreateAABBFrom(ModeloMuro);
             MuroEsquinaSize = BoundingVolumesExtensions.CreateAABBFrom(ModeloMuroEsquina);
@@ -100,7 +101,7 @@ namespace TGC.MonoGame.TP.MurosExtra
                 if (_envolturaEsfera.Intersects(Colliders[i]))
                 {
                     Game.Respawn(); //TODAVIA NO FUNCIONA BIEN EL POSICIONAMIENTO DE LOS COLLIDERS
-                    //MediaPlayer.Play(CollisionSound);
+                    CollisionSound.Play();
                     Console.WriteLine("Colisión detectada con el muro");
                     break;
                 }

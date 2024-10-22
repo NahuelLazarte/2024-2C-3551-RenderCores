@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using TGC.MonoGame.TP.Collisions;
 using TGC.MonoGame.TP.Modelos;
 using TGC.MonoGame.TP;
-
+using Microsoft.Xna.Framework.Audio;
 
 
 namespace TGC.MonoGame.TP.ObstaculoPiedras{
@@ -22,7 +22,7 @@ namespace TGC.MonoGame.TP.ObstaculoPiedras{
         private float Rotation { get; set; }
         private List<Matrix> _obstaculosPiedras { get; set; }
         public BoundingSphere _envolturaEsfera{ get; set; }
-        public Song CollisionSound { get; set; }
+        public SoundEffect CollisionSound { get; set; }
         BoundingBox size;
 
         public ObstaculosPiedras() {
@@ -48,7 +48,7 @@ namespace TGC.MonoGame.TP.ObstaculoPiedras{
                 }
             }
 
-            CollisionSound = Content.Load<Song>("Audio/ColisionPez"); // Ajusta la ruta según sea necesario
+            CollisionSound = Content.Load<SoundEffect>("Audio/ColisionPez"); // Ajusta la ruta según sea necesario
             size = BoundingVolumesExtensions.CreateAABBFrom(ModeloPez);
 
 
@@ -59,7 +59,7 @@ namespace TGC.MonoGame.TP.ObstaculoPiedras{
             for (int i = 0; i < _obstaculosPiedras.Count; i++) {
                 if (_envolturaEsfera.Intersects(Colliders[i])) {
                     // Acción al tocar el modelo
-                    //MediaPlayer.Play(CollisionSound);
+                    CollisionSound.Play();
                     //_obstaculosPiedras.RemoveAt(i);
                     Game.Respawn();
                 }

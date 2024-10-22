@@ -8,6 +8,8 @@ using TGC.MonoGame.TP.Collisions;
 using TGC.MonoGame.TP.Modelos;
 using TGC.MonoGame.TP;
 
+using Microsoft.Xna.Framework.Audio;
+
 using System; // Asegúrate de que esto esté presente en la parte superior de tu archivo
 
 
@@ -23,7 +25,7 @@ namespace TGC.MonoGame.TP.CheckPoint{
         private float Rotation { get; set; }
         private List<Matrix> _checkPoints { get; set; }
         public BoundingSphere _envolturaEsfera{ get; set; }
-        public Song CollisionSound { get; set; }
+        public SoundEffect CollisionSound { get; set; }
         BoundingBox size;
 
         public CheckPoints() {
@@ -51,7 +53,7 @@ namespace TGC.MonoGame.TP.CheckPoint{
                 }
             }
 
-            CollisionSound = Content.Load<Song>("Audio/CheckPoint"); // Ajusta la ruta según sea necesario
+            CollisionSound = Content.Load<SoundEffect>("Audio/CheckPoint"); // Ajusta la ruta según sea necesario
 
             size = BoundingVolumesExtensions.CreateAABBFrom(ModeloCheckPoint);
 
@@ -69,7 +71,7 @@ namespace TGC.MonoGame.TP.CheckPoint{
                 if (_envolturaEsfera.Intersects(Colliders[i])) {
                     // Acción al tocar el modelo
                     // Aquí puedes realizar la acción que desees, como eliminar el pez, reducir vida, etc.
-                    //MediaPlayer.Play(CollisionSound);
+                    CollisionSound.Play();
                     _checkPoints.RemoveAt(i);
                     Game.nuevoCheckPoint(originalPosition);
                 }

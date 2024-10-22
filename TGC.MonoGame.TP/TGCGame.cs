@@ -250,7 +250,7 @@ namespace TGC.MonoGame.TP
         }
         public void nuevoCheckPoint(Vector3 posicion)
         {
-            _constructorMateriales.posicionCheckPoint = new Vector3(posicion.X, posicion.Y + 2f, posicion.Z);
+            _constructorMateriales.posicionCheckPoint = new Vector3(posicion.X, posicion.Y + 5f, posicion.Z);
         }
 
         public void recibirPowerUpPez()

@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using TGC.MonoGame.TP.Collisions;
 using TGC.MonoGame.TP.Modelos;
 using TGC.MonoGame.TP;
-
+using Microsoft.Xna.Framework.Audio;
 using System; 
 
 
@@ -23,7 +23,7 @@ namespace TGC.MonoGame.TP.PowerUpHamburguesa{
         private float Rotation { get; set; }
         private List<Matrix> _hamburguesas { get; set; }
         public BoundingSphere _envolturaEsfera{ get; set; }
-        public Song CollisionSound { get; set; }
+        public SoundEffect CollisionSound { get; set; }
         private SpriteBatch spriteBatch;
         private SpriteFont spriteFont;
         private int hamburguesasCount;
@@ -59,7 +59,7 @@ namespace TGC.MonoGame.TP.PowerUpHamburguesa{
                 }
             }
 
-            CollisionSound = Content.Load<Song>("Audio/ColisionPez"); 
+            CollisionSound = Content.Load<SoundEffect>("Audio/ColisionPez"); 
 
 
             Console.WriteLine(ModeloHamburguesa != null ? "Modelo cargado exitosamente" : "Error al cargar el modelo");
@@ -83,7 +83,7 @@ namespace TGC.MonoGame.TP.PowerUpHamburguesa{
                 // Acción al tocar el modelo
                 Console.WriteLine($"¡Colisión con el pez en la posición {originalPosition}!");
                 
-                //MediaPlayer.Play(CollisionSound);
+                CollisionSound.Play();
                 _hamburguesas.RemoveAt(i);
                 hamburguesasCount++;
                 Game.recibirPowerUpPez();

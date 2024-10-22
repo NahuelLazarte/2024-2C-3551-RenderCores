@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using TGC.MonoGame.TP.Collisions;
 using TGC.MonoGame.TP.Modelos;
 using TGC.MonoGame.TP;
+using Microsoft.Xna.Framework.Audio;
 
 using System;
 
@@ -32,7 +33,7 @@ namespace TGC.MonoGame.TP.ObstaculoCarretilla {
 
         private List<Carretilla> _obstaculosCarretilla;
         public BoundingSphere _envolturaEsfera { get; set; }
-        public Song CollisionSound { get; set; }
+        public SoundEffect CollisionSound { get; set; }
         private float moveSpeed = 50f; // Velocidad de movimiento
         private float movementRange = 30f; // Rango de movimiento en el eje Z
         BoundingBox size;
@@ -57,7 +58,7 @@ namespace TGC.MonoGame.TP.ObstaculoCarretilla {
                 }
             }
             size = BoundingVolumesExtensions.CreateAABBFrom(ModeloCarretilla);
-            CollisionSound = Content.Load<Song>("Audio/ColisionPez"); 
+            CollisionSound = Content.Load<SoundEffect>("Audio/ColisionPez"); 
         }
 
         public void Update(GameTime gameTime, TGCGame Game) {
@@ -92,7 +93,7 @@ namespace TGC.MonoGame.TP.ObstaculoCarretilla {
 
                 // Colisión
                 if (_envolturaEsfera.Intersects(Colliders[i])) {
-                    //MediaPlayer.Play(CollisionSound);
+                    CollisionSound.Play();
                     Game.Respawn();
                 }
             }

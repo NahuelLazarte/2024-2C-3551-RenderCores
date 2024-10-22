@@ -30,7 +30,7 @@ namespace TGC.MonoGame.TP.Modelos
         private bool OnGround = false;
         private KeyboardState previousKeyboardState;
 
-        private SoundEffect soundEffect1;
+        private SoundEffect soundEffect1, soundEffect2;
 
         private SoundEffectInstance soundEffectInstance1;
 
@@ -71,15 +71,8 @@ namespace TGC.MonoGame.TP.Modelos
             //boundingSphere.Radius *= 0.026f;
             boundingSphere.Radius *= 0.023f;
 
-
-            //(SetLightPosition, Vector3.Up * 45f);
-
-
-            //Effect.Parameters["ambientColor"].SetValue(Microsoft.Xna.Framework.Color.Green.ToVector3());
-            //Effect.Parameters["diffuseColor"].SetValue(Microsoft.Xna.Framework.Color.Orange.ToVector3());
-
             Effect.Parameters["ambientColor"].SetValue(Microsoft.Xna.Framework.Color.White.ToVector3());
-            Effect.Parameters["diffuseColor"].SetValue(Microsoft.Xna.Framework.Color.White.ToVector3());
+            Effect.Parameters["diffuseColor"].SetValue(Microsoft.Xna.Framework.Color.Yellow.ToVector3());
 
             Effect.Parameters["specularColor"].SetValue(Microsoft.Xna.Framework.Color.White.ToVector3());
 
@@ -93,6 +86,8 @@ namespace TGC.MonoGame.TP.Modelos
             soundEffect1 = content.Load<SoundEffect>("Audio/stoneDrag1");
             soundEffectInstance1 = soundEffect1.CreateInstance();
             soundEffectInstance1.Volume = 0.2f;
+
+            soundEffect2 = content.Load<SoundEffect>("Audio/stoneHit1");
 
         }
 
@@ -211,7 +206,8 @@ namespace TGC.MonoGame.TP.Modelos
                     ApplyRotation(elapsedTime, leftDirection);
                 }
             }
-            else{
+            else
+            {
                 isMoving2 = false;
             }
 
@@ -380,46 +376,49 @@ namespace TGC.MonoGame.TP.Modelos
             _velocity *= aumento;
         }
 
+        private bool wasOnGround = false;
+
         private void SolveVerticalMovement()
         {
-            //Console.WriteLine($"BoundingSphere Center: {boundingSphere.Center}, Radius: {boundingSphere.Radius}");
+            bool isCurrentlyOnGround = false;
+
             foreach (BoundingBox collider in Colliders)
             {
                 bool hayIntersecion = collider.Intersects(boundingSphere);
 
-                if (hayIntersecion && !OnGround)
+                if (hayIntersecion)
                 {
-                    //Console.WriteLine($"BoundingBox {contador} Min: {collider.Min}, Max: {collider.Max} " + (hayIntersecion ? "Hay interseccion" : "No hay interseccion"));
-                    float posicionMinY = collider.Min.Y;
-                    float posicionMaxY = collider.Max.Y;
+                    isCurrentlyOnGround = true;
 
-                    if (posicionMinY >= posicionMaxY)
+                    if (!wasOnGround)
                     {
-                        posicionNueva = new Vector3(Position.X, posicionMinY + boundingSphere.Radius - 0.01f, Position.Z);
+                        float posicionMinY = collider.Min.Y;
+                        float posicionMaxY = collider.Max.Y;
+
+                        if (posicionMinY >= posicionMaxY)
+                        {
+                            posicionNueva = new Vector3(Position.X, posicionMinY + boundingSphere.Radius - 0.01f, Position.Z);
+                        }
+                        else
+                        {
+                            posicionNueva = new Vector3(Position.X, posicionMaxY + boundingSphere.Radius - 0.01f, Position.Z);
+                        }
+
+                        SetPosition(posicionNueva);
+                        soundEffect2.Play();
+                        _velocity.Y = 0f;
+                        OnGround = true;
                     }
-                    else
-                    {
-                        posicionNueva = new Vector3(Position.X, posicionMaxY + boundingSphere.Radius - 0.01f, Position.Z);
-                    }
-                    //Console.WriteLine($"posicionMinY: {posicionMinY}, posicionMaxY: {posicionMaxY}");
-                    SetPosition(posicionNueva);
-                    _velocity.Y = 0f;
-                    OnGround = true;
-                    //Console.WriteLine($"posicionMinY: {posicionMinY}, posicionMaxY: {posicionMaxY}");
-                    //Console.WriteLine($"Interseccion");
-                    return;
+                    break;
                 }
-                else
-                {
-                    OnGround = false;
-                }
-                /*
-                else if (OnGround){
-                    OnGround = false;
-                    Console.WriteLine($"NO Interseccion");
-                }*/
             }
-            //Console.WriteLine("");
+
+            if (!isCurrentlyOnGround && OnGround)
+            {
+                OnGround = false;
+            }
+
+            wasOnGround = isCurrentlyOnGround;
         }
     }
 }

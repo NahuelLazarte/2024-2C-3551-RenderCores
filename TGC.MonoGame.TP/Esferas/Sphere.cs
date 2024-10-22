@@ -49,7 +49,7 @@ namespace TGC.MonoGame.TP.Modelos
 
             pelota.Texture1 = content.Load<Texture2D>("Textures/texturaGolf");
             pelota.Texture2 = content.Load<Texture2D>("Textures/texturaMetal");
-            pelota.Texture3 = content.Load<Texture2D>("Textures/texturaIA");
+            pelota.Texture3 = content.Load<Texture2D>("Textures/texturaMadera");
             pelota.Texture4 = content.Load<Texture2D>("Textures/texturaPlastico");
 
             Texture = pelota.Texture1;
@@ -66,6 +66,9 @@ namespace TGC.MonoGame.TP.Modelos
 
             //(SetLightPosition, Vector3.Up * 45f);
             
+
+            //Effect.Parameters["ambientColor"].SetValue(Microsoft.Xna.Framework.Color.Green.ToVector3());
+            //Effect.Parameters["diffuseColor"].SetValue(Microsoft.Xna.Framework.Color.Orange.ToVector3());
 
             Effect.Parameters["ambientColor"].SetValue(Microsoft.Xna.Framework.Color.White.ToVector3());
             Effect.Parameters["diffuseColor"].SetValue(Microsoft.Xna.Framework.Color.White.ToVector3());

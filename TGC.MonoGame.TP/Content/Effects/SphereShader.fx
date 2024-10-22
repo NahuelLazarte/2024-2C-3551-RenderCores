@@ -92,7 +92,18 @@ VertexShaderOutput MainVS(in VertexShaderInput input)
 
 float4 MainPS(VertexShaderOutput input) : COLOR
 {
-    //return float4(DiffuseColor, 1.0);
+     //return float4(DiffuseColor, 1.0);
+    // Mapeo esférico
+    /*
+    float3 normalizedPosition = normalize(input.LocalPosition.xyz);
+    float u = 0.5 + atan2(normalizedPosition.z, normalizedPosition.x) / (2.0 * 3.14159265359);
+    float v = 0.5 - asin(normalizedPosition.y) / 3.14159265359;
+
+    // Ajuste para minimizar la línea visible
+    if (u < 0.0) u += 1.0;
+    if (u > 1.0) u -= 1.0;*/
+
+    //float2 TextureCoordinates = float2(u, v);   
 	float2 TextureCoordinates = float2(atan2(input.LocalPosition.x,input.LocalPosition.z),input.LocalPosition.y);
 
 	float4 sample = tex2D(TextureSampler, input.TextureCoordinates);

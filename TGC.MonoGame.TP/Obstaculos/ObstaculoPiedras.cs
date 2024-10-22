@@ -59,7 +59,7 @@ namespace TGC.MonoGame.TP.ObstaculoPiedras{
             for (int i = 0; i < _obstaculosPiedras.Count; i++) {
                 if (_envolturaEsfera.Intersects(Colliders[i])) {
                     // Acción al tocar el modelo
-                    MediaPlayer.Play(CollisionSound);
+                    //MediaPlayer.Play(CollisionSound);
                     //_obstaculosPiedras.RemoveAt(i);
                     Game.Respawn();
                 }

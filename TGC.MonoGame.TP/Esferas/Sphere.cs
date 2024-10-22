@@ -1,6 +1,8 @@
 using System;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Content;
+using Microsoft.Xna.Framework.Media;
 using Microsoft.Xna.Framework.Graphics;
 
 using Microsoft.Xna.Framework.Input;
@@ -28,6 +30,12 @@ namespace TGC.MonoGame.TP.Modelos
         private bool OnGround = false;
         private KeyboardState previousKeyboardState;
 
+        private SoundEffect soundEffect1;
+
+        private SoundEffectInstance soundEffectInstance1;
+
+        bool isMoving = false;
+        bool isMoving2 = false;
 
         public TGCGame Game;
 
@@ -65,7 +73,7 @@ namespace TGC.MonoGame.TP.Modelos
 
 
             //(SetLightPosition, Vector3.Up * 45f);
-            
+
 
             //Effect.Parameters["ambientColor"].SetValue(Microsoft.Xna.Framework.Color.Green.ToVector3());
             //Effect.Parameters["diffuseColor"].SetValue(Microsoft.Xna.Framework.Color.Orange.ToVector3());
@@ -74,7 +82,7 @@ namespace TGC.MonoGame.TP.Modelos
             Effect.Parameters["diffuseColor"].SetValue(Microsoft.Xna.Framework.Color.White.ToVector3());
 
             Effect.Parameters["specularColor"].SetValue(Microsoft.Xna.Framework.Color.White.ToVector3());
-            
+
             Effect.Parameters["KAmbient"]?.SetValue(0.860f);
             Effect.Parameters["KDiffuse"]?.SetValue(1f);
             Effect.Parameters["KSpecular"]?.SetValue(0f);
@@ -82,7 +90,9 @@ namespace TGC.MonoGame.TP.Modelos
 
             Effect.CurrentTechnique = Effect.Techniques["LightingTechnique"];
 
-    
+            soundEffect1 = content.Load<SoundEffect>("Audio/stoneDrag1");
+            soundEffectInstance1 = soundEffect1.CreateInstance();
+            soundEffectInstance1.Volume = 0.2f;
 
         }
 
@@ -117,35 +127,96 @@ namespace TGC.MonoGame.TP.Modelos
                 return;
             }
 
+
             if (keyboardState.IsKeyDown(Keys.W))
             {
-                acceleration += pelota.LinearSpeed * direction;
-                accelerating = true;
-                ApplyRotation(elapsedTime, direction);
+                if (OnGround)
+                {
+                    acceleration += pelota.LinearSpeed * direction;
+                    accelerating = true;
+                    ApplyRotation(elapsedTime, direction);
+                    if (!isMoving)
+                    {
+                        soundEffectInstance1.Play();
+                        isMoving = true;
+                    }
+
+                }
+                else
+                {
+                    ApplyRotation(elapsedTime, direction);
+                }
+
+            }
+            else if (keyboardState.IsKeyDown(Keys.S))
+            {
+                if (OnGround)
+                {
+                    acceleration -= pelota.LinearSpeed * direction;
+                    accelerating = true;
+                    ApplyRotation(elapsedTime, -direction);
+                    if (!isMoving)
+                    {
+                        soundEffectInstance1.Play();
+                        isMoving = true;
+                    }
+                }
+                else
+                {
+                    ApplyRotation(elapsedTime, -direction);
+                }
+
+            }
+            else
+            {
+                isMoving = false;
             }
 
-            if (keyboardState.IsKeyDown(Keys.S))
-            {
-                acceleration -= pelota.LinearSpeed * direction;
-                accelerating = true;
-                ApplyRotation(elapsedTime, -direction);
-            }
 
             if (keyboardState.IsKeyDown(Keys.D))
             {
                 Vector3 rightDirection = Vector3.Cross(direction, Vector3.Up);
-                acceleration += pelota.LinearSpeed * rightDirection;
-                accelerating = true;
-                ApplyRotation(elapsedTime, rightDirection);
+                if (OnGround)
+                {
+                    acceleration += pelota.LinearSpeed * rightDirection;
+                    accelerating = true;
+                    ApplyRotation(elapsedTime, rightDirection);
+                    if (!isMoving2)
+                    {
+                        soundEffectInstance1.Play();
+                        isMoving2 = true;
+                    }
+                }
+                else
+                {
+                    ApplyRotation(elapsedTime, rightDirection);
+                }
             }
-
-            if (keyboardState.IsKeyDown(Keys.A))
+            else if (keyboardState.IsKeyDown(Keys.A))
             {
                 Vector3 leftDirection = Vector3.Cross(Vector3.Up, direction);
-                acceleration += pelota.LinearSpeed * leftDirection;
-                accelerating = true;
-                ApplyRotation(elapsedTime, leftDirection);
+                if (OnGround)
+                {
+                    acceleration += pelota.LinearSpeed * leftDirection;
+                    accelerating = true;
+                    ApplyRotation(elapsedTime, leftDirection);
+                    if (!isMoving2)
+                    {
+                        soundEffectInstance1.Play();
+                        isMoving2 = true;
+                    }
+                }
+                else
+                {
+                    ApplyRotation(elapsedTime, leftDirection);
+                }
             }
+            else{
+                isMoving2 = false;
+            }
+
+
+
 
             if (!accelerating && (_velocity.X != 0f || _velocity.Z != 0f))
             {

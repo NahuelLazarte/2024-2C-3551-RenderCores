@@ -83,7 +83,7 @@ namespace TGC.MonoGame.TP.PowerUpHamburguesa{
                 // Acción al tocar el modelo
                 Console.WriteLine($"¡Colisión con el pez en la posición {originalPosition}!");
                 
-                MediaPlayer.Play(CollisionSound);
+                //MediaPlayer.Play(CollisionSound);
                 _hamburguesas.RemoveAt(i);
                 hamburguesasCount++;
                 Game.recibirPowerUpPez();

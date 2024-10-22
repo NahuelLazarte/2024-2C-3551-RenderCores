@@ -69,7 +69,7 @@ namespace TGC.MonoGame.TP.CheckPoint{
                 if (_envolturaEsfera.Intersects(Colliders[i])) {
                     // Acción al tocar el modelo
                     // Aquí puedes realizar la acción que desees, como eliminar el pez, reducir vida, etc.
-                    MediaPlayer.Play(CollisionSound);
+                    //MediaPlayer.Play(CollisionSound);
                     _checkPoints.RemoveAt(i);
                     Game.nuevoCheckPoint(originalPosition);
                 }

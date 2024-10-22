@@ -92,7 +92,7 @@ namespace TGC.MonoGame.TP.ObstaculoCarretilla {
 
                 // Colisión
                 if (_envolturaEsfera.Intersects(Colliders[i])) {
-                    MediaPlayer.Play(CollisionSound);
+                    //MediaPlayer.Play(CollisionSound);
                     Game.Respawn();
                 }
             }

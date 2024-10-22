@@ -75,6 +75,12 @@
 /processorParam:Quality=Best
 /build:Audio/Sad Town.ogg
 
+#begin Audio/stoneDrag1.mp3
+/importer:Mp3Importer
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Audio/stoneDrag1.mp3
+
 #begin Effects/BasicShader.fx
 /importer:EffectImporter
 /processor:EffectProcessor

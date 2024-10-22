@@ -139,7 +139,7 @@ namespace TGC.MonoGame.TP
             else
             {
 
-                if (!(MediaPlayer.Volume == 0.1f)) MediaPlayer.Volume = 0.1f;
+                if (!(MediaPlayer.Volume == 0.1f)) MediaPlayer.Volume = 0.2f;
 
                 if (keyboardState.IsKeyDown(Keys.Escape))
                 {

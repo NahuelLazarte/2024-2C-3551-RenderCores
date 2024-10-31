@@ -22,7 +22,7 @@ namespace TGC.MonoGame.TP.ObstaculoPozo
         public BoundingSphere _envolturaEsfera{ get; set; }
         float escala = 2f;
         BoundingBox size;
-
+        private BoundingFrustum _frustum;
 
         public ObstaculosPozos()
         {
@@ -58,15 +58,14 @@ namespace TGC.MonoGame.TP.ObstaculoPozo
             size = BoundingVolumesExtensions.CreateAABBFrom(ModeloPozo);
         }
 
-        public void Update(GameTime gameTime, TGCGame Game)
+        public void Update(GameTime gameTime, TGCGame Game, Matrix view, Matrix projection)
         {
             for (int i = 0; i < _pozos.Count; i++) {
                 if (_envolturaEsfera.Intersects(Colliders[i])){
                     Game.Respawn();
                 }
-                       
-
             }
+            _frustum = new BoundingFrustum(view * projection);
         }
 
         public void Draw(GameTime gameTime, Matrix view, Matrix projection)
@@ -82,8 +81,12 @@ namespace TGC.MonoGame.TP.ObstaculoPozo
                 for (int i = 0; i < _pozos.Count; i++)
                 {
                     Matrix _pisoWorld = _pozos[i];
-                    Effect.Parameters["World"].SetValue(mesh.ParentBone.Transform * _pisoWorld);
-                    mesh.Draw();
+                    BoundingBox boundingBox = BoundingVolumesExtensions.FromMatrix(_pisoWorld);
+                    
+                    if(_frustum.Intersects(boundingBox)){
+                        Effect.Parameters["World"].SetValue(mesh.ParentBone.Transform * _pisoWorld);
+                        mesh.Draw();
+                    }
                 }
             }
 

@@ -16,17 +16,13 @@ namespace TGC.MonoGame.TP.PistaCurvaIzquierda
         public Effect Effect { get; set; }
         public Matrix scale = Matrix.CreateScale(0.03f);
         float escala = 0.03f;
-
         public Model ModeloPistaCurva { get; set; }
-
         private BoundingBox PistaCurvaBox { get; set; }
-
         private Vector3 desplazamientoEnEjes { get; set; }
-
         public List<BoundingBox> Colliders { get; set; }
-
         private List<Matrix> _pistasCurvas { get; set; }
         BoundingBox size;
+        private BoundingFrustum _frustum;
 
         public PistasCurvasIzquierdas()
         {
@@ -55,9 +51,9 @@ namespace TGC.MonoGame.TP.PistaCurvaIzquierda
             size = BoundingVolumesExtensions.CreateAABBFrom(ModeloPistaCurva);
         }
 
-        public void Update(GameTime gameTime)
+        public void Update(GameTime gameTime, Matrix view, Matrix projection)
         {
-
+            _frustum = new BoundingFrustum(view * projection);
         }
 
         public void Draw(GameTime gameTime, Matrix view, Matrix projection)
@@ -73,8 +69,12 @@ namespace TGC.MonoGame.TP.PistaCurvaIzquierda
                 for (int i = 0; i < _pistasCurvas.Count; i++)
                 {
                     Matrix _pisoWorld = _pistasCurvas[i];
-                    Effect.Parameters["World"].SetValue(mesh.ParentBone.Transform * _pisoWorld);
-                    mesh.Draw();
+                    BoundingBox boundingBox = BoundingVolumesExtensions.FromMatrix(_pisoWorld);
+                    
+                    if(_frustum.Intersects(boundingBox)){
+                        Effect.Parameters["World"].SetValue(mesh.ParentBone.Transform * _pisoWorld);
+                        mesh.Draw();
+                    }
                 }
             }
 

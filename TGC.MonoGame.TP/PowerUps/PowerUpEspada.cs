@@ -24,9 +24,10 @@ namespace TGC.MonoGame.TP.PowerUpEspada{
         private List<Matrix> _espadas { get; set; }
         public BoundingSphere _envolturaEsfera{ get; set; }
         public SoundEffect CollisionSound { get; set; }
-
         private SpriteBatch spriteBatch;
         private SpriteFont spriteFont;
+        private BoundingFrustum _frustum;
+
         public PowerUpEspadas() {
             Initialize();
         }
@@ -64,7 +65,7 @@ namespace TGC.MonoGame.TP.PowerUpEspada{
 
         }
 
-        public void Update(GameTime gameTime, TGCGame Game) {
+        public void Update(GameTime gameTime, TGCGame Game, Matrix view, Matrix projection) {
             
             for (int i = 0; i < _espadas.Count; i++) {
                 var originalPosition = _espadas[i].Translation; // Obtener la posición original
@@ -79,6 +80,7 @@ namespace TGC.MonoGame.TP.PowerUpEspada{
                 }
             
             }
+            _frustum = new BoundingFrustum(view * projection);
 
         }
 
@@ -94,8 +96,11 @@ namespace TGC.MonoGame.TP.PowerUpEspada{
 
                 for (int i=0; i < _espadas.Count; i++){
                     Matrix _pisoWorld = _espadas[i];
-                    Effect.Parameters["World"].SetValue(mesh.ParentBone.Transform * _pisoWorld);
-                    mesh.Draw();
+                    BoundingBox boundingBox = BoundingVolumesExtensions.FromMatrix(_pisoWorld);
+                    if(_frustum.Intersects(boundingBox)){
+                        Effect.Parameters["World"].SetValue(mesh.ParentBone.Transform * _pisoWorld);
+                        mesh.Draw();
+                    }
                 }
             }
             

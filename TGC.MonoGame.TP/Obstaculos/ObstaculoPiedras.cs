@@ -24,7 +24,7 @@ namespace TGC.MonoGame.TP.ObstaculoPiedras{
         public BoundingSphere _envolturaEsfera{ get; set; }
         public SoundEffect CollisionSound { get; set; }
         BoundingBox size;
-
+        private BoundingFrustum _frustum;
         public ObstaculosPiedras() {
             Initialize();
         }
@@ -54,7 +54,7 @@ namespace TGC.MonoGame.TP.ObstaculoPiedras{
 
         }
 
-        public void Update(GameTime gameTime, TGCGame Game) {
+        public void Update(GameTime gameTime, TGCGame Game, Matrix view, Matrix projection) {
           
             for (int i = 0; i < _obstaculosPiedras.Count; i++) {
                 if (_envolturaEsfera.Intersects(Colliders[i])) {
@@ -64,7 +64,7 @@ namespace TGC.MonoGame.TP.ObstaculoPiedras{
                     Game.Respawn();
                 }
             }
-
+            _frustum = new BoundingFrustum(view * projection);
         }
 
 
@@ -80,8 +80,12 @@ namespace TGC.MonoGame.TP.ObstaculoPiedras{
             foreach (var mesh in ModeloPez.Meshes){
                 for(int i=0; i < _obstaculosPiedras.Count; i++){
                     Matrix _pisoWorld = _obstaculosPiedras[i];
-                    Effect.Parameters["World"].SetValue(mesh.ParentBone.Transform * _pisoWorld);
-                    mesh.Draw();
+                    BoundingBox boundingBox = BoundingVolumesExtensions.FromMatrix(_pisoWorld);
+                    
+                    if(_frustum.Intersects(boundingBox)){
+                        Effect.Parameters["World"].SetValue(mesh.ParentBone.Transform * _pisoWorld);
+                        mesh.Draw();
+                    }
                 }
             }
         }

@@ -20,11 +20,8 @@ namespace TGC.MonoGame.TP.MurosExtra
         public const string ContentFolder3D = "Models/";
         public const string ContentFolderEffects = "Effects/";
         public Effect Effect { get; set; }
-        
         private BasicEffect Efecto { get; set; }
         private Texture2D Texture { get; set; }
-        
-
         public Model ModeloMuro { get; set; }
         public Model ModeloMuroEsquina { get; set; }
         public List<BoundingBox> Colliders { get; set; }
@@ -33,13 +30,11 @@ namespace TGC.MonoGame.TP.MurosExtra
         private List<Matrix> _murosEsquina { get; set; }
         public BoundingSphere _envolturaEsfera { get; set; }
         public SoundEffect CollisionSound { get; set; }
-
         BoundingBox MuroSize;
         BoundingBox MuroEsquinaSize;
-
         float escalaMuros = 3f;
         float escalaMurosEsquina = 10f;
-
+        private BoundingFrustum _frustum;
         public Muros()
         {
             Initialize();
@@ -93,7 +88,7 @@ namespace TGC.MonoGame.TP.MurosExtra
 
         }
 
-        public void Update(GameTime gameTime, TGCGame Game)
+        public void Update(GameTime gameTime, TGCGame Game, Matrix view, Matrix projection)
         {
 
             for (int i = 0; i < _muros.Count + _murosEsquina.Count; i++)
@@ -106,7 +101,7 @@ namespace TGC.MonoGame.TP.MurosExtra
                     break;
                 }
             }
-
+            _frustum = new BoundingFrustum(view * projection);
         }
 
 
@@ -127,9 +122,13 @@ namespace TGC.MonoGame.TP.MurosExtra
                 for (int i = 0; i < _muros.Count; i++)
                 {
                     Matrix _muroWorld = _muros[i];
+                    BoundingBox boundingBox = BoundingVolumesExtensions.FromMatrix(_muroWorld);
+                    
+                    if(_frustum.Intersects(boundingBox)){
                     //Effect.Parameters["World"].SetValue(mesh.ParentBone.Transform * _muroWorld);
-                    Efecto.World = mesh.ParentBone.Transform * _muroWorld;
-                    mesh.Draw();  
+                        Efecto.World = mesh.ParentBone.Transform * _muroWorld;
+                        mesh.Draw();  
+                    }
                 }
             }
             foreach (var mesh in ModeloMuroEsquina.Meshes)
@@ -137,9 +136,13 @@ namespace TGC.MonoGame.TP.MurosExtra
                 for (int i = 0; i < _murosEsquina.Count; i++)
                 {
                     Matrix _muroWorld = _murosEsquina[i];
+                    BoundingBox boundingBox = BoundingVolumesExtensions.FromMatrix(_muroWorld);
+                    
+                    if(_frustum.Intersects(boundingBox)){
                     //Effect.Parameters["World"].SetValue(mesh.ParentBone.Transform * _muroWorld);
-                    Efecto.World = mesh.ParentBone.Transform * _muroWorld;
-                    mesh.Draw();  
+                        Efecto.World = mesh.ParentBone.Transform * _muroWorld;
+                        mesh.Draw(); 
+                    } 
                 }
             }
         }

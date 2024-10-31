@@ -37,6 +37,7 @@ namespace TGC.MonoGame.TP.ObstaculoCarretilla {
         private float moveSpeed = 50f; // Velocidad de movimiento
         private float movementRange = 30f; // Rango de movimiento en el eje Z
         BoundingBox size;
+        private BoundingFrustum _frustum;
 
         public ObstaculosCarretillas() {
             Initialize();
@@ -61,7 +62,7 @@ namespace TGC.MonoGame.TP.ObstaculoCarretilla {
             CollisionSound = Content.Load<SoundEffect>("Audio/ColisionPez"); 
         }
 
-        public void Update(GameTime gameTime, TGCGame Game) {
+        public void Update(GameTime gameTime, TGCGame Game, Matrix view, Matrix projection) {
             for (int i = 0; i < _obstaculosCarretilla.Count; i++) {
                 var carretilla = _obstaculosCarretilla[i];
 
@@ -97,6 +98,7 @@ namespace TGC.MonoGame.TP.ObstaculoCarretilla {
                     Game.Respawn();
                 }
             }
+            _frustum = new BoundingFrustum(view * projection);
         }
         
         private void UpdateCollider(int index, Vector3 position) {
@@ -112,17 +114,20 @@ namespace TGC.MonoGame.TP.ObstaculoCarretilla {
             foreach (var mesh in ModeloCarretilla.Meshes) {
                 for (int i = 0; i < _obstaculosCarretilla.Count; i++) {
                     var carretilla = _obstaculosCarretilla[i];
-                    Effect.Parameters["World"].SetValue(mesh.ParentBone.Transform * carretilla.Transform);
-                    string meshName = mesh.Name.ToLower();
-                    switch (meshName) {
-                        case "wheel":
-                            Effect.Parameters["DiffuseColor"].SetValue(new Vector3(0f, 0f, 0f)); 
-                            break;
-                        case "cart":
-                            Effect.Parameters["DiffuseColor"].SetValue(new Vector3(0.545f, 0.271f, 0.075f)); 
-                            break;
+                    BoundingBox boundingBox = BoundingVolumesExtensions.FromMatrix(carretilla.Transform);
+                    if(_frustum.Intersects(boundingBox)){
+                        Effect.Parameters["World"].SetValue(mesh.ParentBone.Transform * carretilla.Transform);
+                        string meshName = mesh.Name.ToLower();
+                        switch (meshName) {
+                            case "wheel":
+                                Effect.Parameters["DiffuseColor"].SetValue(new Vector3(0f, 0f, 0f)); 
+                                break;
+                            case "cart":
+                                Effect.Parameters["DiffuseColor"].SetValue(new Vector3(0.545f, 0.271f, 0.075f)); 
+                                break;
+                        }
+                        mesh.Draw();
                     }
-                    mesh.Draw();
                 }
             }
         }

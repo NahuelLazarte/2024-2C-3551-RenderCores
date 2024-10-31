@@ -83,16 +83,16 @@ namespace TGC.MonoGame.TP.MaterialesJuego
         public void Update(GameTime gameTime, TGCGame Game, Matrix view, Matrix projection)
         {
             
-            _pistasCurvasDerechas.Update(gameTime);
-            _pistasCurvasIzquierdas.Update(gameTime);
-            _pistasRectas.Update(gameTime);
-            _espadas.Update(gameTime, Game);
-            _hamburguesas.Update(gameTime, Game);
-            _checkPoints.Update(gameTime, Game);
-            _piedras.Update(gameTime, Game);
-            _pozos.Update(gameTime, Game);
-            _muros.Update(gameTime, Game);
-            _carretillas.Update(gameTime, Game);
+            _pistasCurvasDerechas.Update(gameTime, view, projection);
+            _pistasCurvasIzquierdas.Update(gameTime, view, projection);
+            _pistasRectas.Update(gameTime, view, projection);
+            _espadas.Update(gameTime, Game, view, projection);
+            _hamburguesas.Update(gameTime, Game, view, projection);
+            _checkPoints.Update(gameTime, Game, view, projection);
+            _piedras.Update(gameTime, Game, view, projection);
+            _pozos.Update(gameTime, Game, view, projection);
+            _muros.Update(gameTime, Game, view, projection);
+            _carretillas.Update(gameTime, Game, view, projection);
 
             Gizmos.UpdateViewProjection(view, projection);
         }

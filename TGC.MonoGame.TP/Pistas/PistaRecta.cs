@@ -15,20 +15,17 @@ namespace TGC.MonoGame.TP.PistaRecta
         public const string ContentFolderEffects = "Effects/";
         public Effect Effect { get; set; }
         public Matrix scale = Matrix.CreateScale(0.03f);
-
         public Model ModeloPistaRecta { get; set; }
         public Model ModeloMuro { get; set; }
         private BoundingBox PistaRectaBox { get; set; }
         private Vector3 desplazamientoEnEjes { get; set; }
-    
         public List<BoundingBox> Colliders { get; set; }
         public List<BoundingBox> CollidersMuro { get; set; }
-
         private List<Matrix> _pistasRectas { get; set; }
         private List<Matrix> _muros { get; set; }
-        float escala = 0.03f;
-        
+        float escala = 0.03f;        
         BoundingBox Pistasize;
+        private BoundingFrustum _frustum;
  
 
         public PistasRectas()
@@ -63,9 +60,9 @@ namespace TGC.MonoGame.TP.PistaRecta
 
         }
 
-        public void Update(GameTime gameTime)
+        public void Update(GameTime gameTime, Matrix view, Matrix projection)
         {
-
+            _frustum = new BoundingFrustum(view * projection);
         }
 
         public void Draw(GameTime gameTime, Matrix view, Matrix projection)
@@ -81,8 +78,12 @@ namespace TGC.MonoGame.TP.PistaRecta
                 for (int i = 0; i < _pistasRectas.Count; i++)
                 {
                     Matrix _pisoWorld = _pistasRectas[i];
-                    Effect.Parameters["World"].SetValue(mesh.ParentBone.Transform * _pisoWorld);
-                    mesh.Draw();
+                    BoundingBox boundingBox = BoundingVolumesExtensions.FromMatrix(_pisoWorld);
+                    
+                    if(_frustum.Intersects(boundingBox)){
+                        Effect.Parameters["World"].SetValue(mesh.ParentBone.Transform * _pisoWorld);
+                        mesh.Draw();
+                    }
                 }
             }
             

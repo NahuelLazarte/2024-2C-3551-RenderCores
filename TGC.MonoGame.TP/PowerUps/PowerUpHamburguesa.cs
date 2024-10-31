@@ -27,6 +27,8 @@ namespace TGC.MonoGame.TP.PowerUpHamburguesa{
         private SpriteBatch spriteBatch;
         private SpriteFont spriteFont;
         private int hamburguesasCount;
+        private BoundingFrustum _frustum;
+
         public PowerUpHamburguesas() {
             Initialize();
         }
@@ -66,7 +68,7 @@ namespace TGC.MonoGame.TP.PowerUpHamburguesa{
 
         }
 
-        public void Update(GameTime gameTime, TGCGame Game) {
+        public void Update(GameTime gameTime, TGCGame Game, Matrix view, Matrix projection) {
             
             Rotation += Convert.ToSingle(gameTime.ElapsedGameTime.TotalSeconds);
             
@@ -87,8 +89,8 @@ namespace TGC.MonoGame.TP.PowerUpHamburguesa{
                 _hamburguesas.RemoveAt(i);
                 hamburguesasCount++;
                 Game.recibirPowerUpPez();
-
             }
+            _frustum = new BoundingFrustum(view * projection);
             
             }
 
@@ -109,32 +111,36 @@ namespace TGC.MonoGame.TP.PowerUpHamburguesa{
 
                 for (int i=0; i < _hamburguesas.Count; i++){
                     Matrix _pisoWorld = _hamburguesas[i];
-                    Effect.Parameters["World"].SetValue(mesh.ParentBone.Transform * _pisoWorld);
-                    switch (meshName)
-                    {
-                        case "bunbottom":
-                            Effect.Parameters["DiffuseColor"].SetValue(new Vector3(0.8f, 0.52f, 0.25f)); // Color para el pan de abajo
-                            break;
-                        case "buntop":
-                            Effect.Parameters["DiffuseColor"].SetValue(new Vector3(0.8f, 0.52f, 0.25f)); // Color para el pan de arriba
-                            break;
-                        case "cheese":
-                            Effect.Parameters["DiffuseColor"].SetValue(Color.Yellow.ToVector3()); // Color para el queso
-                            break;
-                        case "patty":
-                            Effect.Parameters["DiffuseColor"].SetValue(new Vector3(0.5f, 0.25f, 0.1f)); // Color para la carne
-                            break;
-                        case "salad":
-                            Effect.Parameters["DiffuseColor"].SetValue(Color.Green.ToVector3()); // Color para la lechuga
-                            break;
-                        case "tomato":
-                            Effect.Parameters["DiffuseColor"].SetValue(Color.Red.ToVector3()); // Color para el tomate
-                            break;
-                        default:
-                            Effect.Parameters["DiffuseColor"].SetValue(Color.White.ToVector3()); // Color por defecto
-                            break;
+                    BoundingBox boundingBox = BoundingVolumesExtensions.FromMatrix(_pisoWorld);
+                    
+                    if(_frustum.Intersects(boundingBox)){
+                        Effect.Parameters["World"].SetValue(mesh.ParentBone.Transform * _pisoWorld);
+                        switch (meshName)
+                        {
+                            case "bunbottom":
+                                Effect.Parameters["DiffuseColor"].SetValue(new Vector3(0.8f, 0.52f, 0.25f)); // Color para el pan de abajo
+                                break;
+                            case "buntop":
+                                Effect.Parameters["DiffuseColor"].SetValue(new Vector3(0.8f, 0.52f, 0.25f)); // Color para el pan de arriba
+                                break;
+                            case "cheese":
+                                Effect.Parameters["DiffuseColor"].SetValue(Color.Yellow.ToVector3()); // Color para el queso
+                                break;
+                            case "patty":
+                                Effect.Parameters["DiffuseColor"].SetValue(new Vector3(0.5f, 0.25f, 0.1f)); // Color para la carne
+                                break;
+                            case "salad":
+                                Effect.Parameters["DiffuseColor"].SetValue(Color.Green.ToVector3()); // Color para la lechuga
+                                break;
+                            case "tomato":
+                                Effect.Parameters["DiffuseColor"].SetValue(Color.Red.ToVector3()); // Color para el tomate
+                                break;
+                            default:
+                                Effect.Parameters["DiffuseColor"].SetValue(Color.White.ToVector3()); // Color por defecto
+                                break;
+                            }
+                        mesh.Draw();
                     }
-                    mesh.Draw();
                 }
             }
             

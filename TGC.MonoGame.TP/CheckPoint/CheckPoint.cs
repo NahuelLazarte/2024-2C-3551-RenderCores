@@ -27,7 +27,7 @@ namespace TGC.MonoGame.TP.CheckPoint{
         public BoundingSphere _envolturaEsfera{ get; set; }
         public SoundEffect CollisionSound { get; set; }
         BoundingBox size;
-
+        private BoundingFrustum _frustum;
         public CheckPoints() {
             Initialize();
         }
@@ -60,7 +60,7 @@ namespace TGC.MonoGame.TP.CheckPoint{
 
         }
 
-        public void Update(GameTime gameTime, TGCGame Game) {
+        public void Update(GameTime gameTime, TGCGame Game, Matrix view, Matrix projection) {
             
             //Rotation += Convert.ToSingle(gameTime.ElapsedGameTime.TotalSeconds);
             
@@ -75,8 +75,8 @@ namespace TGC.MonoGame.TP.CheckPoint{
                     _checkPoints.RemoveAt(i);
                     Game.nuevoCheckPoint(originalPosition);
                 }
-            
             }
+            _frustum = new BoundingFrustum(view * projection);
 
         }
 
@@ -91,23 +91,27 @@ namespace TGC.MonoGame.TP.CheckPoint{
                 string meshName = mesh.Name.ToLower();
                 for (int i=0; i < _checkPoints.Count; i++){
                     Matrix _pisoWorld = _checkPoints[i];
-                    Effect.Parameters["World"].SetValue(mesh.ParentBone.Transform * _pisoWorld);
-                    switch (meshName)
-                    {
-                        case "campfire":
-                            Effect.Parameters["DiffuseColor"].SetValue(new Vector3(1.0f, 0.5f, 0.0f)); // Color para el pan de abajo
-                            break;
-                        case "bucket":
-                            Effect.Parameters["DiffuseColor"].SetValue(new Vector3(0.7f, 0.7f, 0.7f)); // Color para el pan de arriba
-                            break;
-                        case "rocks":
-                            Effect.Parameters["DiffuseColor"].SetValue(new Vector3(0.5f, 0.5f, 0.5f)); // Color para el queso
-                            break;
-                        case "wood":
-                            Effect.Parameters["DiffuseColor"].SetValue(new Vector3(0.6f, 0.3f, 0.1f)); // Color para la carne
-                            break;
+                    BoundingBox boundingBox = BoundingVolumesExtensions.FromMatrix(_pisoWorld);
+                    
+                    if(_frustum.Intersects(boundingBox)){
+                        Effect.Parameters["World"].SetValue(mesh.ParentBone.Transform * _pisoWorld);
+                        switch (meshName)
+                        {
+                            case "campfire":
+                                Effect.Parameters["DiffuseColor"].SetValue(new Vector3(1.0f, 0.5f, 0.0f)); // Color para el pan de abajo
+                                break;
+                            case "bucket":
+                                Effect.Parameters["DiffuseColor"].SetValue(new Vector3(0.7f, 0.7f, 0.7f)); // Color para el pan de arriba
+                                break;
+                            case "rocks":
+                                Effect.Parameters["DiffuseColor"].SetValue(new Vector3(0.5f, 0.5f, 0.5f)); // Color para el queso
+                                break;
+                            case "wood":
+                                Effect.Parameters["DiffuseColor"].SetValue(new Vector3(0.6f, 0.3f, 0.1f)); // Color para la carne
+                                break;
+                        }
+                        mesh.Draw();
                     }
-                    mesh.Draw();
                 }
             }
         }

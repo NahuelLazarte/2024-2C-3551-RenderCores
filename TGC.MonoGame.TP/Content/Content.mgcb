@@ -99,6 +99,12 @@
 /processorParam:DebugMode=Auto
 /build:Effects/Gizmos.fx
 
+#begin Effects/PistaShader.fx
+/importer:EffectImporter
+/processor:EffectProcessor
+/processorParam:DebugMode=Auto
+/build:Effects/PistaShader.fx
+
 #begin Effects/SkyBox.fx
 /importer:EffectImporter
 /processor:EffectProcessor

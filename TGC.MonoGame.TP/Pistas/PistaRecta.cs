@@ -26,8 +26,8 @@ namespace TGC.MonoGame.TP.PistaRecta
         float escala = 0.03f;        
         BoundingBox Pistasize;
         private BoundingFrustum _frustum;
- 
 
+        protected Texture Texture { get; set; }
         public PistasRectas()
         {
             Initialize();
@@ -43,9 +43,12 @@ namespace TGC.MonoGame.TP.PistaRecta
 
         public void LoadContent(ContentManager Content)
         {
-            ModeloPistaRecta = Content.Load<Model>(ContentFolder3D + "pistas/road_straight_fix");
-            
-            Effect = Content.Load<Effect>(ContentFolderEffects + "BasicShader");
+            ModeloPistaRecta = Content.Load<Model>(ContentFolder3D + "pistas/road_straight_fix");            
+
+            Effect = Content.Load<Effect>("Effects/" + "PistaShader");
+
+            Texture = Content.Load<Texture2D>("Textures/texturaMadera");
+            //Effect.CurrentTechnique = Effect.Techniques["LightingTechnique"];
 
             foreach (var mesh in ModeloPistaRecta.Meshes)
             {
@@ -70,7 +73,9 @@ namespace TGC.MonoGame.TP.PistaRecta
 
             Effect.Parameters["View"].SetValue(view);
             Effect.Parameters["Projection"].SetValue(projection);
-            Effect.Parameters["DiffuseColor"].SetValue(new Vector3(0.2f, 0.2f, 0.2f));
+            //Effect.Parameters["DiffuseColor"].SetValue(new Vector3(0.2f, 0.2f, 0.2f));
+
+            Effect.Parameters["Texture"]?.SetValue(Texture);
 
             // Dibujar las pistas
             foreach (var mesh in ModeloPistaRecta.Meshes)
@@ -86,6 +91,9 @@ namespace TGC.MonoGame.TP.PistaRecta
                     }
                 }
             }
+
+            //BasicColorDrawing
+
             
         }
 

@@ -17,7 +17,7 @@ using TGC.MonoGame.TP.ObstaculoPozo;
 using TGC.MonoGame.TP.CheckPoint;
 using TGC.MonoGame.TP.ObstaculoCarretilla;
 using TGC.MonoGame.TP.PowerUpEspada;
-
+using TGC.MonoGame.TP.MurosExtra;
 using System; 
 
 namespace TGC.MonoGame.TP.Constructor{
@@ -27,26 +27,32 @@ namespace TGC.MonoGame.TP.Constructor{
         public Vector3 posicionCheckPoint;
         float rotacionActual = 0f;
 
-        public ConstructorMateriales()
-        {
-
+        public ConstructorMateriales(){
             Initialize();
         }
         private void Initialize()
         {
             posicionActual = new Vector3(0f, 0f, 0f);
             posicionCheckPoint = new Vector3(0f, 4f, 0f);
+
         }
 
         public void CargarElementos(Materiales _materiales) {
             
+            //Agregado Para probar
+            AgregarPistaRecta(_materiales._pistasRectas, _materiales);
+            AgregarPistaRecta(_materiales._pistasRectas, _materiales);
+            AgregarPistaRecta(_materiales._pistasRectas, _materiales);
+            AgregarPistaRecta(_materiales._pistasRectas, _materiales);
+            AgregarPistaRecta(_materiales._pistasRectas, _materiales);
+
             //AgregarPistaCurvaDerecha(_materiales._pistasCurvasDerechas, _materiales);
             
-            AgregarPistaRecta(_materiales._pistasRectas, _materiales);
+            /*AgregarPistaRecta(_materiales._pistasRectas, _materiales);
             AgregarObstaculoCarretilla(_materiales._carretillas);
             AgregarPistaRecta(_materiales._pistasRectas, _materiales);
+
             AgregarObstaculoCarretilla(_materiales._carretillas);
-            
             
             AgregarPistaRecta(_materiales._pistasRectas, _materiales);
             AgregarPistaRecta(_materiales._pistasRectas, _materiales);
@@ -98,14 +104,14 @@ namespace TGC.MonoGame.TP.Constructor{
             AgregarPistaCurvaDerecha(_materiales._pistasCurvasDerechas, _materiales);
             AgregarPistaRecta(_materiales._pistasRectas, _materiales);
             AgregarPistaRecta(_materiales._pistasRectas, _materiales);
-            AgregarObstaculoPozo(_materiales._pozos, _materiales);
+            //AgregarObstaculoPozo(_materiales._pozos, _materiales);
             AgregarPistaRecta(_materiales._pistasRectas, _materiales);
             AgregarPistaRecta(_materiales._pistasRectas, _materiales);
             AgregarPowerUpHamburguesa(_materiales._hamburguesas);
             AgregarPistaRecta(_materiales._pistasRectas, _materiales);
             //AgregarObstaculoCarretilla(_materiales._carretillas);
 
-            AgregarPistaRecta(_materiales._pistasRectas, _materiales);
+            AgregarPistaRecta(_materiales._pistasRectas, _materiales);*/
             
         }
 
@@ -128,15 +134,14 @@ namespace TGC.MonoGame.TP.Constructor{
             float rotacion = unaPista.Rotacion();
 
             unaPista.agregarNuevaPista(rotacionActual, posicionActual, _materialesAux);
-            //Console.WriteLine($"Pista Curva dibujada: Posicion en ejes: X = {posicionActual.X}, Y = {posicionActual.Y}, Z = {posicionActual.Z}");
+            Console.WriteLine($"Pista Curva dibujada: Posicion en ejes: X = {posicionActual.X}, Y = {posicionActual.Y}, Z = {posicionActual.Z}");
 
             rotacionActual += rotacion;
             posicionActual += Vector3.Transform(desplazamiento, Matrix.CreateRotationY(rotacionActual));
             //Esferas.Add(posicionActual);
         }
 
-        void AgregarPistaCurvaIzquierda(PistasCurvasIzquierdas unaPista,  Materiales _materialesAux)
-        {
+        void AgregarPistaCurvaIzquierda(PistasCurvasIzquierdas unaPista,  Materiales _materialesAux){
             Vector3 desplazamiento = unaPista.Desplazamiento();
 
             float rotacion = unaPista.Rotacion();

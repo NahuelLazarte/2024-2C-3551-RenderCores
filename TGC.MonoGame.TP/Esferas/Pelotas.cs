@@ -14,7 +14,7 @@ namespace TGC.MonoGame.TP.Pelotas
         private string[] options = { "Play", "Exit" };
         private int selectedIndex = 0;
         public float LinearSpeed = 30f;
-        public float RotationSpeed = 30f;
+        public float RotationSpeed = 3f;
         public float escala;
 
         public Texture Texture1, Texture2, Texture3, Texture4;

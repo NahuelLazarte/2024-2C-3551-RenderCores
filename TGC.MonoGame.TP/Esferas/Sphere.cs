@@ -9,7 +9,8 @@ using Microsoft.Xna.Framework.Input;
 using System.Collections.Generic;
 using TGC.MonoGame.TP.Collisions;
 using TGC.MonoGame.TP.Pelotas;
-
+using System.ComponentModel;
+using System.Security.Cryptography.X509Certificates;
 
 namespace TGC.MonoGame.TP.Modelos
 {
@@ -19,6 +20,9 @@ namespace TGC.MonoGame.TP.Modelos
         Vector3 _velocity;
         Pelota pelota;
         Vector3 direction;
+        Vector3 direccionActual = new Vector3(0f,0f,0f);
+        float rotationAngle;
+        float rotationSpeed;
 
         BoundingSphere boundingSphere;
 
@@ -114,6 +118,7 @@ namespace TGC.MonoGame.TP.Modelos
 
             bool accelerating = false;
 
+            
 
             if (isGodModeActive)
             {
@@ -121,7 +126,6 @@ namespace TGC.MonoGame.TP.Modelos
                 MovimientoGodMode(gameTime, content);
                 return;
             }
-
 
             if (keyboardState.IsKeyDown(Keys.W))
             {
@@ -135,7 +139,6 @@ namespace TGC.MonoGame.TP.Modelos
                         soundEffectInstance1.Play();
                         isMoving = true;
                     }
-
                 }
                 else
                 {
@@ -211,13 +214,12 @@ namespace TGC.MonoGame.TP.Modelos
                 isMoving2 = false;
             }
 
-
-
-
             if (!accelerating && (_velocity.X != 0f || _velocity.Z != 0f))
             {
                 acceleration.X -= _velocity.X * 0.95f;
                 acceleration.Z -= _velocity.Z * 0.95f;
+                direccionActual = new Vector3(acceleration.X, 0f, acceleration.Z);
+                ApplyRotationDesacceleration(elapsedTime, -Vector3.Normalize(direccionActual));
             }
 
             /* //Dejar esto para debuggear
@@ -245,6 +247,7 @@ namespace TGC.MonoGame.TP.Modelos
             //if (keyboardState.IsKeyDown(Keys.Space) && Math.Abs(Position.Y - 4f) < 0.1f)
             if (keyboardState.IsKeyDown(Keys.Space) && Position.Y <= posicionNueva.Y && OnGround)
             {
+                Console.WriteLine($"Pelota en ejes: X = {Position.X}, Y = {Position.Y}, Z = {Position.Z}");
                 _velocity.Y += 30f;
 
                 //Console.WriteLine($"Saltando");
@@ -360,7 +363,22 @@ namespace TGC.MonoGame.TP.Modelos
 
         private void ApplyRotation(float elapsedTime, Vector3 direction)
         {
-            float rotationAngle = pelota.RotationSpeed * elapsedTime;
+            rotationSpeed = pelota.RotationSpeed; //para calcular la velocidad de rotacion se nenesitaria el radio y la velocidad angular
+            rotationAngle = rotationSpeed * elapsedTime;
+            Matrix rotationMatrix = Matrix.CreateFromAxisAngle(Vector3.Cross(Vector3.Up, direction), rotationAngle);
+            Rotation *= rotationMatrix;
+        }
+
+        private void ApplyRotationDesacceleration(float elapsedTime, Vector3 direction)
+        {   
+            if(rotationSpeed > 0f)
+            {
+                rotationSpeed -= pelota.RotationSpeed * 0.004f;
+            } else if(rotationSpeed <= 0f)
+            {
+                rotationSpeed = 0f;
+            }
+            rotationAngle = rotationSpeed * elapsedTime;
             Matrix rotationMatrix = Matrix.CreateFromAxisAngle(Vector3.Cross(Vector3.Up, direction), rotationAngle);
             Rotation *= rotationMatrix;
         }

@@ -9,13 +9,12 @@ using TGC.MonoGame.TP.Modelos;
 using TGC.MonoGame.TP;
 using Microsoft.Xna.Framework.Audio;
 
-using System; // Aseg�rate de que esto est� presente en la parte superior de tu archivo
+using System;
+using System.Linq; // Aseg�rate de que esto est� presente en la parte superior de tu archivo
 
 
-namespace TGC.MonoGame.TP.MurosExtra
-{
-    public class Muros
-    {
+namespace TGC.MonoGame.TP.MurosExtra{
+    public class Muros{
         public Gizmos.Gizmos Gizmos { get; }
         public const string ContentFolder3D = "Models/";
         public const string ContentFolderEffects = "Effects/";
@@ -32,63 +31,56 @@ namespace TGC.MonoGame.TP.MurosExtra
         public SoundEffect CollisionSound { get; set; }
         BoundingBox MuroSize;
         BoundingBox MuroEsquinaSize;
-        float escalaMuros = 3f;
-        float escalaMurosEsquina = 10f;
+        //3f
+        float escalaMuros = 0.03f;
+        //10f
+
+        //0.09
+        float escalaMurosEsquina = 0.09f;
         private BoundingFrustum _frustum;
-        public Muros()
-        {
+        private float time;
+
+        public Muros(BoundingFrustum frustrum){
             Initialize();
+            time = 0;
+            _frustum = frustrum;
         }
 
-        private void Initialize()
-        {
+        private void Initialize(){
             _muros = new List<Matrix>();
             _murosEsquina = new List<Matrix>();
+            
             Colliders = new List<BoundingBox>();
         }
 
-        public void IniciarColliders()
-        {
-
-        }
-
-        public void LoadContent(ContentManager Content, GraphicsDevice graphicsDevice)
-        {
-            ModeloMuro = Content.Load<Model>("Models/" + "Muros/wallHalf");
-            ModeloMuroEsquina = Content.Load<Model>("Models/" + "Muros/wallCornerSlant_exclusive");
-            Effect = Content.Load<Effect>("Effects/" + "BasicShader");
-
-
+        public void LoadContent(ContentManager Content, GraphicsDevice graphicsDevice){
+            Effect = Content.Load<Effect>("Effects/" + "BasicShader2");
             Texture = Content.Load<Texture2D>("Textures/texturaPiedra");
+            CollisionSound = Content.Load<SoundEffect>("Audio/ColisionPez");
 
-            Efecto = new BasicEffect(graphicsDevice);
-            Efecto.TextureEnabled = true;
-            Efecto.Texture = Texture;
-
-            foreach (var mesh in ModeloMuro.Meshes)
-            {
-                foreach (var meshPart in mesh.MeshParts)
-                {
-                    meshPart.Effect = Efecto;
-                }
-            }
-            // aca se puede cambiarla textura del efecto para darle otra onda
-            foreach (var mesh in ModeloMuroEsquina.Meshes)
-            {
-                foreach (var meshPart in mesh.MeshParts)
-                {
-                    meshPart.Effect = Efecto;
+            //Ponerle el efecto/shader a las paredes rectas
+            //ModeloMuro = Content.Load<Model>("Models/" + "Muros/wallHalf");
+            ModeloMuro = Content.Load<Model>("Models/" + "Muros/wallHalfWithoutTextureCentered");
+            foreach (var mesh in ModeloMuro.Meshes){
+                foreach (var meshPart in mesh.MeshParts){
+                    meshPart.Effect = Effect;
                 }
             }
 
-            CollisionSound = Content.Load<SoundEffect>("Audio/ColisionPez"); // Ajusta la ruta seg�n sea necesario
+            //Ponerle el efecto/shader a las paredes curvas
+            ModeloMuroEsquina = Content.Load<Model>("Models/" + "Muros/wallCornerSlantCentered");
+            foreach (var mesh in ModeloMuroEsquina.Meshes){
+                foreach (var meshPart in mesh.MeshParts){
+                    meshPart.Effect = Effect;
+                }
+            }
             
             MuroSize = BoundingVolumesExtensions.CreateAABBFrom(ModeloMuro);
             MuroEsquinaSize = BoundingVolumesExtensions.CreateAABBFrom(ModeloMuroEsquina);
 
         }
 
-        public void Update(GameTime gameTime, TGCGame Game, Matrix view, Matrix projection)
+        public void Update(GameTime gameTime, TGCGame Game, Matrix view, Matrix projection, BoundingFrustum frustum)
         {
 
             for (int i = 0; i < _muros.Count + _murosEsquina.Count; i++)
@@ -96,41 +88,46 @@ namespace TGC.MonoGame.TP.MurosExtra
                 if (_envolturaEsfera.Intersects(Colliders[i]))
                 {
                     Game.Respawn(); //TODAVIA NO FUNCIONA BIEN EL POSICIONAMIENTO DE LOS COLLIDERS
-                    CollisionSound.Play();
+                    //CollisionSound.Play();
                     Console.WriteLine("Colisión detectada con el muro");
                     break;
                 }
             }
-            _frustum = new BoundingFrustum(view * projection);
+            _frustum = frustum;
         }
-
-
-
 
         public void Draw(GameTime gameTime, Matrix view, Matrix projection)
         {
+            //time += Convert.ToSingle(gameTime.ElapsedGameTime.TotalSeconds);
             Effect.Parameters["View"].SetValue(view);
             Effect.Parameters["Projection"].SetValue(projection);
-            Efecto.Projection = projection;
-            Efecto.View = view;
-
+            Effect.Parameters["Texture"]?.SetValue(Texture);
+            /*Efecto.Projection = projection;
+            Efecto.View = view;*/
 
             // Dibujar los muros
-            Effect.Parameters["DiffuseColor"].SetValue(Color.Gray.ToVector3()); // Color para los muros
-            foreach (var mesh in ModeloMuro.Meshes)
-            {
-                for (int i = 0; i < _muros.Count; i++)
-                {
+            //Effect.Parameters["DiffuseColor"].SetValue(Color.Gray.ToVector3()); // Color para los muros
+
+            foreach (var mesh in ModeloMuro.Meshes){
+                for (int i = 0; i < _muros.Count; i++) {
                     Matrix _muroWorld = _muros[i];
                     BoundingBox boundingBox = BoundingVolumesExtensions.FromMatrix(_muroWorld);
-                    
+
                     if(_frustum.Intersects(boundingBox)){
-                    //Effect.Parameters["World"].SetValue(mesh.ParentBone.Transform * _muroWorld);
-                        Efecto.World = mesh.ParentBone.Transform * _muroWorld;
-                        mesh.Draw();  
+
+                        /*Effect.Parameters["World"].SetValue(mesh.ParentBone.Transform * _muroWorld);
+                        Effect.Parameters["View"].SetValue(Camera.View);
+                        Effect.Parameters["Projection"].SetValue(Camera.Projection);
+                        //Effect.Parameters["WorldViewProjection"].SetValue(Camera.WorldMatrix * Camera.View * Camera.Projection);
+                        Effect.Parameters["ModelTexture"].SetValue(Texture);
+                        Effect.Parameters["Time"].SetValue(time);*/
+                        Effect.Parameters["World"].SetValue(mesh.ParentBone.Transform * _muroWorld);
+                        //Efecto.World = mesh.ParentBone.Transform * _muroWorld;
+                        mesh.Draw();
                     }
                 }
             }
+
             foreach (var mesh in ModeloMuroEsquina.Meshes)
             {
                 for (int i = 0; i < _murosEsquina.Count; i++)
@@ -140,7 +137,8 @@ namespace TGC.MonoGame.TP.MurosExtra
                     
                     if(_frustum.Intersects(boundingBox)){
                     //Effect.Parameters["World"].SetValue(mesh.ParentBone.Transform * _muroWorld);
-                        Efecto.World = mesh.ParentBone.Transform * _muroWorld;
+                        //Efecto.World = mesh.ParentBone.Transform * _muroWorld;
+                        Effect.Parameters["World"].SetValue(mesh.ParentBone.Transform * _muroWorld);
                         mesh.Draw(); 
                     } 
                 }
@@ -148,9 +146,12 @@ namespace TGC.MonoGame.TP.MurosExtra
         }
 
         public void AgregarMurosPistaRecta(float Rotacion, Vector3 Posicion) {
-            var posicionMuros = new Vector3(Posicion.X / 100f, Posicion.Y / 100f, Posicion.Z / 100f);
-            var desplazamientoDerecha = new Vector3(25.22f, -12f, 9f);
-            var desplazamientoIzquierda = new Vector3(-25.22f, -12f, -9f);
+            //var posicionMuros = new Vector3(Posicion.X / 100f, Posicion.Y / 100f, Posicion.Z / 100f);
+            var posicionMuros = new Vector3(Posicion.X, Posicion.Y, Posicion.Z);
+            //var desplazamientoDerecha = new Vector3(25.22f, -12f, 9f);
+            var desplazamientoDerecha = new Vector3(0f, -11.63f * 100, -10f * 100) ;
+            //var desplazamientoIzquierda = new Vector3(-25.22f, -12f, -9f);
+            var desplazamientoIzquierda = new Vector3(-0f, -11.63f * 100, 10f * 100);
 
             // Calcular las posiciones de los muros aplicando la rotación
             var posicionDerecha = posicionMuros + Vector3.Transform(desplazamientoDerecha, Matrix.CreateRotationY(Rotacion));
@@ -172,20 +173,19 @@ namespace TGC.MonoGame.TP.MurosExtra
         }
         public void AgregarMurosPistaCurvaDerecha(float Rotacion, Vector3 Posicion) {
             var posicionMuros = new Vector3(Posicion.X / 334f, Posicion.Y / 250f, Posicion.Z / 334f);
-            var desplazamientoIzquierda = new Vector3(-29.9f, -12f, +37.5f);
+            var desplazamientoDerecha = new Vector3(-29.9f, -12f , +37.5f);
 
             // Calcular las posiciones de los muros aplicando la rotación
-            var posicionIzquierda = posicionMuros + Vector3.Transform(desplazamientoIzquierda, Matrix.CreateRotationY(Rotacion));
+            var posicionDerecha = posicionMuros + Vector3.Transform(desplazamientoDerecha, Matrix.CreateRotationY(Rotacion));
 
             // Crear las matrices de transformación para los muros
-            Matrix muroIzquierda = Matrix.CreateRotationY(Rotacion + MathHelper.ToRadians(-180)) * Matrix.CreateTranslation(posicionIzquierda) * Matrix.CreateScale(escalaMurosEsquina);
+            Matrix muroDerecha = Matrix.CreateRotationY(Rotacion + MathHelper.ToRadians(-180)) * Matrix.CreateTranslation(posicionDerecha) * Matrix.CreateScale(escalaMurosEsquina);
 
-            _murosEsquina.Add(muroIzquierda);
+            _murosEsquina.Add(muroDerecha);
 
-            BoundingBox boxIzquierda = CreateTransformedBoundingBox(muroIzquierda, MuroEsquinaSize, 14.0f);
-            Colliders.Add(boxIzquierda);
+            BoundingBox boxDerecha = CreateTransformedBoundingBox(muroDerecha, MuroEsquinaSize, 14.0f);
+            Colliders.Add(boxDerecha);
         }
-
         public void AgregarMurosPistaCurvaIzquierda(float Rotacion, Vector3 Posicion) {
             var posicionMuros = new Vector3(Posicion.X / 334f, Posicion.Y / 250f, Posicion.Z / 334f);
             var desplazamientoIzquierda = new Vector3(-37.5f, -12f, -29.9f);
@@ -201,7 +201,6 @@ namespace TGC.MonoGame.TP.MurosExtra
             BoundingBox boxIzquierda = CreateTransformedBoundingBox(muroIzquierda, MuroEsquinaSize, 14.0f);
             Colliders.Add(boxIzquierda);
         }
-
         public void AgregarMurosPozo(float Rotacion, Vector3 Posicion) {
             
             var posicionMuros = new Vector3(Posicion.X / 1.47f , (Posicion.Y + 15f)/  1.47f  , Posicion.Z/  1.47f );
@@ -225,8 +224,6 @@ namespace TGC.MonoGame.TP.MurosExtra
             BoundingBox boxIzquierda = CreateTransformedBoundingBox(muroIzquierda, MuroSize, 5.0f);
             Colliders.Add(boxIzquierda);
         }
-
-
 
         private BoundingBox CreateTransformedBoundingBox(Matrix transform, BoundingBox size, float yDecrement) {
             // funcion de google, basicamente separa en modelo en esquinas, asigna el tipo que es cada esquina (maximo o minimo en el eje)

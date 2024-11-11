@@ -83,8 +83,8 @@ namespace TGC.MonoGame.TP.PistaCurvaIzquierda
         public Vector3 Desplazamiento()
         {
             desplazamientoEnEjes = size.Max - size.Min;
-            desplazamientoEnEjes = new Vector3(desplazamientoEnEjes.X, 0, desplazamientoEnEjes.Z - 1000);
-            Console.WriteLine($"Pista Curva: Desplazamiento en ejes: X = {desplazamientoEnEjes.X}, Y = {desplazamientoEnEjes.Y}, Z = {desplazamientoEnEjes.Z}");
+            desplazamientoEnEjes = new Vector3(desplazamientoEnEjes.X, 0, desplazamientoEnEjes.Z - 100);
+            //Console.WriteLine($"Pista Curva: Desplazamiento en ejes: X = {desplazamientoEnEjes.X}, Y = {desplazamientoEnEjes.Y}, Z = {desplazamientoEnEjes.Z}");
 
             return desplazamientoEnEjes;
         }

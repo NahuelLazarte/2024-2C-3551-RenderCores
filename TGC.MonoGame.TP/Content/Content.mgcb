@@ -93,6 +93,12 @@
 /processorParam:DebugMode=Auto
 /build:Effects/BasicShader.fx
 
+#begin Effects/BasicShader2.fx
+/importer:EffectImporter
+/processor:EffectProcessor
+/processorParam:DebugMode=Auto
+/build:Effects/BasicShader2.fx
+
 #begin Effects/Gizmos.fx
 /importer:EffectImporter
 /processor:EffectProcessor
@@ -116,6 +122,12 @@
 /processor:EffectProcessor
 /processorParam:DebugMode=Auto
 /build:Effects/SphereShader.fx
+
+#begin Effects/WallShader.fx
+/importer:EffectImporter
+/processor:EffectProcessor
+/processorParam:DebugMode=Auto
+/build:Effects/WallShader.fx
 
 #begin Models/Checkpoint/box.fbx
 /importer:FbxImporter
@@ -364,6 +376,25 @@
 /processorParam:TextureFormat=Compressed
 /build:Models/Muros/wallCornerSlant_exclusive.fbx
 
+#begin Models/Muros/wallCornerSlantCentered.fbx
+/importer:FbxImporter
+/processor:ModelProcessor
+/processorParam:ColorKeyColor=0,0,0,0
+/processorParam:ColorKeyEnabled=True
+/processorParam:DefaultEffect=BasicEffect
+/processorParam:GenerateMipmaps=True
+/processorParam:GenerateTangentFrames=False
+/processorParam:PremultiplyTextureAlpha=True
+/processorParam:PremultiplyVertexColors=True
+/processorParam:ResizeTexturesToPowerOfTwo=False
+/processorParam:RotationX=0
+/processorParam:RotationY=0
+/processorParam:RotationZ=0
+/processorParam:Scale=1
+/processorParam:SwapWindingOrder=False
+/processorParam:TextureFormat=Compressed
+/build:Models/Muros/wallCornerSlantCentered.fbx
+
 #begin Models/Muros/wallHalf.fbx
 /importer:FbxImporter
 /processor:ModelProcessor
@@ -382,6 +413,25 @@
 /processorParam:SwapWindingOrder=False
 /processorParam:TextureFormat=Compressed
 /build:Models/Muros/wallHalf.fbx
+
+#begin Models/Muros/wallHalfWithoutTextureCentered.fbx
+/importer:FbxImporter
+/processor:ModelProcessor
+/processorParam:ColorKeyColor=0,0,0,0
+/processorParam:ColorKeyEnabled=True
+/processorParam:DefaultEffect=BasicEffect
+/processorParam:GenerateMipmaps=True
+/processorParam:GenerateTangentFrames=False
+/processorParam:PremultiplyTextureAlpha=True
+/processorParam:PremultiplyVertexColors=True
+/processorParam:ResizeTexturesToPowerOfTwo=False
+/processorParam:RotationX=0
+/processorParam:RotationY=0
+/processorParam:RotationZ=0
+/processorParam:Scale=1
+/processorParam:SwapWindingOrder=False
+/processorParam:TextureFormat=Compressed
+/build:Models/Muros/wallHalfWithoutTextureCentered.fbx
 
 #begin Models/obstaculos/cart.fbx
 /importer:FbxImporter
@@ -516,6 +566,37 @@
 /processorParam:TextureFormat=Compressed
 /build:Models/pistas/road_straight_fix.fbx
 
+#begin Models/pistas/straightRoad.fbx
+/importer:FbxImporter
+/processor:ModelProcessor
+/processorParam:ColorKeyColor=0,0,0,0
+/processorParam:ColorKeyEnabled=True
+/processorParam:DefaultEffect=BasicEffect
+/processorParam:GenerateMipmaps=True
+/processorParam:GenerateTangentFrames=False
+/processorParam:PremultiplyTextureAlpha=True
+/processorParam:PremultiplyVertexColors=True
+/processorParam:ResizeTexturesToPowerOfTwo=False
+/processorParam:RotationX=0
+/processorParam:RotationY=0
+/processorParam:RotationZ=0
+/processorParam:Scale=1
+/processorParam:SwapWindingOrder=False
+/processorParam:TextureFormat=Compressed
+/build:Models/pistas/straightRoad.fbx
+
+#begin Models/pistas/texturaMadera.jpg
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Models/pistas/texturaMadera.jpg
+
 #begin Models/PowerUps/burger.fbx
 /importer:FbxImporter
 /processor:ModelProcessor
@@ -624,6 +705,18 @@
 /processorParam:PremultiplyAlpha=True
 /processorParam:TextureFormat=Compressed
 /build:SpriteFonts/CascadiaMonoPL.spritefont
+
+#begin Textures/NormalMapPiedra.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Textures/NormalMapPiedra.png
 
 #begin Textures/skybox/skybox.dds
 /importer:TextureImporter

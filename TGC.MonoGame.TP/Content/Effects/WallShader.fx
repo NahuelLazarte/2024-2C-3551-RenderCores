@@ -90,7 +90,8 @@ VertexShaderOutput MainVS(in VertexShaderInput input)
     return output;
 }
 
-float4 MainPS(VertexShaderOutput input) : COLOR {
+float4 MainPS(VertexShaderOutput input) : COLOR
+{
      //return float4(DiffuseColor, 1.0);
     // Mapeo esférico
     /*
@@ -110,7 +111,8 @@ float4 MainPS(VertexShaderOutput input) : COLOR {
 }
 
 
-VertexShaderOutput MainVS_Lighting(in VertexShaderInput input) {
+VertexShaderOutput MainVS_Lighting(in VertexShaderInput input)
+{
     VertexShaderOutput output = (VertexShaderOutput)0;
 
     output.Position = mul(input.Position, WorldViewProjection);
@@ -121,7 +123,8 @@ VertexShaderOutput MainVS_Lighting(in VertexShaderInput input) {
 	return output;
 }
 
-float4 MainPS_Lighting(VertexShaderOutput input) : COLOR {
+float4 MainPS_Lighting(VertexShaderOutput input) : COLOR
+{
     // Base vectors
     float3 lightDirection = normalize(lightPosition - input.WorldPosition.xyz);
     float3 viewDirection = normalize(eyePosition - input.WorldPosition.xyz);
@@ -145,16 +148,20 @@ float4 MainPS_Lighting(VertexShaderOutput input) : COLOR {
     return finalColor;  
 }
 
-technique BasicColorDrawing {
-	pass P0 {
+technique BasicColorDrawing
+{
+	pass P0
+	{
 		VertexShader = compile VS_SHADERMODEL MainVS();
 		PixelShader = compile PS_SHADERMODEL MainPS();
 	}
 };
 
 //ESTA TÉCNICA SERA LA USADA PARA LA ILUMINACIÓN
-technique LightingTechnique {
-    pass P0 {
+technique LightingTechnique
+{
+    pass P0
+    {
         VertexShader = compile VS_SHADERMODEL MainVS_Lighting();
         PixelShader = compile PS_SHADERMODEL MainPS_Lighting();
     }

@@ -85,7 +85,7 @@ namespace TGC.MonoGame.TP.PistaCurvaDerecha
             
             desplazamientoEnEjes = size.Max - size.Min;
             desplazamientoEnEjes = new Vector3(desplazamientoEnEjes.X-2f, 0, desplazamientoEnEjes.Z - 3000);
-            Console.WriteLine($"Pista Curva: Desplazamiento en ejes: X = {desplazamientoEnEjes.X}, Y = {desplazamientoEnEjes.Y}, Z = {desplazamientoEnEjes.Z}");
+            //Console.WriteLine($"Pista Curva: Desplazamiento en ejes: X = {desplazamientoEnEjes.X}, Y = {desplazamientoEnEjes.Y}, Z = {desplazamientoEnEjes.Z}");
 
             return desplazamientoEnEjes;
         }
@@ -97,7 +97,6 @@ namespace TGC.MonoGame.TP.PistaCurvaDerecha
 
         public void agregarNuevaPista(float Rotacion, Vector3 Posicion, Materiales _materiales)
         {
-
             Posicion += Vector3.Transform(new Vector3(495, 0, 500), Matrix.CreateRotationY(Rotacion));
             Matrix transform = Matrix.CreateRotationY(Rotacion) * Matrix.CreateTranslation(Posicion) * scale;
 

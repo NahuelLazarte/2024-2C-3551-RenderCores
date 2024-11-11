@@ -19,10 +19,8 @@ using TGC.MonoGame.TP.Modelos;
 using TGC.MonoGame.TP.MurosExtra;
 using TGC.MonoGame.TP.ObstaculoCarretilla;
 
-namespace TGC.MonoGame.TP.MaterialesJuego
-{
-    public class Materiales
-    {
+namespace TGC.MonoGame.TP.MaterialesJuego {
+    public class Materiales {
         private Gizmos.Gizmos Gizmos;
         LineDrawer lineDrawer;
 
@@ -40,11 +38,7 @@ namespace TGC.MonoGame.TP.MaterialesJuego
 
         private List<BoundingBox> CollidersDibujo { get; set; }
 
-
-
-        public Materiales(ContentManager Content, GraphicsDevice graphicsDevice)
-        {
-
+        public Materiales(ContentManager Content, GraphicsDevice graphicsDevice, BoundingFrustum frustrum) {
             _pistasCurvasDerechas = new PistasCurvasDerechas();
             _pistasCurvasIzquierdas = new PistasCurvasIzquierdas();
             _pistasRectas = new PistasRectas();
@@ -53,7 +47,7 @@ namespace TGC.MonoGame.TP.MaterialesJuego
             _piedras = new ObstaculosPiedras();
             _pozos = new ObstaculosPozos();
             _checkPoints = new CheckPoints();
-            _muros = new Muros();
+            _muros = new Muros(frustrum);
             _carretillas = new ObstaculosCarretillas();
 
             CollidersDibujo = new List<BoundingBox>();
@@ -61,8 +55,7 @@ namespace TGC.MonoGame.TP.MaterialesJuego
             Initialize(Content, graphicsDevice);
         }
 
-        private void Initialize(ContentManager Content, GraphicsDevice graphicsDevice)
-        {
+        private void Initialize(ContentManager Content, GraphicsDevice graphicsDevice) {
             Gizmos = new Gizmos.Gizmos();
             lineDrawer = new LineDrawer(graphicsDevice);
             Gizmos.LoadContent(graphicsDevice, Content);
@@ -80,7 +73,7 @@ namespace TGC.MonoGame.TP.MaterialesJuego
         }
 
 
-        public void Update(GameTime gameTime, TGCGame Game, Matrix view, Matrix projection)
+        public void Update(GameTime gameTime, TGCGame Game, Matrix view, Matrix projection, BoundingFrustum frustum)
         {
             
             _pistasCurvasDerechas.Update(gameTime, view, projection);
@@ -91,7 +84,7 @@ namespace TGC.MonoGame.TP.MaterialesJuego
             _checkPoints.Update(gameTime, Game, view, projection);
             _piedras.Update(gameTime, Game, view, projection);
             _pozos.Update(gameTime, Game, view, projection);
-            _muros.Update(gameTime, Game, view, projection);
+            _muros.Update(gameTime, Game, view, projection, frustum);
             _carretillas.Update(gameTime, Game, view, projection);
 
             Gizmos.UpdateViewProjection(view, projection);
@@ -110,14 +103,13 @@ namespace TGC.MonoGame.TP.MaterialesJuego
             _carretillas.Draw(gameTime, view, projection);
             _hamburguesas.Draw(gameTime, view, projection, graphicsDevice);
             _espadas.Draw(gameTime, view, projection, graphicsDevice);
-            /*
+            
             foreach (var boundingBoxPista in CollidersDibujo)
             {
                 Gizmos.DrawCube((boundingBoxPista.Max + boundingBoxPista.Min) / 2f, boundingBoxPista.Max - boundingBoxPista.Min, Color.Green);
             }
-
              Gizmos.Draw(); // PARA DIBUJAR LOS CUBOS DE GIZMOS
-            */
+            
         }
 
         public void ColliderEsfera(BoundingSphere boundingSphere){

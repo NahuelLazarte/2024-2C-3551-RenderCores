@@ -43,9 +43,9 @@ namespace TGC.MonoGame.TP.PistaRecta
 
         public void LoadContent(ContentManager Content)
         {
-            ModeloPistaRecta = Content.Load<Model>(ContentFolder3D + "pistas/road_straight_fix");            
+            ModeloPistaRecta = Content.Load<Model>(ContentFolder3D + "pistas/straightRoad");            
 
-            Effect = Content.Load<Effect>("Effects/" + "PistaShader");
+            Effect = Content.Load<Effect>("Effects/" + "BasicShader2");
 
             Texture = Content.Load<Texture2D>("Textures/texturaMadera");
             //Effect.CurrentTechnique = Effect.Techniques["LightingTechnique"];
@@ -103,7 +103,7 @@ namespace TGC.MonoGame.TP.PistaRecta
             desplazamientoEnEjes = Pistasize.Max - Pistasize.Min; // aca consigo el tamaño el largo de la pista para que coincida son 3/4, el ancho es el mismo.
             desplazamientoEnEjes = new Vector3(desplazamientoEnEjes.X, 0, 0);
 
-            Console.WriteLine($"Pista Recta: Desplazamiento en ejes: X = {desplazamientoEnEjes.X}, Y = {desplazamientoEnEjes.Y}, Z = {desplazamientoEnEjes.Z}");
+            //Console.WriteLine($"Pista Recta: Desplazamiento en ejes: X = {desplazamientoEnEjes.X}, Y = {desplazamientoEnEjes.Y}, Z = {desplazamientoEnEjes.Z}");
             return desplazamientoEnEjes;
         }
 

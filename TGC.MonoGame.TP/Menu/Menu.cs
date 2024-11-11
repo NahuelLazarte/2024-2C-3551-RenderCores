@@ -1,27 +1,28 @@
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Media; 
+using Microsoft.Xna.Framework.Media;
 using Microsoft.Xna.Framework.Input;
-using System.Collections.Generic;
-using TGC.MonoGame.TP.Collisions;
-using TGC.MonoGame.TP.Modelos;
+
 using TGC.MonoGame.TP;
 
-using System; 
+using System;
 
 namespace TGC.MonoGame.MenuPrincipal
 {
     public class Menu
     {
-        private string[] options = { "Play", "GodMode", "Musica", "Exit" };
-        private int selectedIndex = 0;
-        public bool isGodModeActive = false; // Variable para el modo GodMode
-         public bool isMusicActive = true;
+        
+        public bool isMusicActive = true;
         private float keyHoldDuration = 0.2f; // Duración de la presión de la tecla
         private float timer = 0f; // Temporizador para la duración de la tecla
         private KeyboardState previousKeyboardState;
+        private int selectedIndex = 0;
+        private Option[] options;
 
+        public Menu()
+        {
+            options = new Option[] { new Play(), new SelectLevel(), new GodMode(), new Exit() };
+        }
         public void Update(TGCGame Game, GameTime gameTime)
         {
             var keyboardState = Keyboard.GetState();
@@ -52,6 +53,7 @@ namespace TGC.MonoGame.MenuPrincipal
             // Manejo de la tecla Enter
             if (keyboardState.IsKeyDown(Keys.Enter) && timer >= keyHoldDuration)
             {
+                /*
                 if (selectedIndex == 0)
                 {
                     Game.isMenuActive = false;
@@ -75,15 +77,15 @@ namespace TGC.MonoGame.MenuPrincipal
                         // Desactivar la música
                         MediaPlayer.Pause();
                     }
-                    
-                    
+
                     // Aquí podrías añadir lógica para activar/desactivar la música
-                    
+
                 }
                 else if (selectedIndex == 3)
                 {
                     Environment.Exit(0); // Salir del juego
-                }
+                }*/
+                options[selectedIndex].LogicExecute(Game);
                 timer = 0f;
             }
 
@@ -109,24 +111,31 @@ namespace TGC.MonoGame.MenuPrincipal
             {
                 Color color = (i == selectedIndex) ? Color.Yellow : Color.White;
 
+                // Medir el ancho del texto
+                Vector2 textSize = font.MeasureString(options[i].GetName()) * scale;
+
+                // Calcular la posición horizontal centrada
+                Vector2 position = startPosition + new Vector2(-textSize.X / 2, i * 40 * scale);
+
                 // Dibujar el texto con escalado
-                spriteBatch.DrawString(font, options[i], startPosition + new Vector2(0, i * 40 * scale), color, 0f, 
-                font.MeasureString(options[i]) / 2, new Vector2(scale), SpriteEffects.None, 0f);
+                spriteBatch.DrawString(font, options[i].GetName(), position, color, 0f, Vector2.Zero, new Vector2(scale), SpriteEffects.None, 0f);
             }
 
+            //Por ahora está comentado, Ya lo voy a volver a poner
+            /*
             // Mostrar el estado de GodMode y Musica en el menú
             string godModeText = $"GodMode: {(isGodModeActive ? "ON" : "OFF")}";
-            spriteBatch.DrawString(font, godModeText, startPosition + new Vector2(0, options.Length * 40 * scale), 
-            isGodModeActive ? Color.Red : Color.Gray, 0f, 
+            spriteBatch.DrawString(font, godModeText, startPosition + new Vector2(0, options.Length * 40 * scale),
+            isGodModeActive ? Color.Red : Color.Gray, 0f,
             font.MeasureString(godModeText) / 2, new Vector2(scale), SpriteEffects.None, 0f);
 
             string musicText = $"Musica: {(isMusicActive ? "ON" : "OFF")}";
-            spriteBatch.DrawString(font, musicText, startPosition + new Vector2(0, (options.Length + 1) * 40 * scale), 
-            isMusicActive ? Color.Green : Color.Gray, 0f, 
+            spriteBatch.DrawString(font, musicText, startPosition + new Vector2(0, (options.Length + 1) * 40 * scale),
+            isMusicActive ? Color.Green : Color.Gray, 0f,
             font.MeasureString(musicText) / 2, new Vector2(scale), SpriteEffects.None, 0f);
+            */
 
             spriteBatch.End();
         }
-
     }
 }

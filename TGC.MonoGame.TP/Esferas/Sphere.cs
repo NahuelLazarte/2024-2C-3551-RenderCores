@@ -23,6 +23,7 @@ namespace TGC.MonoGame.TP.Modelos
         Vector3 direccionActual = new Vector3(0f,0f,0f);
         float rotationAngle;
         float rotationSpeed;
+        float velocidadLineal;
 
         BoundingSphere boundingSphere;
 
@@ -64,6 +65,8 @@ namespace TGC.MonoGame.TP.Modelos
             pelota.Texture3 = content.Load<Texture2D>("Textures/texturaMadera");
             pelota.Texture4 = content.Load<Texture2D>("Textures/texturaPlastico");
 
+            pelota.NormalTexture1 = content.Load<Texture2D>("Textures/NormalMapGolf");
+
             Texture = pelota.Texture1;
 
             base.LoadContent(content, graphicsDevice);
@@ -77,7 +80,6 @@ namespace TGC.MonoGame.TP.Modelos
 
             Effect.Parameters["ambientColor"].SetValue(Microsoft.Xna.Framework.Color.White.ToVector3());
             Effect.Parameters["diffuseColor"].SetValue(Microsoft.Xna.Framework.Color.Yellow.ToVector3());
-
             Effect.Parameters["specularColor"].SetValue(Microsoft.Xna.Framework.Color.White.ToVector3());
 
             Effect.Parameters["KAmbient"]?.SetValue(0.860f);
@@ -117,8 +119,6 @@ namespace TGC.MonoGame.TP.Modelos
             Vector3 acceleration = Vector3.Zero;
 
             bool accelerating = false;
-
-            
 
             if (isGodModeActive)
             {
@@ -247,8 +247,7 @@ namespace TGC.MonoGame.TP.Modelos
             //if (keyboardState.IsKeyDown(Keys.Space) && Math.Abs(Position.Y - 4f) < 0.1f)
             if (keyboardState.IsKeyDown(Keys.Space) && Position.Y <= posicionNueva.Y && OnGround)
             {
-                Console.WriteLine($"Pelota en ejes: X = {Position.X}, Y = {Position.Y}, Z = {Position.Z}");
-                _velocity.Y += 30f;
+                _velocity.Y += 40f;
 
                 //Console.WriteLine($"Saltando");
                 //Console.WriteLine($"_velocity.Y = {_velocity.Y}");
@@ -362,18 +361,21 @@ namespace TGC.MonoGame.TP.Modelos
         }
 
         private void ApplyRotation(float elapsedTime, Vector3 direction)
-        {
-            rotationSpeed = pelota.RotationSpeed; //para calcular la velocidad de rotacion se nenesitaria el radio y la velocidad angular
+        {   
+            velocidadLineal = _velocity.Length() * 0.06f;
+            rotationSpeed = velocidadLineal * boundingSphere.Radius;
+            //rotationSpeed = pelota.RotationSpeed; //para calcular la velocidad de rotacion se nenesitaria el radio y la velocidad angular
             rotationAngle = rotationSpeed * elapsedTime;
             Matrix rotationMatrix = Matrix.CreateFromAxisAngle(Vector3.Cross(Vector3.Up, direction), rotationAngle);
             Rotation *= rotationMatrix;
         }
 
-        private void ApplyRotationDesacceleration(float elapsedTime, Vector3 direction)
-        {   
+        private void ApplyRotationDesacceleration(float elapsedTime, Vector3 direction){   
+            float friccionPisoMadera = 0.0035f; //Luego si se cambia el piso estaria bueno hacer que le pasen el valor del piso para que desacelere al rotacion dependiendo del piso
             if(rotationSpeed > 0f)
             {
-                rotationSpeed -= pelota.RotationSpeed * 0.004f;
+                //rotationSpeed -= pelota.RotationSpeed * 0.003f + 0.0015f;
+                rotationSpeed -= velocidadLineal * boundingSphere.Radius * friccionPisoMadera;
             } else if(rotationSpeed <= 0f)
             {
                 rotationSpeed = 0f;

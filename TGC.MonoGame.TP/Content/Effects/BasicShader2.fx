@@ -20,6 +20,18 @@ float4x4 Projection;
 float3 DiffuseColor;
 float Time = 0;
 
+// Agregado para la iluminacion
+float4x4 InverseTransposeWorld;
+float4x4 WorldViewProjection;
+
+float3 lightPosition;
+float3 lightColor;
+float3 eyePosition;
+
+#define LIGHT_COUNT 4
+
+static const float PI = 3.14159265359;
+
 // DiffuseMap
 texture Texture;
 sampler2D TextureSampler = sampler_state {
@@ -33,7 +45,7 @@ sampler2D TextureSampler = sampler_state {
 
 // NormalMap
 texture normalTexture;
-sampler2D normalSampler = sampler_state {
+sampler2D normalTextureSampler = sampler_state {
 	Texture = (normalTexture);
 	AddressU = clamp;
     AddressV = clamp;
@@ -41,6 +53,53 @@ sampler2D normalSampler = sampler_state {
     MinFilter = Linear;
 	MipFilter = Linear;
 };
+
+//Textura para Metallic
+//texture metallicTexture;
+texture metallicTexture;
+sampler2D metallicSampler = sampler_state
+{
+	Texture = (metallicTexture);
+	ADDRESSU = WRAP;
+	ADDRESSV = WRAP;
+	MINFILTER = LINEAR;
+	MAGFILTER = LINEAR;
+	MIPFILTER = LINEAR;
+};
+
+//Textura para Roughness
+texture roughnessTexture;
+sampler2D roughnessSampler = sampler_state
+{
+	Texture = (roughnessTexture);
+	ADDRESSU = WRAP;
+	ADDRESSV = WRAP;
+	MINFILTER = LINEAR;
+	MAGFILTER = LINEAR;
+	MIPFILTER = LINEAR;
+};
+
+//Textura para Ambient Occlusion
+texture aoTexture;
+sampler2D aoSampler = sampler_state
+{
+	Texture = (aoTexture);
+	ADDRESSU = WRAP;
+	ADDRESSV = WRAP;
+	MINFILTER = LINEAR;
+	MAGFILTER = LINEAR;
+	MIPFILTER = LINEAR;
+};
+
+//input Vertex Shader
+struct Light
+{
+	float3 Position;
+	float3 Color;
+} ;
+
+
+
 struct VertexShaderInput{
 	//Consigue la posicion del vertice
 	float4 Position : POSITION0;
@@ -55,11 +114,10 @@ struct VertexShaderInput{
 
 struct VertexShaderOutput{
 	//Devuelve la posicion del vertice rasterizado
-	//float4 Position : SV_POSITION;
 
 	float4 Position : SV_POSITION;
 	float2 TextureCoordinates : TEXCOORD0;
-	float3 WorldNormal : TEXCOORD1;
+	float3 Normal : TEXCOORD1;
 	float4 WorldPosition : TEXCOORD2;
 };
 
@@ -79,39 +137,12 @@ VertexShaderOutput MainVS(in VertexShaderInput input)
 	return output;
 }
 
-float3 getNormalFromMap(float2 textureCoordinates, float3 worldPosition, float3 worldNormal){
-	float3 tangentNormal = tex2D(normalSampler, textureCoordinates).xyz * 2.0 - 1.0;
-
-	float3 Q1 = ddx(worldPosition);
-	float3 Q2 = ddy(worldPosition);
-	float2 st1 = ddx(textureCoordinates);
-	float2 st2 = ddy(textureCoordinates);
-
-	worldNormal = normalize(worldNormal.xyz);
-	float3 T = normalize(Q1 * st2.y - Q2 * st1.y);
-	float3 B = -normalize(cross(worldNormal, T));
-	float3x3 TBN = float3x3(T, B, worldNormal);
-
-	return normalize(mul(tangentNormal, TBN));
-}
-
-float4 MainPS(VertexShaderOutput input) : COLOR
-{
-    //return float4(DiffuseColor, 1.0);
-
-	//float3 albedo = pow(tex2D(albedoSampler, input.TextureCoordinates).rgb, float3(2.2, 2.2, 2.2));
-	//float2 TextureCoordinates = float2(input.TextureCoordinates.x, input.TextureCoordinates.y);
-	//float s = 1f;
-	//input.TextureCoordinates = (input.TextureCoordinates - scaleCenter) * scale + scaleCenter;
-	//Red Green Blue Alpha
-	//float3 textureColor = pow(tex2D(TextureSampler, input.TextureCoordinates).rgb, float3(1, 1, 1));
+float4 MainPS(VertexShaderOutput input) : COLOR{
 	float4 textureSample = tex2D(TextureSampler, input.TextureCoordinates);
-	//textureColor.a = 1;
 	return float4(textureSample.rgb , 1.0);
-
 }
 
-technique RenderWalls
+technique Render
 {
 	pass P0
 	{

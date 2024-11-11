@@ -19,6 +19,7 @@ namespace TGC.MonoGame.TP.PistaCurvaIzquierda
         public Model ModeloPistaCurva { get; set; }
         private BoundingBox PistaCurvaBox { get; set; }
         private Vector3 desplazamientoEnEjes { get; set; }
+        private Texture2D Texture { get; set; }
         public List<BoundingBox> Colliders { get; set; }
         private List<Matrix> _pistasCurvas { get; set; }
         BoundingBox size;
@@ -37,8 +38,9 @@ namespace TGC.MonoGame.TP.PistaCurvaIzquierda
 
         public void LoadContent(ContentManager Content)
         {
-            ModeloPistaCurva = Content.Load<Model>("Models/" + "pistas/road_curve_fix");
-            Effect = Content.Load<Effect>("Effects/" + "BasicShader");
+            ModeloPistaCurva = Content.Load<Model>("Models/" + "pistas/curvedRoadIzq");
+            Effect = Content.Load<Effect>("Effects/" + "BasicShader2");
+            Texture = Content.Load<Texture2D>("Textures/texturaMadera");
 
             foreach (var mesh in ModeloPistaCurva.Meshes)
             {
@@ -62,7 +64,8 @@ namespace TGC.MonoGame.TP.PistaCurvaIzquierda
 
             Effect.Parameters["View"].SetValue(view);
             Effect.Parameters["Projection"].SetValue(projection);
-            Effect.Parameters["DiffuseColor"].SetValue(new Vector3(0.2f, 0.2f, 0.2f));
+            //Effect.Parameters["DiffuseColor"].SetValue(new Vector3(0.2f, 0.2f, 0.2f));
+            Effect.Parameters["Texture"]?.SetValue(Texture);
 
             foreach (var mesh in ModeloPistaCurva.Meshes)
             {
@@ -83,7 +86,7 @@ namespace TGC.MonoGame.TP.PistaCurvaIzquierda
         public Vector3 Desplazamiento()
         {
             desplazamientoEnEjes = size.Max - size.Min;
-            desplazamientoEnEjes = new Vector3(desplazamientoEnEjes.X, 0, desplazamientoEnEjes.Z - 100);
+            desplazamientoEnEjes = new Vector3(desplazamientoEnEjes.X, 0, desplazamientoEnEjes.Z - 1000);
             //Console.WriteLine($"Pista Curva: Desplazamiento en ejes: X = {desplazamientoEnEjes.X}, Y = {desplazamientoEnEjes.Y}, Z = {desplazamientoEnEjes.Z}");
 
             return desplazamientoEnEjes;
@@ -96,9 +99,9 @@ namespace TGC.MonoGame.TP.PistaCurvaIzquierda
 
         public void agregarNuevaPista(float Rotacion, Vector3 Posicion, Materiales _materiales)
         {
-            Posicion += Vector3.Transform(new Vector3(500, 0, -500), Matrix.CreateRotationY(Rotacion));
+            Posicion += Vector3.Transform(new Vector3(500f, -5f, -500f), Matrix.CreateRotationY(Rotacion));
 
-            Matrix world = Matrix.CreateRotationY(Rotacion) * Matrix.CreateRotationX(MathHelper.Pi) * Matrix.CreateTranslation(Posicion) * scale;
+            Matrix world = Matrix.CreateRotationY(Rotacion) * Matrix.CreateTranslation(Posicion) * scale;
 
             BoundingBox box = new BoundingBox(size.Min * escala + Posicion * escala , size.Max * escala + Posicion * escala);
 

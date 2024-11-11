@@ -47,6 +47,17 @@ uniform sampler2D TextureSampler = sampler_state {
 	MIPFILTER = LINEAR;
 };
 
+// NormalMap
+texture normalTexture;
+sampler2D normalTextureSampler = sampler_state {
+	Texture = (normalTexture);
+	AddressU = clamp;
+    AddressV = clamp;
+	MagFilter = Linear;
+    MinFilter = Linear;
+	MipFilter = Linear;
+};
+
 struct VertexShaderInput
 {
 	float4 Position : POSITION0;

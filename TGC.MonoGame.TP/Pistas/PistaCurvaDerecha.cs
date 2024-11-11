@@ -21,6 +21,7 @@ namespace TGC.MonoGame.TP.PistaCurvaDerecha
         private Vector3 desplazamientoEnEjes { get; set; }
         public List<BoundingBox> Colliders { get; set; }
         private List<Matrix> _pistasCurvas { get; set; }
+        private Texture2D Texture { get; set; }
         BoundingBox size;
         private BoundingFrustum _frustum;
         public PistasCurvasDerechas()
@@ -36,8 +37,9 @@ namespace TGC.MonoGame.TP.PistaCurvaDerecha
 
         public void LoadContent(ContentManager Content)
         {
-            ModeloPistaCurva = Content.Load<Model>("Models/" + "pistas/road_curve_fix");
-            Effect = Content.Load<Effect>("Effects/" + "BasicShader");
+            ModeloPistaCurva = Content.Load<Model>("Models/" + "pistas/curvedRoad");
+            Effect = Content.Load<Effect>("Effects/" + "BasicShader2");
+            Texture = Content.Load<Texture2D>("Textures/texturaMadera");
 
             foreach (var mesh in ModeloPistaCurva.Meshes)
             {
@@ -62,7 +64,8 @@ namespace TGC.MonoGame.TP.PistaCurvaDerecha
 
             Effect.Parameters["View"].SetValue(view);
             Effect.Parameters["Projection"].SetValue(projection);
-            Effect.Parameters["DiffuseColor"].SetValue(new Vector3(0.2f, 0.2f, 0.2f));
+            //Effect.Parameters["DiffuseColor"].SetValue(new Vector3(0.2f, 0.2f, 0.2f));
+            Effect.Parameters["Texture"]?.SetValue(Texture);
 
             foreach (var mesh in ModeloPistaCurva.Meshes)
             {

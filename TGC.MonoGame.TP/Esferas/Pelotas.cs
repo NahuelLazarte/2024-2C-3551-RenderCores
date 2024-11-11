@@ -18,6 +18,7 @@ namespace TGC.MonoGame.TP.Pelotas
         public float escala;
 
         public Texture Texture1, Texture2, Texture3, Texture4;
+        public Texture NormalTexture1, NormalTexture2, NormalTexture3, NormalTexture4;
         bool primera = true;
 
         internal void Update(GameTime gameTime, Modelos.Sphere esfera, ContentManager content)

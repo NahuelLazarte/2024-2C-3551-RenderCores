@@ -21,6 +21,10 @@ namespace TGC.MonoGame.TP.MurosExtra{
         public Effect Effect { get; set; }
         private BasicEffect Efecto { get; set; }
         private Texture2D Texture { get; set; }
+        private Texture2D normalTexture { get; set; }
+        private Texture2D metallicTexture { get; set; }
+        private Texture2D roughnessTexture { get; set; }
+        private Texture2D aoTexture { get; set; }
         public Model ModeloMuro { get; set; }
         public Model ModeloMuroEsquina { get; set; }
         public List<BoundingBox> Colliders { get; set; }
@@ -56,6 +60,10 @@ namespace TGC.MonoGame.TP.MurosExtra{
         public void LoadContent(ContentManager Content, GraphicsDevice graphicsDevice){
             Effect = Content.Load<Effect>("Effects/" + "BasicShader2");
             Texture = Content.Load<Texture2D>("Textures/texturaPiedra");
+            /*normalTexture = Content.Load<Texture2D>("Textures/normalMapPiedra");
+            metallicTexture = Content.Load<Texture2D>("Textures/SpecularMapPiedra");
+            roughnessTexture = Content.Load<Texture2D>("Textures/DisplacementMapPiedra");
+            aoTexture = Content.Load<Texture2D>("Textures/AmbientOcclusionMapPiedra");*/
             CollisionSound = Content.Load<SoundEffect>("Audio/ColisionPez");
 
             //Ponerle el efecto/shader a las paredes rectas
@@ -68,7 +76,7 @@ namespace TGC.MonoGame.TP.MurosExtra{
             }
 
             //Ponerle el efecto/shader a las paredes curvas
-            ModeloMuroEsquina = Content.Load<Model>("Models/" + "Muros/wallCornerSlantCentered");
+            ModeloMuroEsquina = Content.Load<Model>("Models/" + "Muros/wallCornerCentered");
             foreach (var mesh in ModeloMuroEsquina.Meshes){
                 foreach (var meshPart in mesh.MeshParts){
                     meshPart.Effect = Effect;
@@ -102,6 +110,13 @@ namespace TGC.MonoGame.TP.MurosExtra{
             Effect.Parameters["View"].SetValue(view);
             Effect.Parameters["Projection"].SetValue(projection);
             Effect.Parameters["Texture"]?.SetValue(Texture);
+            /*Effect.Parameters["metallicTexture"]?.SetValue(metallicTexture);
+            Effect.Parameters["roughnessTexture"]?.SetValue(roughnessTexture);
+            Effect.Parameters["aoTexture"]?.SetValue(aoTexture);
+            Effect.Parameters["normalTexture"]?.SetValue(normalTexture);
+            Effect.Parameters["lightPosition"].SetValue(Vector3.Up * 45f);
+            Effect.Parameters["lightColor"].SetValue(new Vector3(253, 251, 211));*/
+            //Effect.CurrentTechnique = Effect.Techniques["LightingTechnique"];
             /*Efecto.Projection = projection;
             Efecto.View = view;*/
 
@@ -172,9 +187,10 @@ namespace TGC.MonoGame.TP.MurosExtra{
             Colliders.Add(boxIzquierda);
         }
         public void AgregarMurosPistaCurvaDerecha(float Rotacion, Vector3 Posicion) {
-            var posicionMuros = new Vector3(Posicion.X / 334f, Posicion.Y / 250f, Posicion.Z / 334f);
-            var desplazamientoDerecha = new Vector3(-29.9f, -12f , +37.5f);
-
+            float a = 3f;
+            var posicionMuros = new Vector3(Posicion.X / a, Posicion.Y, Posicion.Z / a);
+            float b= 175f;
+            var desplazamientoDerecha = new Vector3(b, -12f * 100, -b);
             // Calcular las posiciones de los muros aplicando la rotación
             var posicionDerecha = posicionMuros + Vector3.Transform(desplazamientoDerecha, Matrix.CreateRotationY(Rotacion));
 
@@ -187,8 +203,10 @@ namespace TGC.MonoGame.TP.MurosExtra{
             Colliders.Add(boxDerecha);
         }
         public void AgregarMurosPistaCurvaIzquierda(float Rotacion, Vector3 Posicion) {
-            var posicionMuros = new Vector3(Posicion.X / 334f, Posicion.Y / 250f, Posicion.Z / 334f);
-            var desplazamientoIzquierda = new Vector3(-37.5f, -12f, -29.9f);
+            float a = 3f;
+            var posicionMuros = new Vector3(Posicion.X / a, Posicion.Y, Posicion.Z / a);
+            float b= 175f;
+            var desplazamientoIzquierda = new Vector3(b, -12f * 100, b);
 
             // Calcular las posiciones de los muros aplicando la rotación
             var posicionIzquierda = posicionMuros + Vector3.Transform(desplazamientoIzquierda, Matrix.CreateRotationY(Rotacion));

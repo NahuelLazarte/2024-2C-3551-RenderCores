@@ -8,6 +8,7 @@ using TGC.MonoGame.TP.Collisions;
 using TGC.MonoGame.TP.Modelos;
 using TGC.MonoGame.TP;
 using Microsoft.Xna.Framework.Audio;
+using TGC.MonoGame.TP.Levels;
 
 
 namespace TGC.MonoGame.TP.ObstaculoPiedras{
@@ -54,7 +55,7 @@ namespace TGC.MonoGame.TP.ObstaculoPiedras{
 
         }
 
-        public void Update(GameTime gameTime, TGCGame Game, Matrix view, Matrix projection) {
+        public void Update(GameTime gameTime, Level Game, Matrix view, Matrix projection) {
           
             for (int i = 0; i < _obstaculosPiedras.Count; i++) {
                 if (_envolturaEsfera.Intersects(Colliders[i])) {

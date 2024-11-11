@@ -4,7 +4,8 @@ using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
 using TGC.MonoGame.TP.Collisions;
 using TGC.MonoGame.TP.MaterialesJuego;
-using System; 
+using System;
+using TGC.MonoGame.TP.Levels;
 namespace TGC.MonoGame.TP.ObstaculoPozo
 {
     public class ObstaculosPozos
@@ -58,7 +59,7 @@ namespace TGC.MonoGame.TP.ObstaculoPozo
             size = BoundingVolumesExtensions.CreateAABBFrom(ModeloPozo);
         }
 
-        public void Update(GameTime gameTime, TGCGame Game, Matrix view, Matrix projection)
+        public void Update(GameTime gameTime, Level Game, Matrix view, Matrix projection)
         {
             for (int i = 0; i < _pozos.Count; i++) {
                 if (_envolturaEsfera.Intersects(Colliders[i])){

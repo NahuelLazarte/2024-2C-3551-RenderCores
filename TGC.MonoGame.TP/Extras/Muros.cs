@@ -10,7 +10,8 @@ using TGC.MonoGame.TP;
 using Microsoft.Xna.Framework.Audio;
 
 using System;
-using System.Linq; // Aseg�rate de que esto est� presente en la parte superior de tu archivo
+using System.Linq;
+using TGC.MonoGame.TP.Levels; // Aseg�rate de que esto est� presente en la parte superior de tu archivo
 
 
 namespace TGC.MonoGame.TP.MurosExtra{
@@ -88,7 +89,7 @@ namespace TGC.MonoGame.TP.MurosExtra{
 
         }
 
-        public void Update(GameTime gameTime, TGCGame Game, Matrix view, Matrix projection, BoundingFrustum frustum)
+        public void Update(GameTime gameTime, Level Game, Matrix view, Matrix projection, BoundingFrustum frustum)
         {
 
             for (int i = 0; i < _muros.Count + _murosEsquina.Count; i++)

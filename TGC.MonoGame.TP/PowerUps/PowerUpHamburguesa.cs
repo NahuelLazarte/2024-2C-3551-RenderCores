@@ -8,7 +8,8 @@ using TGC.MonoGame.TP.Collisions;
 using TGC.MonoGame.TP.Modelos;
 using TGC.MonoGame.TP;
 using Microsoft.Xna.Framework.Audio;
-using System; 
+using System;
+using TGC.MonoGame.TP.Levels;
 
 
 namespace TGC.MonoGame.TP.PowerUpHamburguesa{
@@ -68,7 +69,7 @@ namespace TGC.MonoGame.TP.PowerUpHamburguesa{
 
         }
 
-        public void Update(GameTime gameTime, TGCGame Game, Matrix view, Matrix projection) {
+        public void Update(GameTime gameTime, Level Game, Matrix view, Matrix projection) {
             
             Rotation += Convert.ToSingle(gameTime.ElapsedGameTime.TotalSeconds);
             

@@ -8,7 +8,8 @@ using TGC.MonoGame.TP.Collisions;
 using TGC.MonoGame.TP.Modelos;
 using TGC.MonoGame.TP;
 using Microsoft.Xna.Framework.Audio;
-using System; 
+using System;
+using TGC.MonoGame.TP.Levels;
 
 
 namespace TGC.MonoGame.TP.PowerUpEspada{
@@ -65,7 +66,7 @@ namespace TGC.MonoGame.TP.PowerUpEspada{
 
         }
 
-        public void Update(GameTime gameTime, TGCGame Game, Matrix view, Matrix projection) {
+        public void Update(GameTime gameTime, Level Game, Matrix view, Matrix projection) {
             
             for (int i = 0; i < _espadas.Count; i++) {
                 var originalPosition = _espadas[i].Translation; // Obtener la posición original

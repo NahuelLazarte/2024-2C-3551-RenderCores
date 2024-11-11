@@ -13,7 +13,8 @@ namespace TGC.MonoGame.MenuPrincipal
     {
         protected string name;
         public abstract void LogicExecute(TGCGame Game);
-        public string GetName (){
+        public string GetName()
+        {
             return name;
         }
     }
@@ -28,7 +29,7 @@ namespace TGC.MonoGame.MenuPrincipal
         public override void LogicExecute(TGCGame Game)
         {
             Game.isMenuActive = false;
-            //Game.SeleccionarNivel(1);
+            Game.SeleccionarNivel(1);
         }
     }
 
@@ -61,7 +62,7 @@ namespace TGC.MonoGame.MenuPrincipal
     {
         public override void LogicExecute(TGCGame Game)
         {
-            //Game.SeleccionarNivel(1);
+            Game.SeleccionarNivel(2);
         }
 
         public SelectLevel()

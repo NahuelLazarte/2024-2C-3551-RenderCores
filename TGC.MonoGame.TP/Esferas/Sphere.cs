@@ -11,10 +11,11 @@ using TGC.MonoGame.TP.Collisions;
 using TGC.MonoGame.TP.Pelotas;
 using System.ComponentModel;
 using System.Security.Cryptography.X509Certificates;
+using TGC.MonoGame.TP.Levels;
 
 namespace TGC.MonoGame.TP.Modelos
 {
-    class Sphere : Modelo
+    public class Sphere : Modelo
     {
         public float escala;
         Vector3 _velocity;
@@ -42,7 +43,7 @@ namespace TGC.MonoGame.TP.Modelos
         bool isMoving = false;
         bool isMoving2 = false;
 
-        public TGCGame Game;
+        public Level Game;
 
         public void setDirection(Vector3 newDirection)
         {

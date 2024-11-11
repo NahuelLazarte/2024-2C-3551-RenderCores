@@ -18,6 +18,7 @@ using TGC.MonoGame.TP.CheckPoint;
 using TGC.MonoGame.TP.Modelos;
 using TGC.MonoGame.TP.MurosExtra;
 using TGC.MonoGame.TP.ObstaculoCarretilla;
+using TGC.MonoGame.TP.Levels;
 
 namespace TGC.MonoGame.TP.MaterialesJuego {
     public class Materiales {
@@ -73,7 +74,7 @@ namespace TGC.MonoGame.TP.MaterialesJuego {
         }
 
 
-        public void Update(GameTime gameTime, TGCGame Game, Matrix view, Matrix projection, BoundingFrustum frustum)
+        public void Update(GameTime gameTime, Level Game, Matrix view, Matrix projection, BoundingFrustum frustum)
         {
             
             _pistasCurvasDerechas.Update(gameTime, view, projection);

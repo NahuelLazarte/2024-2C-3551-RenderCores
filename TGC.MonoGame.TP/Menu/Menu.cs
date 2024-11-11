@@ -11,7 +11,7 @@ namespace TGC.MonoGame.MenuPrincipal
 {
     public class Menu
     {
-        
+
         public bool isMusicActive = true;
         private float keyHoldDuration = 0.2f; // Duración de la presión de la tecla
         private float timer = 0f; // Temporizador para la duración de la tecla

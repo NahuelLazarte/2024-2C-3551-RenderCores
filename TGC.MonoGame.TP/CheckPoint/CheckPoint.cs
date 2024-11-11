@@ -6,7 +6,7 @@ using Microsoft.Xna.Framework.Media; // Asegúrate de tener esta directiva
 using System.Collections.Generic;
 using TGC.MonoGame.TP.Collisions;
 using TGC.MonoGame.TP.Modelos;
-using TGC.MonoGame.TP;
+using TGC.MonoGame.TP.Levels;
 
 using Microsoft.Xna.Framework.Audio;
 
@@ -60,7 +60,7 @@ namespace TGC.MonoGame.TP.CheckPoint{
 
         }
 
-        public void Update(GameTime gameTime, TGCGame Game, Matrix view, Matrix projection) {
+        public void Update(GameTime gameTime, Level Game, Matrix view, Matrix projection) {
             
             //Rotation += Convert.ToSingle(gameTime.ElapsedGameTime.TotalSeconds);
             

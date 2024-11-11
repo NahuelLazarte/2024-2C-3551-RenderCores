@@ -10,6 +10,7 @@ using TGC.MonoGame.TP;
 using Microsoft.Xna.Framework.Audio;
 
 using System;
+using TGC.MonoGame.TP.Levels;
 
 namespace TGC.MonoGame.TP.ObstaculoCarretilla {
     public class ObstaculosCarretillas {
@@ -62,7 +63,7 @@ namespace TGC.MonoGame.TP.ObstaculoCarretilla {
             CollisionSound = Content.Load<SoundEffect>("Audio/ColisionPez"); 
         }
 
-        public void Update(GameTime gameTime, TGCGame Game, Matrix view, Matrix projection) {
+        public void Update(GameTime gameTime, Level Game, Matrix view, Matrix projection) {
             for (int i = 0; i < _obstaculosCarretilla.Count; i++) {
                 var carretilla = _obstaculosCarretilla[i];
 

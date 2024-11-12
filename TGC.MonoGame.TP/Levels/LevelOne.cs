@@ -164,7 +164,7 @@ namespace TGC.MonoGame.TP
             {
                 isMenuActive = true;
             }*/
-            esfera.isGodModeActive = isGodModeActive;
+            //esfera.isGodModeActive = isGodModeActive;
 
             FrustrumCamera.Update(esfera.GetPosition());
 

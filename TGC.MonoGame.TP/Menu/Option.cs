@@ -42,7 +42,13 @@ namespace TGC.MonoGame.MenuPrincipal
 
         public override void LogicExecute(TGCGame Game)
         {
-            Game.isGodModeActive = !Game.isGodModeActive;
+            //Game.isGodModeActive = !Game.isGodModeActive;
+            if(Game.isGodModeActive) {
+                Game.isGodModeActive = false;
+            }
+            else{
+                Game.isGodModeActive = true;
+            }
         }
     }
     public class Exit : Option

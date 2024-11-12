@@ -89,6 +89,10 @@ namespace TGC.MonoGame.TP
             backgroundMusic = Content.Load<Song>(ContentFolderMusic + "Sad Town");
             MediaPlayer.IsRepeating = true;
             MediaPlayer.Volume = 0.3f;
+
+            // Cargar contenido del nivel actual
+            nivelActual = new LevelOne(GraphicsDevice, Content);
+            iniciarNivelActual();
             base.LoadContent();
         }
 
@@ -112,6 +116,9 @@ namespace TGC.MonoGame.TP
             }
             else
             {
+
+
+
                 if (!(MediaPlayer.Volume == 0.1f)) MediaPlayer.Volume = 0.2f;
 
                 if (keyboardState.IsKeyDown(Keys.Escape))
@@ -121,10 +128,10 @@ namespace TGC.MonoGame.TP
 
                 if (nivelActual != null)
                 {
-                    nivelActual.Update(gameTime);                    
+                    nivelActual.esfera.setGodMode(isGodModeActive);
+                    nivelActual.Update(gameTime);
+
                 }
-
-
             }
 
             base.Update(gameTime);
@@ -144,20 +151,21 @@ namespace TGC.MonoGame.TP
             GraphicsDevice.RasterizerState = rasterizerState;
 
             // Guarda los estados actuales
-            
             var originalBlendState = GraphicsDevice.BlendState;
             var originalDepthStencilState = GraphicsDevice.DepthStencilState;
 
+            // Dibuja el nivel actual siempre
+            if (nivelActual != null)
+            {
+                nivelActual.Draw(gameTime);
+            }
+
+            // Dibuja el menú si está activo
             if (isMenuActive)
             {
+                SpriteBatch.Begin();
                 menu.Draw(SpriteBatch, menuFont);
-            }
-            else
-            {
-                if (nivelActual != null)
-                {
-                    nivelActual.Draw(gameTime);                    
-                }
+                SpriteBatch.End();
             }
 
             // Restaura los estados originales
@@ -174,22 +182,28 @@ namespace TGC.MonoGame.TP
 
             // Imprimir en la consola
             Console.WriteLine("Nivel seleccionado");
-            if(nivel ==1){
+            if (nivel == 1)
+            {
                 nivelActual = new LevelOne(GraphicsDevice, Content);
             }
-            else if(nivel ==2){
+            else if (nivel == 2)
+            {
                 nivelActual = new LevelTwo(GraphicsDevice, Content);
             }
             nivelSeleccionado = nivel;
-            
-            nivelActual.Initialize();
-            nivelActual.LoadContent();
+
+            iniciarNivelActual();
             isMenuActive = false;
 
             Console.WriteLine("Ejecución terminada");
 
             // Liberar la ejecución
             nivelSeleccionadoEvent.Set();
+        }
+        public void iniciarNivelActual()
+        {
+            nivelActual.Initialize();
+            nivelActual.LoadContent();
         }
     }
 }

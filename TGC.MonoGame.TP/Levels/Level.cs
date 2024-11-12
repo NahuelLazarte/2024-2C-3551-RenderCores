@@ -17,7 +17,7 @@ namespace TGC.MonoGame.TP.Levels
         protected GraphicsDevice GraphicsDevice { get; }
         protected ContentManager Content { get; }
 
-        protected Sphere esfera; // Campo protegido
+        public Sphere esfera; 
 
         private Matrix rotation = Matrix.Identity;
 

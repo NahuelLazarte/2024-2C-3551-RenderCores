@@ -114,6 +114,7 @@ namespace TGC.MonoGame.TP.MaterialesJuego {
         }
 
         public void ColliderEsfera(BoundingSphere boundingSphere){
+            //Se le pasa el BoungingSphere de la esfera
             _hamburguesas._envolturaEsfera = boundingSphere;
             _espadas._envolturaEsfera = boundingSphere;
             _piedras._envolturaEsfera = boundingSphere;
@@ -124,6 +125,7 @@ namespace TGC.MonoGame.TP.MaterialesJuego {
         }
 
         internal void DarCollidersEsfera(Modelos.Sphere esfera){
+            //a la esfera se agrega a la lista los colliders de todos los objetos
             List<BoundingBox> CollidersPistaRecta = _pistasRectas.Colliders;
             List<BoundingBox> CollidersPistaCurvaDerecha = _pistasCurvasDerechas.Colliders;
             List<BoundingBox> CollidersPistaCurvaIzquierda = _pistasCurvasIzquierdas.Colliders;

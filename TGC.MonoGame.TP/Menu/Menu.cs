@@ -95,7 +95,7 @@ namespace TGC.MonoGame.MenuPrincipal
 
         public void Draw(SpriteBatch spriteBatch, SpriteFont font)
         {
-            spriteBatch.Begin();
+            //spriteBatch.Begin();
 
             // Obtener el tamaño de la ventana
             var screenWidth = spriteBatch.GraphicsDevice.Viewport.Width;
@@ -135,7 +135,7 @@ namespace TGC.MonoGame.MenuPrincipal
             font.MeasureString(musicText) / 2, new Vector2(scale), SpriteEffects.None, 0f);
             */
 
-            spriteBatch.End();
+            //spriteBatch.End();
         }
     }
 }

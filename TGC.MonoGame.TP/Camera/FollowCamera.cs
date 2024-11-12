@@ -21,10 +21,10 @@ namespace TGC.MonoGame.TP
         public Vector3 GetDirection()
         {
             Vector3 direccion = posicionObjeto - position;
-            direccion = new Vector3(direccion.X,0f,direccion.Z);
+            direccion = new Vector3(direccion.X, 0f, direccion.Z);
 
             return Vector3.Normalize(direccion);
-        }       
+        }
         public FollowCamera(GraphicsDevice graphicsDevice, Vector3 initialPosition, Vector3 initialTarget, Vector3 initialUp)
         {
             position = initialPosition;
@@ -36,6 +36,9 @@ namespace TGC.MonoGame.TP
 
         }
 
+        private float accumulatedDeltaX = 0f;
+        private float accumulatedDeltaY = 0f;
+
         public void Update(Vector3 objectPosition)
         {
             posicionObjeto = objectPosition;
@@ -43,22 +46,25 @@ namespace TGC.MonoGame.TP
             float deltaX = mouseState.X - (GraphicsDeviceManager.DefaultBackBufferWidth / 2);
             float deltaY = mouseState.Y - (GraphicsDeviceManager.DefaultBackBufferHeight / 2);
 
+            // Acumular los deltas del ratón
+            accumulatedDeltaX += deltaX;
+            accumulatedDeltaY += deltaY;
+
+            // Restablecer el ratón al centro de la pantalla
+            Mouse.SetPosition(GraphicsDeviceManager.DefaultBackBufferWidth / 2, GraphicsDeviceManager.DefaultBackBufferHeight / 2);
+
             position = objectPosition + offset;
 
-            position = Vector3.Transform(position - objectPosition, Matrix.CreateFromAxisAngle(up, -0.007f * deltaX)) + objectPosition;
-            float angleY = MathHelper.Clamp(0.0004f * deltaY, -MathHelper.PiOver2, MathHelper.PiOver2);
+            position = Vector3.Transform(position - objectPosition, Matrix.CreateFromAxisAngle(up, -0.007f * accumulatedDeltaX)) + objectPosition;
+            float angleY = MathHelper.Clamp(0.0004f * accumulatedDeltaY, -MathHelper.PiOver2, MathHelper.PiOver2);
             position = Vector3.Transform(position - objectPosition, Matrix.CreateFromAxisAngle(Vector3.Cross(up, position - objectPosition), angleY)) + objectPosition;
 
             // Actualizar la matriz de vista
             ViewMatrix = Matrix.CreateLookAt(position, objectPosition, up);
 
-
             //Console.WriteLine($"Camera Position: X={position.X}, Y={position.Y}, Z={position.Z}");
-
             //Console.WriteLine($"objectPosition: X={objectPosition.X}, Y={objectPosition.Y}, Z={objectPosition.Z}");
-
             //Console.WriteLine($"up: X={up.X}, Y={up.Y}, Z={up.Z}");
-
         }
     }
 }

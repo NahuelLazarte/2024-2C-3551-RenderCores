@@ -31,7 +31,7 @@ namespace TGC.MonoGame.TP.Modelos
         public List<BoundingBox> Colliders { get; set; }
 
         Vector3 posicionNueva;
-        public bool isGodModeActive { get; set; }
+        public bool isGodModeActive;
 
         private bool OnGround = false;
         private KeyboardState previousKeyboardState;
@@ -48,6 +48,11 @@ namespace TGC.MonoGame.TP.Modelos
         public void setDirection(Vector3 newDirection)
         {
             direction = newDirection;
+        }
+        public void setGodMode(bool mode)
+        {
+            this.isGodModeActive = mode;
+            
         }
 
         public BoundingSphere GetBoundingSphere()
@@ -112,6 +117,7 @@ namespace TGC.MonoGame.TP.Modelos
 
         public override void Update(GameTime gameTime, ContentManager content)
         {
+            Console.WriteLine($"Modo seteado a: {isGodModeActive}");
 
             var keyboardState = Keyboard.GetState();
 
@@ -122,7 +128,7 @@ namespace TGC.MonoGame.TP.Modelos
             bool accelerating = false;
 
             if (isGodModeActive)
-            {
+            {                
                 acceleration = new Vector3(0, 0, 0);
                 MovimientoGodMode(gameTime, content);
                 return;
@@ -286,6 +292,7 @@ namespace TGC.MonoGame.TP.Modelos
 
         private void MovimientoGodMode(GameTime gameTime, ContentManager content)
         {
+            Console.WriteLine("Ejecutando GodMode");
             var keyboardState = Keyboard.GetState();
             var mouseState = Mouse.GetState(); // Obtener el estado del mouse
 

@@ -1,5 +1,5 @@
 using Microsoft.Xna.Framework;
-namespace MonoGamers.Camera;
+namespace TGC.MonoGame.TP.Camera;
 
     /// <summary>
     ///     The minimum behavior that a camera should have.

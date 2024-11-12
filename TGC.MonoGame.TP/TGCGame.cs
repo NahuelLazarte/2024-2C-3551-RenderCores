@@ -17,7 +17,6 @@ using TGC.MonoGame.MenuPrincipal;
 using MonoGame.Framework;
 
 using TGC.MonoGame.TP.Geometries;
-using MonoGamers.Camera;
 
 namespace TGC.MonoGame.TP
 {

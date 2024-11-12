@@ -7,7 +7,7 @@ using TGC.MonoGame.TP.Fondo;
 
 using MonoGame.Framework;
 using TGC.MonoGame.TP.Geometries;
-using MonoGamers.Camera;
+using TGC.MonoGame.TP.Camera;
 using Vector3 = Microsoft.Xna.Framework.Vector3;
 
 namespace TGC.MonoGame.TP.Levels

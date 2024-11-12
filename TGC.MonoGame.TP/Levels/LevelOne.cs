@@ -14,7 +14,7 @@ using TGC.MonoGame.MenuPrincipal;
 using MonoGame.Framework;
 
 using TGC.MonoGame.TP.Geometries;
-using MonoGamers.Camera;
+using TGC.MonoGame.TP.Camera;
 using TGC.MonoGame.TP.Levels;
 
 
@@ -39,7 +39,7 @@ namespace TGC.MonoGame.TP
 
         //Mundo
         private Materiales _materiales { get; set; }
-        
+
         LineDrawer lineDrawer;
         private Gizmos.Gizmos Gizmos;
         private SkyBox SkyBox { get; set; }
@@ -61,6 +61,11 @@ namespace TGC.MonoGame.TP
         private bool isMusicPlaying = false;
         public bool isGodModeActive = false;
 
+        //Enviroment Map
+        private StaticCamera CubeMapCamera { get; set; }
+        private RenderTargetCube EnvironmentMapRenderTarget { get; set; }
+        private const int EnvironmentmapSize = 2048;
+
         public LevelOne(GraphicsDevice graphicsDevice, ContentManager content)
             : base(graphicsDevice, content)
         {
@@ -68,7 +73,7 @@ namespace TGC.MonoGame.TP
 
         public override void Initialize()
         {
-            
+
             //Inicializar Gizmos
             Gizmos = new Gizmos.Gizmos();
             lineDrawer = new LineDrawer(GraphicsDevice);
@@ -91,6 +96,10 @@ namespace TGC.MonoGame.TP
             _materiales.DarCollidersEsfera(esfera);
 
             //base.Initialize();
+
+            //Enviroment Map
+            CubeMapCamera = new StaticCamera(1f, new Vector3(0, 0, 0), Vector3.UnitX, Vector3.Up);
+            CubeMapCamera.BuildProjection(1f, 1f, 3000f, MathHelper.PiOver2);
         }
 
         public override void LoadContent()
@@ -131,39 +140,39 @@ namespace TGC.MonoGame.TP
                 MediaPlayer.Play(backgroundMusic);
                 isMusicPlaying = false;
             }
-/*
-            if (isMenuActive)
+            /*
+                        if (isMenuActive)
+                        {
+                            if (!(MediaPlayer.Volume == 0.3f)) MediaPlayer.Volume = 0.3f;
+
+                            _materiales.Update(gameTime, this, FrustrumCamera.ViewMatrix, FrustrumCamera.ProjectionMatrix, _frustum);
+                            menu.Update(this, gameTime);
+
+                        }
+                        else
+                        {*/
+
+            if (!(MediaPlayer.Volume == 0.1f)) MediaPlayer.Volume = 0.2f;
+            /*
+            if (keyboardState.IsKeyDown(Keys.Escape))
             {
-                if (!(MediaPlayer.Volume == 0.3f)) MediaPlayer.Volume = 0.3f;
+                isMenuActive = true;
+            }*/
+            esfera.isGodModeActive = isGodModeActive;
 
-                _materiales.Update(gameTime, this, FrustrumCamera.ViewMatrix, FrustrumCamera.ProjectionMatrix, _frustum);
-                menu.Update(this, gameTime);
+            FrustrumCamera.Update(esfera.GetPosition());
 
-            }
-            else
-            {*/
+            _frustum.Matrix = FrustrumCamera.ViewMatrix * FrustrumCamera.ProjectionMatrix;
+            _materiales.Update(gameTime, this, FrustrumCamera.ViewMatrix, FrustrumCamera.ProjectionMatrix, _frustum);
+            esfera.Update(gameTime, Content);
+            esfera.setDirection(FrustrumCamera.GetDirection());
 
-                if (!(MediaPlayer.Volume == 0.1f)) MediaPlayer.Volume = 0.2f;
-                /*
-                if (keyboardState.IsKeyDown(Keys.Escape))
-                {
-                    isMenuActive = true;
-                }*/
-                esfera.isGodModeActive = isGodModeActive;
-
-                FrustrumCamera.Update(esfera.GetPosition());
-
-                _frustum.Matrix = FrustrumCamera.ViewMatrix * FrustrumCamera.ProjectionMatrix;
-                _materiales.Update(gameTime, this, FrustrumCamera.ViewMatrix, FrustrumCamera.ProjectionMatrix, _frustum);
-                esfera.Update(gameTime, Content);
-                esfera.setDirection(FrustrumCamera.GetDirection());
-
-                //Gizmos.UpdateViewProjection(Camera.ViewMatrix, Camera.ProjectionMatrix);
-                Gizmos.UpdateViewProjection(TestCamera.ViewMatrix, TestCamera.ProjectionMatrix);
+            //Gizmos.UpdateViewProjection(Camera.ViewMatrix, Camera.ProjectionMatrix);
+            Gizmos.UpdateViewProjection(TestCamera.ViewMatrix, TestCamera.ProjectionMatrix);
 
 
-                BoundingSphere boundingSphere = esfera.GetBoundingSphere();
-                _materiales.ColliderEsfera(boundingSphere);
+            BoundingSphere boundingSphere = esfera.GetBoundingSphere();
+            _materiales.ColliderEsfera(boundingSphere);
 
             //}
             //base.Update(gameTime);
@@ -171,10 +180,11 @@ namespace TGC.MonoGame.TP
 
         public override void Draw(GameTime gameTime)
         {
+            /*
             // Calcula el tiempo para girar la cámara
             float elapsedTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
             float rotationSpeed = 0.3f; // Velocidad de rotación
-            float radius = 100f; // Distancia de la cámara a la pelota
+            float radius = 100f; // Distancia de la cámara a la pelota*/
 
             /*
             if (isMenuActive)
@@ -201,36 +211,136 @@ namespace TGC.MonoGame.TP
             else
             {*/
 
-                //Skybox
-                SkyBox.Draw(FrustrumCamera.ViewMatrix, FrustrumCamera.ProjectionMatrix, FrustrumCamera.position);
-
-                //Objetos
-                _materiales.Draw(gameTime, FrustrumCamera.ViewMatrix, FrustrumCamera.ProjectionMatrix, GraphicsDevice);
-                esfera.Draw(FrustrumCamera.ViewMatrix, FrustrumCamera.ProjectionMatrix, FrustrumCamera.position);
-
-
-
-                Vector3 start = new Vector3(0, 0, 0);
-                Vector3 endGreen = new Vector3(50, 0, 0);
-                Vector3 endRed = new Vector3(0, 0, 50);
-
-                lineDrawer.DrawLine(start, endGreen, Color.Green, FrustrumCamera.ViewMatrix, FrustrumCamera.ProjectionMatrix);
-                lineDrawer.DrawLine(start, endRed, Color.Red, FrustrumCamera.ViewMatrix, FrustrumCamera.ProjectionMatrix);
-
-                LightBox.Draw(LightBoxWorld, FrustrumCamera.ViewMatrix, FrustrumCamera.ProjectionMatrix);
-
-                //Gizmos
-                Gizmos.DrawSphere(esfera.GetBoundingSphere().Center, esfera.GetBoundingSphere().Radius * Vector3.One, Color.White);
-                Gizmos.DrawFrustum(FrustrumCamera.ViewMatrix * FrustrumCamera.ProjectionMatrix, Color.Aqua);
-                Gizmos.Draw();
-            //ddd}
-
+            //ddd}            
+            ObjectsToDraw(gameTime);
+            esfera.Draw(FrustrumCamera.ViewMatrix, FrustrumCamera.ProjectionMatrix, FrustrumCamera.position);
+            Gizmos.DrawSphere(esfera.GetBoundingSphere().Center, esfera.GetBoundingSphere().Radius * Vector3.One, Color.White);
+            //DrawEnvironmentMap();
         }
+        public void ObjectsToDraw(GameTime gameTime)
+        {
+            //Skybox
+            SkyBox.Draw(FrustrumCamera.ViewMatrix, FrustrumCamera.ProjectionMatrix, FrustrumCamera.position);
 
+            //Objetos
+            _materiales.Draw(gameTime, FrustrumCamera.ViewMatrix, FrustrumCamera.ProjectionMatrix, GraphicsDevice);
+            
+
+            Vector3 start = new Vector3(0, 0, 0);
+            Vector3 endGreen = new Vector3(50, 0, 0);
+            Vector3 endRed = new Vector3(0, 0, 50);
+
+            lineDrawer.DrawLine(start, endGreen, Color.Green, FrustrumCamera.ViewMatrix, FrustrumCamera.ProjectionMatrix);
+            lineDrawer.DrawLine(start, endRed, Color.Red, FrustrumCamera.ViewMatrix, FrustrumCamera.ProjectionMatrix);
+
+            LightBox.Draw(LightBoxWorld, FrustrumCamera.ViewMatrix, FrustrumCamera.ProjectionMatrix);
+
+            //Gizmos
+            Gizmos.DrawFrustum(FrustrumCamera.ViewMatrix * FrustrumCamera.ProjectionMatrix, Color.Aqua);
+            Gizmos.Draw();
+        }
         public override void UnloadContent()
         {
             Content.Unload();
             //base.UnloadContent();
+
+            EnvironmentMapRenderTarget.Dispose();
+        }
+
+
+        private void SetCubemapCameraForOrientation(CubeMapFace face)
+        {
+            switch (face)
+            {
+                default:
+                case CubeMapFace.PositiveX:
+                    CubeMapCamera.FrontDirection = -Vector3.UnitX;
+                    CubeMapCamera.UpDirection = Vector3.Down;
+                    break;
+
+                case CubeMapFace.NegativeX:
+                    CubeMapCamera.FrontDirection = Vector3.UnitX;
+                    CubeMapCamera.UpDirection = Vector3.Down;
+                    break;
+
+                case CubeMapFace.PositiveY:
+                    CubeMapCamera.FrontDirection = Vector3.Down;
+                    CubeMapCamera.UpDirection = Vector3.UnitZ;
+                    break;
+
+                case CubeMapFace.NegativeY:
+                    CubeMapCamera.FrontDirection = Vector3.Up;
+                    CubeMapCamera.UpDirection = -Vector3.UnitZ;
+                    break;
+
+                case CubeMapFace.PositiveZ:
+                    CubeMapCamera.FrontDirection = -Vector3.UnitZ;
+                    CubeMapCamera.UpDirection = Vector3.Down;
+                    break;
+
+                case CubeMapFace.NegativeZ:
+                    CubeMapCamera.FrontDirection = Vector3.UnitZ;
+                    CubeMapCamera.UpDirection = Vector3.Down;
+                    break;
+            }
+        }
+
+        private void DrawEnvironmentMap(GameTime gameTime)
+        {
+            #region Pass 1-6
+
+            GraphicsDevice.DepthStencilState = DepthStencilState.Default;
+            // Draw to our cubemap from the robot position
+            for (var face = CubeMapFace.PositiveX; face <= CubeMapFace.NegativeZ; face++)
+            {
+                // Set the render target as our cubemap face, we are drawing the scene in this texture
+                GraphicsDevice.SetRenderTarget(EnvironmentMapRenderTarget, face);
+                GraphicsDevice.Clear(ClearOptions.Target | ClearOptions.DepthBuffer, Color.CornflowerBlue, 1f, 0);
+
+                SetCubemapCameraForOrientation(face);
+                CubeMapCamera.BuildView();
+
+                // Draw our scene. Do not draw our tank as it would be occluded by itself 
+                // (if it has backface culling on)
+                //Scene.Draw(Matrix.Identity, CubeMapCamera.View, CubeMapCamera.Projection);
+                ObjectsToDraw(gameTime);
+            }
+
+            #endregion
+
+            #region Pass 7
+
+            // Set the render target as null, we are drawing on the screen!
+            GraphicsDevice.SetRenderTarget(null);
+            GraphicsDevice.Clear(ClearOptions.Target | ClearOptions.DepthBuffer, Color.CornflowerBlue, 1f, 0);
+
+
+            // Draw our scene with the default effect and default camera
+            //Scene.Draw(Matrix.Identity, Camera.View, Camera.Projection);
+            ObjectsToDraw(gameTime);
+
+            // Draw our sphere
+
+            #region Draw Sphere
+
+            Effect.CurrentTechnique = Effect.Techniques["EnvironmentMapSphere"];
+            Effect.Parameters["environmentMap"].SetValue(EnvironmentMapRenderTarget);
+            Effect.Parameters["eyePosition"].SetValue(FrustrumCamera.position);
+
+            var sphereWorld = Matrix.CreateTranslation(esfera.GetPosition());
+
+            // World is used to transform from model space to world space
+            Effect.Parameters["World"].SetValue(sphereWorld);
+            // InverseTransposeWorld is used to rotate normals
+            Effect.Parameters["InverseTransposeWorld"]?.SetValue(Matrix.Transpose(Matrix.Invert(sphereWorld)));
+            // WorldViewProjection is used to transform from model space to clip space
+            Effect.Parameters["WorldViewProjection"].SetValue(sphereWorld * FrustrumCamera.ViewMatrix * FrustrumCamera.ProjectionMatrix);
+
+            //Sphere.Draw(Effect);
+
+            #endregion
+            #endregion
+
         }
 
     }

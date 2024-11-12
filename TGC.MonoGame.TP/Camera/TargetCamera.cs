@@ -4,7 +4,7 @@ using Microsoft.Xna.Framework.Input;
 using System;
 using System.Configuration;
 
-namespace MonoGamers.Camera;
+namespace TGC.MonoGame.TP.Camera;
 
     /// <summary>
     ///     Camera looking at a particular point, assumes the up vector is in y.

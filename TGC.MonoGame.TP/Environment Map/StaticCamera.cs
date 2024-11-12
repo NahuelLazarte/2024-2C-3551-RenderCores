@@ -1,13 +1,11 @@
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
-using System;
-using System.Configuration;
 
-namespace TGC.MonoGame.TP.Camera;
+using TGC.MonoGame.TP.Camera;
 
+namespace TGC.MonoGame.Samples.Cameras
+{
     /// <summary>
-    ///     Camera looking at a particular point, assumes the up vector is in y.
+    ///     Static camera without restrictions, where each component is configured and nothing is inferred.
     /// </summary>
     public class StaticCamera : Camera
     {
@@ -41,3 +39,4 @@ namespace TGC.MonoGame.TP.Camera;
             // This camera has no movement, once initialized with position and lookAt it is no longer updated automatically.
         }
     }
+}

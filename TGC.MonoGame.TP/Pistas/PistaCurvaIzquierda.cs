@@ -25,15 +25,16 @@ namespace TGC.MonoGame.TP.PistaCurvaIzquierda
         BoundingBox size;
         private BoundingFrustum _frustum;
 
-        public PistasCurvasIzquierdas()
+        public PistasCurvasIzquierdas(Matrix view, Matrix projection)
         {
-            Initialize();
+            Initialize(view,projection);
         }
 
-        private void Initialize()
+        private void Initialize(Matrix view, Matrix projection)
         {
             _pistasCurvas = new List<Matrix>();
             Colliders = new List<BoundingBox>();
+            _frustum = new BoundingFrustum(view * projection);
         }
 
         public void LoadContent(ContentManager Content)

@@ -28,17 +28,18 @@ namespace TGC.MonoGame.TP.PistaRecta
         private BoundingFrustum _frustum;
 
         protected Texture Texture { get; set; }
-        public PistasRectas()
+        public PistasRectas(Matrix view, Matrix projection)
         {
-            Initialize();
+            Initialize(view,projection);
         }
 
-        private void Initialize()
+        private void Initialize(Matrix view, Matrix projection)
         {
             _pistasRectas = new List<Matrix>();
             _muros = new List<Matrix>();
             Colliders = new List<BoundingBox>();
             CollidersMuro = new List<BoundingBox>();
+            _frustum = new BoundingFrustum(view * projection);
         }
 
         public void LoadContent(ContentManager Content)

@@ -29,12 +29,13 @@ namespace TGC.MonoGame.TP.PowerUpEspada{
         private SpriteFont spriteFont;
         private BoundingFrustum _frustum;
 
-        public PowerUpEspadas() {
-            Initialize();
+        public PowerUpEspadas(Matrix view, Matrix projection) {
+            Initialize(view,projection);
         }
 
-        private void Initialize() {
+        private void Initialize(Matrix view, Matrix projection) {
             _espadas = new List<Matrix>();
+            _frustum = new BoundingFrustum(view * projection);
         }
 
         public void IniciarColliders() {

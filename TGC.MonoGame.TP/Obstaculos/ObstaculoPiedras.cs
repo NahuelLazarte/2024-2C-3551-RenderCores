@@ -26,13 +26,14 @@ namespace TGC.MonoGame.TP.ObstaculoPiedras{
         public SoundEffect CollisionSound { get; set; }
         BoundingBox size;
         private BoundingFrustum _frustum;
-        public ObstaculosPiedras() {
-            Initialize();
+        public ObstaculosPiedras(Matrix view, Matrix projection) {
+            Initialize(view,projection);
         }
 
-        private void Initialize() {
+        private void Initialize(Matrix view, Matrix projection) {
             _obstaculosPiedras = new List<Matrix>();
             Colliders = new List<BoundingBox>();
+            _frustum = new BoundingFrustum(view * projection);
         }
 
         public void IniciarColliders() {

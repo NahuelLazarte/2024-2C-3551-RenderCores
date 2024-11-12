@@ -76,21 +76,27 @@ namespace TGC.MonoGame.TP
 
             //Inicializar Gizmos
             Gizmos = new Gizmos.Gizmos();
+            Console.WriteLine("Gizmos initialized");
             lineDrawer = new LineDrawer(GraphicsDevice);
+            Console.WriteLine("LineDrawer initialized");
 
             //Camara de Prueba
             TestCamera = new FreeCamera(new Vector3(0.0f, 10.0f, 0.0f), GraphicsDevice);
+            Console.WriteLine("TestCamera initialized");
 
             //Camara con Frustrum
             FrustrumCamera = new FollowCamera(GraphicsDevice, new Vector3(0, 5, 15), Vector3.Zero, Vector3.Up);
+            Console.WriteLine("FrustrumCamera initialized");
             _frustum = new BoundingFrustum(FrustrumCamera.ViewMatrix * FrustrumCamera.ProjectionMatrix);
+            Console.WriteLine("BoundingFrustum initialized");
 
             //Inicializar Esfera
             esfera = new Sphere(new Vector3(0.0f, 10.0f, 0.0f), rotation, new Vector3(0.5f, 0.5f, 0.5f));
             esfera.Game = this;
 
             //Inicializar Materiales
-            _materiales = new Materiales(Content, GraphicsDevice, _frustum);
+            _materiales = new Materiales(Content, GraphicsDevice, _frustum,FrustrumCamera.ViewMatrix,FrustrumCamera.ProjectionMatrix);
+            Console.WriteLine("Materiales inicializados");
             _constructorMateriales = new ConstructorMateriales();
             _constructorMateriales.CargarElementos(_materiales);
             _materiales.DarCollidersEsfera(esfera);

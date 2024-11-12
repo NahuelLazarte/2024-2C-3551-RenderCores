@@ -39,17 +39,17 @@ namespace TGC.MonoGame.TP.MaterialesJuego {
 
         private List<BoundingBox> CollidersDibujo { get; set; }
 
-        public Materiales(ContentManager Content, GraphicsDevice graphicsDevice, BoundingFrustum frustrum) {
-            _pistasCurvasDerechas = new PistasCurvasDerechas();
-            _pistasCurvasIzquierdas = new PistasCurvasIzquierdas();
-            _pistasRectas = new PistasRectas();
-            _hamburguesas = new PowerUpHamburguesas();
-            _espadas = new PowerUpEspadas();
-            _piedras = new ObstaculosPiedras();
+        public Materiales(ContentManager Content, GraphicsDevice graphicsDevice, BoundingFrustum frustrum, Matrix view, Matrix projection) {
+            _pistasCurvasDerechas = new PistasCurvasDerechas(view,projection);
+            _pistasCurvasIzquierdas = new PistasCurvasIzquierdas(view,projection);
+            _pistasRectas = new PistasRectas(view,projection);
+            _hamburguesas = new PowerUpHamburguesas(view,projection);
+            _espadas = new PowerUpEspadas(view,projection);
+            _piedras = new ObstaculosPiedras(view,projection);
             _pozos = new ObstaculosPozos();
-            _checkPoints = new CheckPoints();
+            _checkPoints = new CheckPoints(view,projection);
             _muros = new Muros(frustrum);
-            _carretillas = new ObstaculosCarretillas();
+            _carretillas = new ObstaculosCarretillas(view,projection);
 
             CollidersDibujo = new List<BoundingBox>();
 

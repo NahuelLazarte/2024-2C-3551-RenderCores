@@ -30,13 +30,14 @@ namespace TGC.MonoGame.TP.PowerUpHamburguesa{
         private int hamburguesasCount;
         private BoundingFrustum _frustum;
 
-        public PowerUpHamburguesas() {
-            Initialize();
+        public PowerUpHamburguesas(Matrix view, Matrix projection) {
+            Initialize(view,projection);
         }
 
-        private void Initialize() {
+        private void Initialize(Matrix view, Matrix projection) {
             _hamburguesas = new List<Matrix>();
             hamburguesasCount = 0;
+            _frustum = new BoundingFrustum(view * projection);
         }
 
         public void IniciarColliders() {

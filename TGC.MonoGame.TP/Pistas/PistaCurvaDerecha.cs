@@ -24,20 +24,22 @@ namespace TGC.MonoGame.TP.PistaCurvaDerecha
         private Texture2D Texture { get; set; }
         BoundingBox size;
         private BoundingFrustum _frustum;
-        public PistasCurvasDerechas()
+        public PistasCurvasDerechas(Matrix view, Matrix projection)
         {
-            Initialize();
+            Initialize(view, projection);
         }
 
-        private void Initialize()
+        private void Initialize(Matrix view, Matrix projection)
         {
             _pistasCurvas = new List<Matrix>();
             Colliders = new List<BoundingBox>();
+            _frustum = new BoundingFrustum(view * projection);
         }
 
         public void LoadContent(ContentManager Content)
         {
             ModeloPistaCurva = Content.Load<Model>("Models/" + "pistas/curvedRoad");
+            Console.WriteLine($"Modelo de pista curva cargado");
             Effect = Content.Load<Effect>("Effects/" + "BasicShader2");
             Texture = Content.Load<Texture2D>("Textures/texturaMadera");
 

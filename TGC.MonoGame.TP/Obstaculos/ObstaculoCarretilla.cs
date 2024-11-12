@@ -40,13 +40,14 @@ namespace TGC.MonoGame.TP.ObstaculoCarretilla {
         BoundingBox size;
         private BoundingFrustum _frustum;
 
-        public ObstaculosCarretillas() {
-            Initialize();
+        public ObstaculosCarretillas(Matrix view, Matrix projection) {
+            Initialize(view,projection);
         }
 
-        private void Initialize() {
+        private void Initialize(Matrix view, Matrix projection) {
             _obstaculosCarretilla = new List<Carretilla>();
             Colliders = new List<BoundingBox>();
+            _frustum = new BoundingFrustum(view * projection);
         }
 
         public void LoadContent(ContentManager Content) {

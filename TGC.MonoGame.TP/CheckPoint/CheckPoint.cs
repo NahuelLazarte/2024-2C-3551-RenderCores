@@ -28,13 +28,14 @@ namespace TGC.MonoGame.TP.CheckPoint{
         public SoundEffect CollisionSound { get; set; }
         BoundingBox size;
         private BoundingFrustum _frustum;
-        public CheckPoints() {
-            Initialize();
+        public CheckPoints(Matrix view, Matrix projection) {
+            Initialize(view,projection);
         }
 
-        private void Initialize() {
+        private void Initialize(Matrix view, Matrix projection) {
             _checkPoints = new List<Matrix>();
             Colliders = new List<BoundingBox>();
+            _frustum = new BoundingFrustum(view * projection);
         }
 
         public void IniciarColliders() {

@@ -58,7 +58,7 @@ namespace TGC.MonoGame.TP
         public bool isMenuActive = true;
         private SpriteBatch SpriteBatch { get; set; }
         private Song backgroundMusic;
-        private bool isMusicPlaying = false;
+        private bool isMusicPlaying = true;
         public bool isGodModeActive = false;
 
         //Enviroment Map

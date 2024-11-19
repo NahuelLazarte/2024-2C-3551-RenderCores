@@ -66,7 +66,7 @@ namespace TGC.MonoGame.TP.PistaRecta
 
         public void Update(GameTime gameTime, Matrix view, Matrix projection)
         {
-            _frustum = new BoundingFrustum(view * projection);
+            _frustum = new BoundingFrustum(view * projection * scale); // * scale
         }
 
         public void Draw(GameTime gameTime, Matrix view, Matrix projection)

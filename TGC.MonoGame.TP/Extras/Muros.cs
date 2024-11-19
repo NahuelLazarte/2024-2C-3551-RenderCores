@@ -42,13 +42,15 @@ namespace TGC.MonoGame.TP.MurosExtra{
 
         //0.09
         float escalaMurosEsquina = 0.09f;
-        private BoundingFrustum _frustum;
+        private BoundingFrustum _frustumMuros;
+        private BoundingFrustum _frustumEsquinas;
         private float time;
 
         public Muros(BoundingFrustum frustrum){
             Initialize();
             time = 0;
-            _frustum = frustrum;
+            _frustumMuros = frustrum;
+            _frustumEsquinas = frustrum;
         }
 
         private void Initialize(){
@@ -102,7 +104,8 @@ namespace TGC.MonoGame.TP.MurosExtra{
                     break;
                 }
             }
-            _frustum = frustum;
+            _frustumEsquinas = new BoundingFrustum(view * projection * Matrix.CreateScale(escalaMurosEsquina));
+            _frustumMuros = new BoundingFrustum(view * projection * Matrix.CreateScale(escalaMuros));
         }
 
         public void Draw(GameTime gameTime, Matrix view, Matrix projection)
@@ -129,7 +132,7 @@ namespace TGC.MonoGame.TP.MurosExtra{
                     Matrix _muroWorld = _muros[i];
                     BoundingBox boundingBox = BoundingVolumesExtensions.FromMatrix(_muroWorld);
 
-                    if(_frustum.Intersects(boundingBox)){
+                    if(_frustumMuros.Intersects(boundingBox)){
 
                         /*Effect.Parameters["World"].SetValue(mesh.ParentBone.Transform * _muroWorld);
                         Effect.Parameters["View"].SetValue(Camera.View);
@@ -151,7 +154,7 @@ namespace TGC.MonoGame.TP.MurosExtra{
                     Matrix _muroWorld = _murosEsquina[i];
                     BoundingBox boundingBox = BoundingVolumesExtensions.FromMatrix(_muroWorld);
                     
-                    if(_frustum.Intersects(boundingBox)){
+                    if(_frustumEsquinas.Intersects(boundingBox)){
                     //Effect.Parameters["World"].SetValue(mesh.ParentBone.Transform * _muroWorld);
                         //Efecto.World = mesh.ParentBone.Transform * _muroWorld;
                         Effect.Parameters["World"].SetValue(mesh.ParentBone.Transform * _muroWorld);

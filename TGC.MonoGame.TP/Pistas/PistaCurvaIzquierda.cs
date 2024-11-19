@@ -56,7 +56,7 @@ namespace TGC.MonoGame.TP.PistaCurvaIzquierda
 
         public void Update(GameTime gameTime, Matrix view, Matrix projection)
         {
-            _frustum = new BoundingFrustum(view * projection);
+            _frustum = new BoundingFrustum(view * projection * scale);
         }
 
         public void Draw(GameTime gameTime, Matrix view, Matrix projection)

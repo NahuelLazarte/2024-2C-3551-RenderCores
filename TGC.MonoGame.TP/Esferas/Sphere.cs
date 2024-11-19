@@ -117,7 +117,7 @@ namespace TGC.MonoGame.TP.Modelos
 
         public override void Update(GameTime gameTime, ContentManager content)
         {
-            Console.WriteLine($"Modo seteado a: {isGodModeActive}");
+            //Console.WriteLine($"Modo seteado a: {isGodModeActive}");
 
             var keyboardState = Keyboard.GetState();
 

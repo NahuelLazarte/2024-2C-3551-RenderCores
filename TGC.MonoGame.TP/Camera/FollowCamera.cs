@@ -32,7 +32,7 @@ namespace TGC.MonoGame.TP
             up = initialUp;
 
             ViewMatrix = Matrix.CreateLookAt(position, target, up);
-            ProjectionMatrix = Matrix.CreatePerspectiveFieldOfView(MathHelper.PiOver4, graphicsDevice.Viewport.AspectRatio, 0.1f, 1000.0f);
+            ProjectionMatrix = Matrix.CreatePerspectiveFieldOfView(MathHelper.PiOver2, graphicsDevice.Viewport.AspectRatio, 0.1f, 5000.0f);
 
         }
 

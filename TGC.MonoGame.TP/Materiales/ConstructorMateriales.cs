@@ -39,6 +39,7 @@ namespace TGC.MonoGame.TP.Constructor{
 
         public void CargarElementos(Materiales _materiales) {
             
+            
             AgregarPistaRecta(_materiales._pistasRectas, _materiales);
             AgregarObstaculoCarretilla(_materiales._carretillas);
             
@@ -109,7 +110,8 @@ namespace TGC.MonoGame.TP.Constructor{
             //AgregarObstaculoCarretilla(_materiales._carretillas);
             AgregarObstaculoCarretilla(_materiales._carretillas);
             AgregarPistaRecta(_materiales._pistasRectas, _materiales);
-            
+            AgregarPistaCurvaIzquierda(_materiales._pistasCurvasIzquierdas, _materiales);
+
         }
 
         void AgregarPistaRecta(PistasRectas unaPista, Materiales _materialesAux)

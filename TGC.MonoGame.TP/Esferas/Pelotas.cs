@@ -15,6 +15,9 @@ namespace TGC.MonoGame.TP.Pelotas
         private int selectedIndex = 0;
         public float LinearSpeed = 30f;
         public float RotationSpeed = 3f;
+        public bool rebota = false;
+        public float coeficienteRebote; // Cuánta velocidad se conserva tras un rebote
+        public float umbralVelocidadRebote; // Velocidad mínima para detener el rebote
         public float escala;
 
         public Texture Texture1, Texture2, Texture3, Texture4;
@@ -32,6 +35,7 @@ namespace TGC.MonoGame.TP.Pelotas
                 esfera.SetColor(new Vector3(0.75f, 0.75f, 0.75f));
                 LinearSpeed = 15f;
                 RotationSpeed = 50f;
+
             }
             if (keyboardState.IsKeyDown(Keys.D2)) // Madera
             {
@@ -40,6 +44,9 @@ namespace TGC.MonoGame.TP.Pelotas
                 esfera.SetColor(new Vector3(0.54f, 0.27f, 0.07f));
                 LinearSpeed = 30f;
                 RotationSpeed = 20f;
+                rebota = true;
+                coeficienteRebote = 0.5f;
+                umbralVelocidadRebote = 3f;
             }
 
             if (keyboardState.IsKeyDown(Keys.D3)) // Plastico
@@ -49,6 +56,9 @@ namespace TGC.MonoGame.TP.Pelotas
                 esfera.SetColor(new Vector3(0.9f, 0.9f, 0.9f));
                 LinearSpeed = 40f;
                 RotationSpeed = 15f;
+                rebota = true;
+                coeficienteRebote = 0.65f;
+                umbralVelocidadRebote = 3f;
             }
 
             if (keyboardState.IsKeyDown(Keys.D4) && !primera)
@@ -57,6 +67,9 @@ namespace TGC.MonoGame.TP.Pelotas
                 esfera.SetColor(new Vector3(0.9f, 0.9f, 0.9f));
                 LinearSpeed = 30f;
                 RotationSpeed = 30f;
+                rebota = true;
+                coeficienteRebote = 0.7f;
+                umbralVelocidadRebote = 3f;
             }
         }
 

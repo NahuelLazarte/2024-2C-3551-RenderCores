@@ -263,6 +263,7 @@ namespace TGC.MonoGame.TP.Modelos
             if (!OnGround)
             {
                 acceleration.Y = -50f;
+                
             }
 
             for (int i = 0; i < Colliders.Count; i++)
@@ -434,8 +435,18 @@ namespace TGC.MonoGame.TP.Modelos
 
                         SetPosition(posicionNueva);
                         soundEffect2.Play();
-                        _velocity.Y = 0f;
-                        OnGround = true;
+
+                        if (pelota.rebota && Math.Abs(_velocity.Y) > pelota.umbralVelocidadRebote)
+                        {
+                            // Invierte la velocidad vertical con un coeficiente de pérdida
+                            _velocity.Y = -_velocity.Y * pelota.coeficienteRebote;
+                        }
+                        else
+                        {
+                            // Detener el rebote si la velocidad es muy baja
+                            _velocity.Y = 0f;
+                            OnGround = true;
+                        }
                     }
                     break;
                 }

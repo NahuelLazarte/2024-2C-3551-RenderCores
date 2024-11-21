@@ -26,6 +26,7 @@ namespace TGC.MonoGame.TP.ObstaculoPiedras{
         public SoundEffect CollisionSound { get; set; }
         BoundingBox size;
         private BoundingFrustum _frustum;
+        Random random = new Random();
         public ObstaculosPiedras(Matrix view, Matrix projection) {
             Initialize(view,projection);
         }
@@ -93,6 +94,8 @@ namespace TGC.MonoGame.TP.ObstaculoPiedras{
         }
 
         public void AgregarNuevoObstaculo(float Rotacion, Vector3 Posicion) {
+            int randomInt = random.Next(-10, 10);
+            Posicion += Vector3.Transform(new Vector3(0, 0, randomInt), Matrix.CreateRotationY(Rotacion)); 
             var transform = Matrix.CreateRotationY(Rotacion) * Matrix.CreateTranslation(Posicion) * scale ; 
             _obstaculosPiedras.Add(transform);
 

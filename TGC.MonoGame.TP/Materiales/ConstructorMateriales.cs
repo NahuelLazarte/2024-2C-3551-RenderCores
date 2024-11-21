@@ -40,8 +40,10 @@ namespace TGC.MonoGame.TP.Constructor{
         public void CargarElementos(Materiales _materiales) {
             
             AgregarPistaRecta(_materiales._pistasRectas, _materiales);
-            AgregarPistaRecta(_materiales._pistasRectas, _materiales);
             AgregarObstaculoCarretilla(_materiales._carretillas);
+            
+            AgregarPistaRecta(_materiales._pistasRectas, _materiales);
+            
             AgregarPistaRecta(_materiales._pistasRectas, _materiales);
 
             AgregarObstaculoCarretilla(_materiales._carretillas);
@@ -51,6 +53,7 @@ namespace TGC.MonoGame.TP.Constructor{
             AgregarObstaculoCarretilla(_materiales._carretillas);
             AgregarPistaRecta(_materiales._pistasRectas, _materiales);
             AgregarPistaRecta(_materiales._pistasRectas, _materiales);
+            
             //AgregarObstaculoPozo(_materiales._pozos, _materiales);
             AgregarPistaRecta(_materiales._pistasRectas, _materiales);
             AgregarPowerUpHamburguesa(_materiales._hamburguesas);
@@ -64,10 +67,12 @@ namespace TGC.MonoGame.TP.Constructor{
             AgregarPowerUpHamburguesa(_materiales._hamburguesas);
             AgregarPistaCurvaDerecha(_materiales._pistasCurvasDerechas, _materiales);
             AgregarPistaRecta(_materiales._pistasRectas, _materiales);
+            AgregarObstaculoCarretilla(_materiales._carretillas);
             AgregarPistaRecta(_materiales._pistasRectas, _materiales);
             AgregarPistaCurvaIzquierda(_materiales._pistasCurvasIzquierdas, _materiales);
             AgregarObstaculoPiedra(_materiales._piedras);
             AgregarPistaRecta(_materiales._pistasRectas, _materiales);
+            AgregarObstaculoCarretilla(_materiales._carretillas);
             AgregarPistaRecta(_materiales._pistasRectas, _materiales);
             AgregarObstaculoPiedra(_materiales._piedras);
             AgregarPistaRecta(_materiales._pistasRectas, _materiales);
@@ -102,7 +107,7 @@ namespace TGC.MonoGame.TP.Constructor{
             AgregarPowerUpHamburguesa(_materiales._hamburguesas);
             AgregarPistaRecta(_materiales._pistasRectas, _materiales);
             //AgregarObstaculoCarretilla(_materiales._carretillas);
-
+            AgregarObstaculoCarretilla(_materiales._carretillas);
             AgregarPistaRecta(_materiales._pistasRectas, _materiales);
             
         }
@@ -174,7 +179,7 @@ namespace TGC.MonoGame.TP.Constructor{
         
         void AgregarObstaculoPiedra(ObstaculosPiedras unObstaculo)
         {
-            Vector3 posicionObstaculo = new(posicionActual.X / 38f, posicionActual.Y / 38f, posicionActual.Z / 33.5f);
+            Vector3 posicionObstaculo = new(posicionActual.X / 33.5f, posicionActual.Y / 38f, posicionActual.Z / 33.5f);
             unObstaculo.AgregarNuevoObstaculo(rotacionActual, posicionObstaculo);
             //Console.WriteLine($"Obstaculo Pez dibujado: Posicion en ejes: X = {posicionObstaculo.X}, Y = {posicionObstaculo.Y}, Z = {posicionObstaculo.Z}");
             
@@ -190,8 +195,7 @@ namespace TGC.MonoGame.TP.Constructor{
 
         void AgregarObstaculoCarretilla(ObstaculosCarretillas unObstaculo)
         {
-            Vector3 posicionObstaculo = new(posicionActual.X / 40f, posicionActual.Y / 100f, posicionActual.Z / 40f);
-            unObstaculo.AgregarNuevoObstaculo(rotacionActual, posicionObstaculo);
+            unObstaculo.AgregarNuevoObstaculo(rotacionActual, posicionActual);
             //Console.WriteLine($"Obstaculo Pez dibujado: Posicion en ejes: X = {posicionObstaculo.X}, Y = {posicionObstaculo.Y}, Z = {posicionObstaculo.Z}");
             
         }

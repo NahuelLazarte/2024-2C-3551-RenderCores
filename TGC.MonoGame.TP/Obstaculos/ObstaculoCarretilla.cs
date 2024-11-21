@@ -28,8 +28,10 @@ namespace TGC.MonoGame.TP.ObstaculoCarretilla {
             public Vector3 Position;
             public float MovementDirection = 1f; // 1: adelante, -1: atrás
             public bool IsTurning = false;
+            public float InitialAngle;
             public float TurnAngle = 0f; // Ángulo actual de giro
             public const float TurnSpeed = MathHelper.Pi / 2; // Velocidad de giro (180 grados en 1 segundo)
+            public Vector3 InitialPosition;
         }
 
         private List<Carretilla> _obstaculosCarretilla;
@@ -68,28 +70,34 @@ namespace TGC.MonoGame.TP.ObstaculoCarretilla {
             for (int i = 0; i < _obstaculosCarretilla.Count; i++) {
                 var carretilla = _obstaculosCarretilla[i];
 
+
                 if (carretilla.IsTurning) {
                     // Girar la carretilla
                     carretilla.TurnAngle += Carretilla.TurnSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
                     if (carretilla.TurnAngle >= MathHelper.Pi) {
                         // Finaliza el giro
-                        carretilla.TurnAngle = 0f;
+                        carretilla.TurnAngle = MathHelper.Pi * -1;
                         carretilla.IsTurning = false;
                         carretilla.MovementDirection *= -1; // Cambia dirección al completar el giro
                     }
                 } else {
                     // Mover en el eje Z según la dirección
-                    carretilla.Position.Z += carretilla.MovementDirection * moveSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
-
+                    Vector3 movimiento = new Vector3(0, 0, carretilla.MovementDirection * moveSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds);
+                    movimiento = Vector3.Transform(movimiento, Matrix.CreateRotationY(carretilla.InitialAngle)); // Aplicar rotación inicial
+                    carretilla.Position += movimiento;
+                    
+                    
+                    var aux1 = Vector3.Transform(carretilla.Position, Matrix.CreateRotationY(carretilla.InitialAngle));
+                    var aux2 = Vector3.Transform(carretilla.InitialPosition, Matrix.CreateRotationY(carretilla.InitialAngle));
                     // Cambiar dirección al llegar al límite
-                    if (carretilla.Position.Z > movementRange || carretilla.Position.Z < -movementRange) {
-                        carretilla.Position.Z = MathHelper.Clamp(carretilla.Position.Z, -movementRange, movementRange);
+                    if (aux1.Z - aux2.Z >  movementRange || aux1.Z - aux2.Z < -movementRange) {
+                        //carretilla.Position.Z = MathHelper.Clamp(carretilla.Position.Z, -movementRange, movementRange);
                         carretilla.IsTurning = true; // Iniciar giro
                     }
                 }
 
                 // Crear la matriz de transformación
-                carretilla.Transform = Matrix.CreateRotationY(carretilla.TurnAngle) * Matrix.CreateTranslation(carretilla.Position) * scale;
+                carretilla.Transform = Matrix.CreateRotationY(carretilla.TurnAngle + carretilla.InitialAngle) * Matrix.CreateTranslation(carretilla.Position) * scale;
                 _obstaculosCarretilla[i] = carretilla;
 
                 UpdateCollider(i, carretilla.Position);
@@ -136,10 +144,14 @@ namespace TGC.MonoGame.TP.ObstaculoCarretilla {
 
         public void AgregarNuevoObstaculo(float rotationY, Vector3 Posicion) {
             // Crear transformación inicial
-            Posicion += new Vector3(-17.5f, 0, 0);
+            Posicion = new Vector3(Posicion.X /34f, 0, Posicion.Z/34f );
+            //Posicion += Vector3.Transform(new Vector3(0f,0,-80f), Matrix.CreateRotationY(rotationY));
+
             var carretilla = new Carretilla {
                 Transform = Matrix.CreateRotationY(rotationY) * Matrix.CreateTranslation(Posicion) * scale,
-                Position = Posicion
+                Position = Posicion,
+                InitialPosition = Posicion,
+                InitialAngle = rotationY
             };
             _obstaculosCarretilla.Add(carretilla);
 

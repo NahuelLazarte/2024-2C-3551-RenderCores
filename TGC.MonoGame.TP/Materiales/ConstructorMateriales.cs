@@ -15,6 +15,7 @@ using TGC.MonoGame.TP.PowerUpHamburguesa;
 using TGC.MonoGame.TP.ObstaculoPiedras;
 using TGC.MonoGame.TP.ObstaculoPozo;
 using TGC.MonoGame.TP.CheckPoint;
+using TGC.MonoGame.TP.MarcadorCheckPoint;
 using TGC.MonoGame.TP.ObstaculoCarretilla;
 using TGC.MonoGame.TP.PowerUpEspada;
 using TGC.MonoGame.TP.MurosExtra;
@@ -26,6 +27,7 @@ namespace TGC.MonoGame.TP.Constructor{
         private Vector3 posicionActual { get; set; }
         public Vector3 posicionCheckPoint;
         float rotacionActual = 0f;
+
 
         public ConstructorMateriales(){
             Initialize();
@@ -83,7 +85,7 @@ namespace TGC.MonoGame.TP.Constructor{
             AgregarPistaRecta(_materiales._pistasRectas, _materiales);
             AgregarPistaRecta(_materiales._pistasRectas, _materiales);
             
-            AgregarCheckPoint(_materiales._checkPoints);
+            AgregarCheckPoint(_materiales._checkPoints, _materiales._marcadoresCheckPoints);
             AgregarPistaRecta(_materiales._pistasRectas, _materiales);
             AgregarPistaRecta(_materiales._pistasRectas, _materiales);
             AgregarPistaRecta(_materiales._pistasRectas, _materiales);
@@ -187,17 +189,20 @@ namespace TGC.MonoGame.TP.Constructor{
             
         }
 
-        void AgregarCheckPoint(CheckPoints unCheckPoint)
+        void AgregarCheckPoint(CheckPoints unCheckPoint, MarcadoresCheckPoints unMarcador)
         {
             Vector3 posicionObstaculo = new(posicionActual.X / 170f, posicionActual.Y / 185f, posicionActual.Z / 170f);
             unCheckPoint.AgregarNuevoCheckPoint(rotacionActual, posicionObstaculo);
             //Console.WriteLine($"Obstaculo Pez dibujado: Posicion en ejes: X = {posicionObstaculo.X}, Y = {posicionObstaculo.Y}, Z = {posicionObstaculo.Z}");
-            
+            posicionObstaculo = new(posicionActual.X / 170f, posicionActual.Y / 185f, posicionActual.Z / 170f);
+            unMarcador.AgregarNuevoMarcadorCheckPoint(rotacionActual, posicionObstaculo);
         }
+
 
         void AgregarObstaculoCarretilla(ObstaculosCarretillas unObstaculo)
         {
             unObstaculo.AgregarNuevoObstaculo(rotacionActual, posicionActual);
+            
             //Console.WriteLine($"Obstaculo Pez dibujado: Posicion en ejes: X = {posicionObstaculo.X}, Y = {posicionObstaculo.Y}, Z = {posicionObstaculo.Z}");
             
         }

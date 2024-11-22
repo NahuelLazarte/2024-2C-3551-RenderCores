@@ -15,6 +15,7 @@ using TGC.MonoGame.TP.PowerUpEspada;
 using TGC.MonoGame.TP.ObstaculoPiedras;
 using TGC.MonoGame.TP.ObstaculoPozo;
 using TGC.MonoGame.TP.CheckPoint;
+using TGC.MonoGame.TP.MarcadorCheckPoint;
 using TGC.MonoGame.TP.Modelos;
 using TGC.MonoGame.TP.MurosExtra;
 using TGC.MonoGame.TP.ObstaculoCarretilla;
@@ -30,13 +31,12 @@ namespace TGC.MonoGame.TP.MaterialesJuego {
         public PistasRectas _pistasRectas { get; set; }
         public PowerUpHamburguesas _hamburguesas { get; set; }
         public CheckPoints _checkPoints { get; set; }
+        public MarcadoresCheckPoints _marcadoresCheckPoints { get; set; }
         public ObstaculosPiedras _piedras { get; set; }
         public ObstaculosPozos _pozos { get; set; }
         public ObstaculosCarretillas _carretillas { get; set; }
         public PowerUpEspadas _espadas { get; set; }
-
         public Muros _muros { get; set; }
-
         private List<BoundingBox> CollidersDibujo { get; set; }
 
         public Materiales(ContentManager Content, GraphicsDevice graphicsDevice, BoundingFrustum frustrum, Matrix view, Matrix projection) {
@@ -48,6 +48,7 @@ namespace TGC.MonoGame.TP.MaterialesJuego {
             _piedras = new ObstaculosPiedras(view,projection);
             _pozos = new ObstaculosPozos();
             _checkPoints = new CheckPoints(view,projection);
+            _marcadoresCheckPoints = new MarcadoresCheckPoints(view,projection);
             _muros = new Muros(frustrum);
             _carretillas = new ObstaculosCarretillas(view,projection);
 
@@ -69,6 +70,7 @@ namespace TGC.MonoGame.TP.MaterialesJuego {
             _piedras.LoadContent(Content);
             _pozos.LoadContent(Content);
             _checkPoints.LoadContent(Content);
+            _marcadoresCheckPoints.LoadContent(Content);
             _muros.LoadContent(Content, graphicsDevice);
             _carretillas.LoadContent(Content);
         }
@@ -83,6 +85,7 @@ namespace TGC.MonoGame.TP.MaterialesJuego {
             _espadas.Update(gameTime, Game, view, projection);
             _hamburguesas.Update(gameTime, Game, view, projection);
             _checkPoints.Update(gameTime, Game, view, projection);
+            _marcadoresCheckPoints.Update(gameTime, Game, view, projection);
             _piedras.Update(gameTime, Game, view, projection);
             _pozos.Update(gameTime, Game, view, projection);
             _muros.Update(gameTime, Game, view, projection, frustum);
@@ -99,6 +102,8 @@ namespace TGC.MonoGame.TP.MaterialesJuego {
             
             _piedras.Draw(gameTime, view, projection);
             _checkPoints.Draw(gameTime, view, projection);
+            _marcadoresCheckPoints.Draw(gameTime, view, projection);
+
             _pozos.Draw(gameTime, view, projection);
             _muros.Draw(gameTime, view, projection);
             _carretillas.Draw(gameTime, view, projection);
@@ -131,7 +136,8 @@ namespace TGC.MonoGame.TP.MaterialesJuego {
             List<BoundingBox> CollidersPistaCurvaIzquierda = _pistasCurvasIzquierdas.Colliders;
             List<BoundingBox> CollidersPiedras = _piedras.Colliders;
             List<BoundingBox> CollidersCheckpoints = _checkPoints.Colliders;
-            CollidersDibujo = _muros.Colliders;
+            List<BoundingBox> CollidersMarcadoresCheckpoints = _marcadoresCheckPoints.Colliders;
+            CollidersDibujo = CollidersMarcadoresCheckpoints;
 
             esfera.Colliders.AddRange(CollidersPistaRecta);
             esfera.Colliders.AddRange(CollidersPistaCurvaDerecha);

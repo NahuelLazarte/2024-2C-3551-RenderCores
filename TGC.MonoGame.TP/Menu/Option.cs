@@ -63,6 +63,18 @@ namespace TGC.MonoGame.MenuPrincipal
             Environment.Exit(0);
         }
     }
+    public class Music : Option
+    {
+        public Music()
+        {
+            name = "Music";
+        }
+
+        public override void LogicExecute(TGCGame Game)
+        {
+            Game.isMusicPlaying = !Game.isMusicPlaying;
+        }
+    }
 
     public class SelectLevel : Option
     {

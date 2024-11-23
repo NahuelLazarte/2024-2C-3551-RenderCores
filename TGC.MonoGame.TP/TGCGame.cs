@@ -55,7 +55,7 @@ namespace TGC.MonoGame.TP
         public bool isMenuActive = true;
         private SpriteBatch SpriteBatch { get; set; }
         private Song backgroundMusic;
-        private bool isMusicPlaying = false;
+        public bool isMusicPlaying = false;
         public bool isGodModeActive = false;
 
         private Level nivelActual;
@@ -164,7 +164,7 @@ namespace TGC.MonoGame.TP
             if (isMenuActive)
             {
                 SpriteBatch.Begin();
-                menu.Draw(SpriteBatch, menuFont);
+                menu.Draw(SpriteBatch, menuFont,this);
                 SpriteBatch.End();
             }
 

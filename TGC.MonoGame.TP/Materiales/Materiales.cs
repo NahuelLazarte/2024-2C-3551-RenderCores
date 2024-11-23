@@ -93,7 +93,7 @@ namespace TGC.MonoGame.TP.MaterialesJuego {
             _pistasRectas.LoadContent(Content);
             _hamburguesas.LoadContent(Content, graphicsDevice);
             _espadas.LoadContent(Content, graphicsDevice);
-            _piedras.LoadContent(Content, ShadowMapEffect);
+            _piedras.LoadContent(Content);
             _pozos.LoadContent(Content);
             _checkPoints.LoadContent(Content);
             _marcadoresCheckPoints.LoadContent(Content);
@@ -122,42 +122,13 @@ namespace TGC.MonoGame.TP.MaterialesJuego {
 
         public void Draw(GameTime gameTime, Matrix view, Matrix projection, GraphicsDevice graphicsDevice )
         {
-
-            #region Pass 1: Renderizar el Shadow Map
-
-            graphicsDevice.DepthStencilState = DepthStencilState.Default;
-            graphicsDevice.SetRenderTarget(ShadowMapRenderTarget);
-            graphicsDevice.Clear(ClearOptions.Target | ClearOptions.DepthBuffer, Color.Black, 1f, 0);
-
-            ShadowMapEffect.CurrentTechnique = ShadowMapEffect.Techniques["DepthPass"];
-
-            _piedras.ShadowMapRender(ShadowMapEffect, TargetLightCamera.View, TargetLightCamera.Projection);
-
-            #endregion
-
-            #region Pass 2: Renderizar la escena con sombras
-            graphicsDevice.SetRenderTarget(null);
-            graphicsDevice.Clear(ClearOptions.Target | ClearOptions.DepthBuffer, Color.CornflowerBlue, 1f, 0);
-
-
-            ShadowMapEffect.CurrentTechnique = ShadowMapEffect.Techniques["DrawShadowedPCF"];
-            ShadowMapEffect.Parameters["shadowMap"].SetValue(ShadowMapRenderTarget);
-            ShadowMapEffect.Parameters["lightPosition"].SetValue(LightPosition);
-            ShadowMapEffect.Parameters["shadowMapSize"].SetValue(Vector2.One * ShadowmapSize);
-            ShadowMapEffect.Parameters["LightViewProjection"].SetValue(TargetLightCamera.View * TargetLightCamera.Projection);
-
-            _piedras.Draw(gameTime, ShadowMapEffect, view, projection);
-
-            LightBox.Draw(Matrix.CreateTranslation(LightPosition), TargetLightCamera.View, TargetLightCamera.Projection);
-
-            #endregion
-
             _pistasCurvasDerechas.Draw(gameTime, view, projection);
             _pistasCurvasIzquierdas.Draw(gameTime, view, projection);
             _pistasRectas.Draw(gameTime, view, projection);
 
             _checkPoints.Draw(gameTime, view, projection);
             _marcadoresCheckPoints.Draw(gameTime, view, projection);
+            _piedras.Draw(gameTime, view, projection);
 
             _pozos.Draw(gameTime, view, projection);
             _muros.Draw(gameTime, view, projection);

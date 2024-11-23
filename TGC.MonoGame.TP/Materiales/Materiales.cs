@@ -20,6 +20,8 @@ using TGC.MonoGame.TP.Modelos;
 using TGC.MonoGame.TP.MurosExtra;
 using TGC.MonoGame.TP.ObstaculoCarretilla;
 using TGC.MonoGame.TP.Levels;
+using TGC.MonoGame.TP.Camera;
+using TGC.MonoGame.TP.Geometries;
 
 namespace TGC.MonoGame.TP.MaterialesJuego {
     public class Materiales {
@@ -38,6 +40,14 @@ namespace TGC.MonoGame.TP.MaterialesJuego {
         public PowerUpEspadas _espadas { get; set; }
         public Muros _muros { get; set; }
         private List<BoundingBox> CollidersDibujo { get; set; }
+        private const int ShadowmapSize = 2048;
+        private readonly float LightCameraFarPlaneDistance = 3000f;
+        private readonly float LightCameraNearPlaneDistance = 5f;
+        private CubePrimitive LightBox;
+        private Vector3 LightPosition = Vector3.One * 500f;
+        private RenderTarget2D ShadowMapRenderTarget;
+        private TargetCamera TargetLightCamera { get; set; }
+        private Effect ShadowMapEffect { get; set; }
 
         public Materiales(ContentManager Content, GraphicsDevice graphicsDevice, BoundingFrustum frustrum, Matrix view, Matrix projection) {
             _pistasCurvasDerechas = new PistasCurvasDerechas(view,projection);
@@ -58,6 +68,22 @@ namespace TGC.MonoGame.TP.MaterialesJuego {
         }
 
         private void Initialize(ContentManager Content, GraphicsDevice graphicsDevice) {
+            
+            TargetLightCamera = new TargetCamera(1f, LightPosition, Vector3.Zero, graphicsDevice.Viewport);
+            TargetLightCamera.BuildProjection(1f, LightCameraNearPlaneDistance, LightCameraFarPlaneDistance,
+            MathHelper.PiOver2);        
+
+            ShadowMapEffect = Content.Load<Effect>("Effects/ShadowMap");
+            
+            // Create a shadow map. It stores depth from the light position
+            ShadowMapRenderTarget = new RenderTarget2D(graphicsDevice, ShadowmapSize, ShadowmapSize, false,
+            SurfaceFormat.Single, DepthFormat.Depth24, 0, RenderTargetUsage.PlatformContents);
+
+            LightBox = new CubePrimitive(graphicsDevice, 5, Color.White);
+
+            graphicsDevice.BlendState = BlendState.Opaque;
+
+
             Gizmos = new Gizmos.Gizmos();
             lineDrawer = new LineDrawer(graphicsDevice);
             Gizmos.LoadContent(graphicsDevice, Content);
@@ -67,7 +93,7 @@ namespace TGC.MonoGame.TP.MaterialesJuego {
             _pistasRectas.LoadContent(Content);
             _hamburguesas.LoadContent(Content, graphicsDevice);
             _espadas.LoadContent(Content, graphicsDevice);
-            _piedras.LoadContent(Content);
+            _piedras.LoadContent(Content, ShadowMapEffect);
             _pozos.LoadContent(Content);
             _checkPoints.LoadContent(Content);
             _marcadoresCheckPoints.LoadContent(Content);
@@ -96,11 +122,19 @@ namespace TGC.MonoGame.TP.MaterialesJuego {
 
         public void Draw(GameTime gameTime, Matrix view, Matrix projection, GraphicsDevice graphicsDevice )
         {
+
+            ShadowMapEffect.CurrentTechnique = ShadowMapEffect.Techniques["DrawShadowedPCF"];
+            ShadowMapEffect.Parameters["shadowMap"].SetValue(ShadowMapRenderTarget);
+            ShadowMapEffect.Parameters["lightPosition"].SetValue(LightPosition);
+            ShadowMapEffect.Parameters["shadowMapSize"].SetValue(Vector2.One * ShadowmapSize);
+            ShadowMapEffect.Parameters["LightViewProjection"].SetValue(TargetLightCamera.View * TargetLightCamera.Projection);
+
+
             _pistasCurvasDerechas.Draw(gameTime, view, projection);
             _pistasCurvasIzquierdas.Draw(gameTime, view, projection);
             _pistasRectas.Draw(gameTime, view, projection);
             
-            _piedras.Draw(gameTime, view, projection);
+            _piedras.Draw(gameTime, ShadowMapEffect, view, projection);
             _checkPoints.Draw(gameTime, view, projection);
             _marcadoresCheckPoints.Draw(gameTime, view, projection);
 

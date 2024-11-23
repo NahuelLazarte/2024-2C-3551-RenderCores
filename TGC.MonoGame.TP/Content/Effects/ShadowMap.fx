@@ -22,150 +22,136 @@ static const float maxEpsilon = 0.000023200045689009130001068115234375;
 texture baseTexture;
 sampler2D textureSampler = sampler_state
 {
-	Texture = (baseTexture);
-	MagFilter = Linear;
-	MinFilter = Linear;
-	AddressU = Clamp;
-	AddressV = Clamp;
+    Texture = (baseTexture);
+    MagFilter = Linear;
+    MinFilter = Linear;
+    AddressU = Clamp;
+    AddressV = Clamp;
 };
-    
 
 texture shadowMap;
-sampler2D shadowMapSampler =
-sampler_state
+sampler2D shadowMapSampler = sampler_state
 {
-	Texture = <shadowMap>;
-	MinFilter = Point;
-	MagFilter = Point;
-	MipFilter = Point;
-	AddressU = Clamp;
-	AddressV = Clamp;
+    Texture = <shadowMap>;
+    MinFilter = Point;
+    MagFilter = Point;
+    MipFilter = Point;
+    AddressU = Clamp;
+    AddressV = Clamp;
 };
 
 struct DepthPassVertexShaderInput
 {
-	float4 Position : POSITION0;
+    float4 Position : POSITION0;
 };
 
 struct DepthPassVertexShaderOutput
 {
-	float4 Position : SV_POSITION;
-	float4 ScreenSpacePosition : TEXCOORD1;
+    float4 Position : SV_POSITION;
+    float4 ScreenSpacePosition : TEXCOORD1;
 };
 
 struct ShadowedVertexShaderInput
 {
-	float4 Position : POSITION0;
-	float3 Normal : NORMAL;
-	float2 TextureCoordinates : TEXCOORD0;
+    float4 Position : POSITION0;
+    float3 Normal : NORMAL;
+    float2 TextureCoordinates : TEXCOORD0;
 };
 
 struct ShadowedVertexShaderOutput
 {
-	float4 Position : SV_POSITION;
-	float2 TextureCoordinates : TEXCOORD0;
-	float4 WorldSpacePosition : TEXCOORD1;
-	float4 LightSpacePosition : TEXCOORD2;
-    float4 Normal : TEXCOORD3;
+    float4 Position : SV_POSITION;
+    float2 TextureCoordinates : TEXCOORD0;
+    float4 WorldSpacePosition : TEXCOORD1;
+    float4 LightSpacePosition : TEXCOORD2;
+    float3 Normal : TEXCOORD3;
 };
 
-
-
-
-DepthPassVertexShaderOutput DepthVS(in DepthPassVertexShaderInput input)
+DepthPassVertexShaderOutput DepthVS(DepthPassVertexShaderInput input)
 {
-	DepthPassVertexShaderOutput output;
-	output.Position = mul(input.Position, WorldViewProjection);
-	output.ScreenSpacePosition = mul(input.Position, WorldViewProjection);
-	return output;
+    DepthPassVertexShaderOutput output;
+    output.Position = mul(input.Position, WorldViewProjection);
+    output.ScreenSpacePosition = output.Position;
+    return output;
 }
 
-float4 DepthPS(in DepthPassVertexShaderOutput input) : COLOR
+float4 DepthPS(DepthPassVertexShaderOutput input) : COLOR
 {
     float depth = input.ScreenSpacePosition.z / input.ScreenSpacePosition.w;
     return float4(depth, depth, depth, 1.0);
 }
 
-
-
-ShadowedVertexShaderOutput MainVS(in ShadowedVertexShaderInput input)
+ShadowedVertexShaderOutput MainVS(ShadowedVertexShaderInput input)
 {
-	ShadowedVertexShaderOutput output;
-	output.Position = mul(input.Position, WorldViewProjection);
-	output.TextureCoordinates = input.TextureCoordinates;
-	output.WorldSpacePosition = mul(input.Position, World);
-	output.LightSpacePosition = mul(output.WorldSpacePosition, LightViewProjection);
-    output.Normal = mul(float4(input.Normal, 1), InverseTransposeWorld);
-	return output;
+    ShadowedVertexShaderOutput output;
+    output.Position = mul(input.Position, WorldViewProjection);
+    output.TextureCoordinates = input.TextureCoordinates;
+    output.WorldSpacePosition = mul(input.Position, World);
+    output.LightSpacePosition = mul(output.WorldSpacePosition, LightViewProjection);
+    output.Normal = normalize(mul(float4(input.Normal, 0), InverseTransposeWorld).xyz);
+    return output;
 }
 
-float4 ShadowedPS(in ShadowedVertexShaderOutput input) : COLOR
+float4 ShadowedPS(ShadowedVertexShaderOutput input) : COLOR
 {
     float3 lightSpacePosition = input.LightSpacePosition.xyz / input.LightSpacePosition.w;
-    float2 shadowMapTextureCoordinates = 0.5 * lightSpacePosition.xy + float2(0.5, 0.5);
-    shadowMapTextureCoordinates.y = 1.0f - shadowMapTextureCoordinates.y;
-	
-	
-    float3 normal = normalize(input.Normal.rgb);
+    float2 shadowMapTextureCoordinates = 0.5 * lightSpacePosition.xy + 0.5;
+    shadowMapTextureCoordinates.y = 1.0 - shadowMapTextureCoordinates.y;
+
     float3 lightDirection = normalize(lightPosition - input.WorldSpacePosition.xyz);
-    float inclinationBias = max(modulatedEpsilon * (1.0 - dot(normal, lightDirection)), maxEpsilon);
-	
+    float inclinationBias = max(modulatedEpsilon * (1.0 - dot(input.Normal, lightDirection)), maxEpsilon);
+
     float shadowMapDepth = tex2D(shadowMapSampler, shadowMapTextureCoordinates).r + inclinationBias;
-	
-	// Compare the shadowmap with the REAL depth of this fragment
-	// in light space
-    float notInShadow = step(lightSpacePosition.z, shadowMapDepth);
-	
-	float4 baseColor = tex2D(textureSampler, input.TextureCoordinates);
-    baseColor.rgb *= 0.5 + 0.5 * notInShadow;
-	return baseColor;
-}
 
-float4 ShadowedPCFPS(in ShadowedVertexShaderOutput input) : COLOR
-{
-    float3 lightSpacePosition = input.LightSpacePosition.xyz / input.LightSpacePosition.w;
-    float2 shadowMapTextureCoordinates = 0.5 * lightSpacePosition.xy + float2(0.5, 0.5);
-    shadowMapTextureCoordinates.y = 1.0f - shadowMapTextureCoordinates.y;
-	
-    float3 normal = normalize(input.Normal.rgb);
-    float3 lightDirection = normalize(lightPosition - input.WorldSpacePosition.xyz);
-    float inclinationBias = max(modulatedEpsilon * (1.0 - dot(normal, lightDirection)), maxEpsilon);
-	
-	// Sample and smooth the shadowmap
-	// Also perform the comparison inside the loop and average the result
-    float notInShadow = 0.0;
-    float2 texelSize = 1.0 / shadowMapSize;
-    for (int x = -1; x <= 1; x++)
-        for (int y = -1; y <= 1; y++)
-        {
-            float pcfDepth = tex2D(shadowMapSampler, shadowMapTextureCoordinates + float2(x, y) * texelSize).r + inclinationBias;
-            notInShadow += step(lightSpacePosition.z, pcfDepth) / 9.0;
-        }
-	
+    float notInShadow = step(lightSpacePosition.z, shadowMapDepth);
+
     float4 baseColor = tex2D(textureSampler, input.TextureCoordinates);
     baseColor.rgb *= 0.5 + 0.5 * notInShadow;
     return baseColor;
 }
 
+float4 ShadowedPCFPS(ShadowedVertexShaderOutput input) : COLOR
+{
+    float3 lightSpacePosition = input.LightSpacePosition.xyz / input.LightSpacePosition.w;
+    float2 shadowMapTextureCoordinates = 0.5 * lightSpacePosition.xy + 0.5;
+    shadowMapTextureCoordinates.y = 1.0 - shadowMapTextureCoordinates.y;
 
+    float3 lightDirection = normalize(lightPosition - input.WorldSpacePosition.xyz);
+    float inclinationBias = max(modulatedEpsilon * (1.0 - dot(input.Normal, lightDirection)), maxEpsilon);
 
+    float notInShadow = 0.0;
+    float2 texelSize = 1.0 / shadowMapSize;
+
+    for (int x = -1; x <= 1; x++)
+    {
+        for (int y = -1; y <= 1; y++)
+        {
+            float pcfDepth = tex2D(shadowMapSampler, shadowMapTextureCoordinates + float2(x, y) * texelSize).r + inclinationBias;
+            notInShadow += step(lightSpacePosition.z, pcfDepth) / 9.0;
+        }
+    }
+
+    float4 baseColor = tex2D(textureSampler, input.TextureCoordinates);
+    baseColor.rgb *= 0.5 + 0.5 * notInShadow;
+    return baseColor;
+}
 
 technique DepthPass
 {
-	pass Pass0
-	{
-		VertexShader = compile VS_SHADERMODEL DepthVS();
-		PixelShader = compile PS_SHADERMODEL DepthPS();
-	}
+    pass Pass0
+    {
+        VertexShader = compile VS_SHADERMODEL DepthVS();
+        PixelShader = compile PS_SHADERMODEL DepthPS();
+    }
 };
 
 technique DrawShadowed
 {
-	pass Pass0
-	{
-		VertexShader = compile VS_SHADERMODEL MainVS();
-		PixelShader = compile PS_SHADERMODEL ShadowedPS();
-	}
+    pass Pass0
+    {
+        VertexShader = compile VS_SHADERMODEL MainVS();
+        PixelShader = compile PS_SHADERMODEL ShadowedPS();
+    }
 };
 
 technique DrawShadowedPCF

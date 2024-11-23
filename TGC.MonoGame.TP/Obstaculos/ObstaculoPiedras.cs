@@ -46,12 +46,13 @@ namespace TGC.MonoGame.TP.ObstaculoPiedras{
             ModeloPez = Content.Load<Model>("Models/" + "obstaculos/rockLarge");
             Effect = Content.Load<Effect>("Effects/" + "BasicShader");
 
+            /*
             foreach (var mesh in ModeloPez.Meshes){
                 foreach (var meshPart in mesh.MeshParts){
-                    meshPart.Effect = ShadowMapEffect;
+                    meshPart.Effect = Effect;
                 }
             }
-
+            */
             CollisionSound = Content.Load<SoundEffect>("Audio/ColisionPez"); // Ajusta la ruta según sea necesario
             size = BoundingVolumesExtensions.CreateAABBFrom(ModeloPez);
             Texture = Content.Load<Texture2D>("Textures/texturaPiedra");
@@ -72,47 +73,78 @@ namespace TGC.MonoGame.TP.ObstaculoPiedras{
 
 
 
-/*
-        public void Draw(GameTime gameTime, Matrix view, Matrix projection)
-        {
-            Effect.Parameters["View"].SetValue(view);
-            Effect.Parameters["Projection"].SetValue(projection);
-            Effect.Parameters["DiffuseColor"].SetValue(new Vector3(0.5f, 0.5f, 0.5f));
+        /*
+                public void Draw(GameTime gameTime, Matrix view, Matrix projection)
+                {
+                    Effect.Parameters["View"].SetValue(view);
+                    Effect.Parameters["Projection"].SetValue(projection);
+                    Effect.Parameters["DiffuseColor"].SetValue(new Vector3(0.5f, 0.5f, 0.5f));
 
-            
-            foreach (var mesh in ModeloPez.Meshes){
-                for(int i=0; i < _obstaculosPiedras.Count; i++){
-                    Matrix _pisoWorld = _obstaculosPiedras[i];
-                    BoundingBox boundingBox = BoundingVolumesExtensions.FromMatrix(_pisoWorld);
-                    
-                    if(_frustum.Intersects(boundingBox)){
-                        Effect.Parameters["World"].SetValue(mesh.ParentBone.Transform * _pisoWorld);
-                        mesh.Draw();
+
+                    foreach (var mesh in ModeloPez.Meshes){
+                        for(int i=0; i < _obstaculosPiedras.Count; i++){
+                            Matrix _pisoWorld = _obstaculosPiedras[i];
+                            BoundingBox boundingBox = BoundingVolumesExtensions.FromMatrix(_pisoWorld);
+
+                            if(_frustum.Intersects(boundingBox)){
+                                Effect.Parameters["World"].SetValue(mesh.ParentBone.Transform * _pisoWorld);
+                                mesh.Draw();
+                            }
+                        }
                     }
+                }
+        */
+
+        public void ShadowMapRender(Effect ShadowMapEffect, Matrix LightView, Matrix Projection)
+        {
+            
+            foreach (var worldMatrix in _obstaculosPiedras)
+            {
+                foreach (var modelMesh in ModeloPez.Meshes)
+                {
+                    var modelMeshesBaseTransforms = new Matrix[ModeloPez.Bones.Count];
+                    ModeloPez.CopyAbsoluteBoneTransformsTo(modelMeshesBaseTransforms);
+
+                    // Combina las transformaciones locales y globales.
+                    var meshWorld = modelMeshesBaseTransforms[modelMesh.ParentBone.Index] * worldMatrix;
+                    ShadowMapEffect.Parameters["WorldViewProjection"].SetValue(meshWorld * LightView * Projection);
+
+                    foreach (var part in modelMesh.MeshParts)
+                    {
+                        part.Effect = ShadowMapEffect; // Aplica el shader de sombras
+                    }
+
+                    modelMesh.Draw(); // Dibuja el mesh en el mapa de sombras
                 }
             }
         }
-*/
+
+
+
         public void Draw(GameTime gameTime, Effect ShadowMapEffect, Matrix view, Matrix projection)
         {
-            
-            foreach (var mesh in ModeloPez.Meshes){
-                for(int i=0; i < _obstaculosPiedras.Count; i++){
-                    Matrix _pisoWorld = _obstaculosPiedras[i];
-                    BoundingBox boundingBox = BoundingVolumesExtensions.FromMatrix(_pisoWorld);
-                    
-                    if(_frustum.Intersects(boundingBox)){
-                        ShadowMapEffect.Parameters["World"].SetValue(mesh.ParentBone.Transform * _pisoWorld);
+            var viewProjection = view * projection;
+
+            foreach (var worldMatrix in _obstaculosPiedras)
+            {
+                foreach (var mesh in ModeloPez.Meshes)
+                {
+                    var meshWorld = mesh.ParentBone.Transform * worldMatrix;
+                    var boundingBox = BoundingVolumesExtensions.FromMatrix(meshWorld);
+
+                    if (_frustum.Intersects(boundingBox))
+                    {
+                        ShadowMapEffect.Parameters["World"].SetValue(meshWorld);
                         ShadowMapEffect.Parameters["baseTexture"].SetValue(Texture);
-                        // WorldViewProjection is used to transform from model space to clip space
-                        ShadowMapEffect.Parameters["WorldViewProjection"].SetValue(mesh.ParentBone.Transform * _pisoWorld * view * projection);
-                        ShadowMapEffect.Parameters["InverseTransposeWorld"].SetValue(Matrix.Transpose(Matrix.Invert(mesh.ParentBone.Transform * _pisoWorld)));
+                        ShadowMapEffect.Parameters["WorldViewProjection"].SetValue(meshWorld * viewProjection);
+                        ShadowMapEffect.Parameters["InverseTransposeWorld"].SetValue(Matrix.Transpose(Matrix.Invert(meshWorld)));
 
                         mesh.Draw();
                     }
                 }
             }
         }
+
 
         public void AgregarNuevoObstaculo(float Rotacion, Vector3 Posicion) {
             int randomInt = random.Next(-10, 10);

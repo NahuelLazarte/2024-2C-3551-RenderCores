@@ -124,7 +124,7 @@ namespace TGC.MonoGame.MenuPrincipal
             //Por ahora está comentado, Ya lo voy a volver a poner
             
             // Mostrar el estado de GodMode y Musica en el menú
-            string godModeText = $"GodMode: {(Game.isMusicPlaying ? "ON" : "OFF")}";
+            string godModeText = $"GodMode: {(Game.isGodModeActive ? "ON" : "OFF")}";
             spriteBatch.DrawString(font, godModeText, startPosition + new Vector2(0, options.Length * 40 * scale),
             Game.isGodModeActive ? Color.Red : Color.Gray, 0f,
             font.MeasureString(godModeText) / 2, new Vector2(scale), SpriteEffects.None, 0f);

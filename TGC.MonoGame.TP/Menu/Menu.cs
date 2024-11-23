@@ -21,7 +21,7 @@ namespace TGC.MonoGame.MenuPrincipal
 
         public Menu()
         {
-            options = new Option[] { new Play(), new SelectLevel(), new GodMode(), new Exit() };
+            options = new Option[] { new Play(), new SelectLevel(), new GodMode(), new Music() ,new Exit() };
         }
         public void Update(TGCGame Game, GameTime gameTime)
         {
@@ -93,7 +93,7 @@ namespace TGC.MonoGame.MenuPrincipal
             previousKeyboardState = keyboardState;
         }
 
-        public void Draw(SpriteBatch spriteBatch, SpriteFont font)
+        public void Draw(SpriteBatch spriteBatch, SpriteFont font,TGCGame Game)
         {
             //spriteBatch.Begin();
 
@@ -122,18 +122,18 @@ namespace TGC.MonoGame.MenuPrincipal
             }
 
             //Por ahora está comentado, Ya lo voy a volver a poner
-            /*
+            
             // Mostrar el estado de GodMode y Musica en el menú
-            string godModeText = $"GodMode: {(isGodModeActive ? "ON" : "OFF")}";
+            string godModeText = $"GodMode: {(Game.isGodModeActive ? "ON" : "OFF")}";
             spriteBatch.DrawString(font, godModeText, startPosition + new Vector2(0, options.Length * 40 * scale),
-            isGodModeActive ? Color.Red : Color.Gray, 0f,
+            Game.isGodModeActive ? Color.Red : Color.Gray, 0f,
             font.MeasureString(godModeText) / 2, new Vector2(scale), SpriteEffects.None, 0f);
 
             string musicText = $"Musica: {(isMusicActive ? "ON" : "OFF")}";
             spriteBatch.DrawString(font, musicText, startPosition + new Vector2(0, (options.Length + 1) * 40 * scale),
             isMusicActive ? Color.Green : Color.Gray, 0f,
             font.MeasureString(musicText) / 2, new Vector2(scale), SpriteEffects.None, 0f);
-            */
+            
 
             //spriteBatch.End();
         }

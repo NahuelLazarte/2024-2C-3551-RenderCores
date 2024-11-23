@@ -17,6 +17,8 @@ namespace TGC.MonoGame.TP.Levels
         protected GraphicsDevice GraphicsDevice { get; }
         protected ContentManager Content { get; }
 
+        public FollowCamera FrustrumCamera { get; set; }
+
         public Sphere esfera; 
 
         private Matrix rotation = Matrix.Identity;

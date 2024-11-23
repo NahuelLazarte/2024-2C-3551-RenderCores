@@ -55,6 +55,7 @@ namespace TGC.MonoGame.TP
         public bool isMenuActive = true;
         private SpriteBatch SpriteBatch { get; set; }
         private Song backgroundMusic;
+        public bool isMusicActive = false;
         public bool isMusicPlaying = false;
         public bool isGodModeActive = false;
 
@@ -105,8 +106,18 @@ namespace TGC.MonoGame.TP
 
             if (isMusicPlaying)
             {
-                MediaPlayer.Play(backgroundMusic);
-                isMusicPlaying = false;
+                if (!isMusicActive)
+                {
+                    MediaPlayer.Play(backgroundMusic);
+                }
+                isMusicActive= true;
+
+                //isMusicPlaying = false;
+            }
+            else
+            {
+                MediaPlayer.Stop();
+                isMusicActive = false;
             }
 
             if (isMenuActive)
@@ -163,8 +174,23 @@ namespace TGC.MonoGame.TP
             // Dibuja el menú si está activo
             if (isMenuActive)
             {
+                // Calcula el tiempo para girar la cámara
+            float elapsedTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
+            float rotationSpeed = 0.3f; // Velocidad de rotación
+            float radius = 100f; // Distancia de la cámara a la pelota
+
+                float angle = rotationSpeed * (float)gameTime.TotalGameTime.TotalSeconds;
+
+                // Calcula la posición de la cámara en un círculo inclinado a 45 grados
+                float height = radius * (float)Math.Sin(MathHelper.PiOver4); // Altura a 45 grados
+                float distance = radius * (float)Math.Cos(MathHelper.PiOver4 - 10); // Distancia horizontal a 45 grados
+
+                var position = new Vector3((float)Math.Cos(angle) * distance, height, (float)Math.Sin(angle) * distance);
+
+                nivelActual.FrustrumCamera = new FollowCamera(GraphicsDevice, position, Vector3.One, Vector3.Up);
+                
                 SpriteBatch.Begin();
-                menu.Draw(SpriteBatch, menuFont,this);
+                menu.Draw(SpriteBatch, menuFont, this);
                 SpriteBatch.End();
             }
 

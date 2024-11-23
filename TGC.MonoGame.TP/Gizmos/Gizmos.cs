@@ -107,7 +107,7 @@ namespace TGC.MonoGame.TP.Gizmos
         /// <param name="destination">The final point of the line.</param>
         public void DrawLine(Vector3 origin, Vector3 destination)
         {
-            DrawLine(origin, destination, BaseColor);
+            //DrawLine(origin, destination, BaseColor);
         }
 
         /// <summary>
@@ -118,8 +118,9 @@ namespace TGC.MonoGame.TP.Gizmos
         /// <param name="color">The color of the line.</param>
         public void DrawLine(Vector3 origin, Vector3 destination, Color color)
         {
+            /*
             var world = LineSegmentGizmoGeometry.CalculateWorld(origin, destination);
-            AddDrawInstance(LineSegment, color, world);
+            AddDrawInstance(LineSegment, color, world);*/
         }
 
         /// <summary>

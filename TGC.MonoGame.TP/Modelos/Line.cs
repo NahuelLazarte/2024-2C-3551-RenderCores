@@ -8,7 +8,7 @@ public class LineDrawer
     private BasicEffect basicEffect;
 
     public LineDrawer(GraphicsDevice graphicsDevice)
-    {
+    {/*
         this.graphicsDevice = graphicsDevice;
         basicEffect = new BasicEffect(graphicsDevice)
         {
@@ -16,11 +16,11 @@ public class LineDrawer
             View = Matrix.Identity,
             Projection = Matrix.Identity,
             World = Matrix.Identity
-        };
+        };*/
     }
 
     public void DrawLine(Vector3 start, Vector3 end, Color color, Matrix view, Matrix projection)
-    {
+    {/*
         VertexPositionColor[] vertices = new VertexPositionColor[2];
         vertices[0] = new VertexPositionColor(start, color);
         vertices[1] = new VertexPositionColor(end, color);
@@ -32,7 +32,7 @@ public class LineDrawer
         {
             pass.Apply();
             graphicsDevice.DrawUserPrimitives(PrimitiveType.LineList, vertices, 0, 1);
-        }
+        }*/
     }
 }
 }

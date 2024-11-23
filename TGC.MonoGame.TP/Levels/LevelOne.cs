@@ -45,7 +45,7 @@ namespace TGC.MonoGame.TP
         private SkyBox SkyBox { get; set; }
 
         //Camaras
-        private FollowCamera FrustrumCamera { get; set; }
+        
         private FreeCamera TestCamera;
         BoundingFrustum _frustum { get; set; }
 
@@ -236,8 +236,8 @@ namespace TGC.MonoGame.TP
             Vector3 endGreen = new Vector3(50, 0, 0);
             Vector3 endRed = new Vector3(0, 0, 50);
 
-            lineDrawer.DrawLine(start, endGreen, Color.Green, FrustrumCamera.ViewMatrix, FrustrumCamera.ProjectionMatrix);
-            lineDrawer.DrawLine(start, endRed, Color.Red, FrustrumCamera.ViewMatrix, FrustrumCamera.ProjectionMatrix);
+            //lineDrawer.DrawLine(start, endGreen, Color.Green, FrustrumCamera.ViewMatrix, FrustrumCamera.ProjectionMatrix);
+            //lineDrawer.DrawLine(start, endRed, Color.Red, FrustrumCamera.ViewMatrix, FrustrumCamera.ProjectionMatrix);
 
             LightBox.Draw(LightBoxWorld, FrustrumCamera.ViewMatrix, FrustrumCamera.ProjectionMatrix);
 

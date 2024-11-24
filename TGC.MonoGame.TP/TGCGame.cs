@@ -123,25 +123,23 @@ namespace TGC.MonoGame.TP
             if (isMenuActive)
             {
                 if (!(MediaPlayer.Volume == 0.3f)) MediaPlayer.Volume = 0.3f;
+                nivelActual.Update(gameTime);
                 menu.Update(this, gameTime);
             }
             else
             {
-
-
-
                 if (!(MediaPlayer.Volume == 0.1f)) MediaPlayer.Volume = 0.2f;
 
                 if (keyboardState.IsKeyDown(Keys.Escape))
                 {
                     isMenuActive = true;
+                    nivelActual.leveIsActive = false;
                 }
 
                 if (nivelActual != null)
                 {
                     nivelActual.esfera.setGodMode(isGodModeActive);
                     nivelActual.Update(gameTime);
-
                 }
             }
 
@@ -172,6 +170,7 @@ namespace TGC.MonoGame.TP
             }
 
             // Dibuja el menú si está activo
+            
             if (isMenuActive)
             {
                 // Calcula el tiempo para girar la cámara
@@ -219,10 +218,10 @@ namespace TGC.MonoGame.TP
             nivelSeleccionado = nivel;
 
             iniciarNivelActual();
+            nivelActual.leveIsActive = true;
             isMenuActive = false;
 
             Console.WriteLine("Ejecución terminada");
-
             // Liberar la ejecución
             nivelSeleccionadoEvent.Set();
         }

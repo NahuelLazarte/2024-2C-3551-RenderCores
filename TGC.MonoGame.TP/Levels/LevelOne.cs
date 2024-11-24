@@ -165,8 +165,10 @@ namespace TGC.MonoGame.TP
                 isMenuActive = true;
             }*/
             //esfera.isGodModeActive = isGodModeActive;
-
-            FrustrumCamera.Update(esfera.GetPosition());
+            if(leveIsActive){
+                FrustrumCamera.Update(esfera.GetPosition());
+            }
+            
 
             _frustum.Matrix = FrustrumCamera.ViewMatrix * FrustrumCamera.ProjectionMatrix;
             _materiales.Update(gameTime, this, FrustrumCamera.ViewMatrix, FrustrumCamera.ProjectionMatrix, _frustum);

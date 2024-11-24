@@ -27,15 +27,17 @@ namespace TGC.MonoGame.TP.ObstaculoPozo
 
         private BoundingFrustum _frustum;
 
-        public ObstaculosPozos()
+        public ObstaculosPozos(Matrix view, Matrix projection)
         {
-            Initialize();
+            Initialize(view, projection);
         }
 
-        private void Initialize()
+        private void Initialize(Matrix view, Matrix projection)
         {
             _pozos = new List<Matrix>();
             Colliders = new List<BoundingBox>();
+            _frustum = new BoundingFrustum(view * projection);
+
         }
 
         public void IniciarColliders()
@@ -79,17 +81,21 @@ namespace TGC.MonoGame.TP.ObstaculoPozo
                 foreach (var mesh in ModeloPozo.Meshes)
                 {
                     var meshWorld = mesh.ParentBone.Transform * worldMatrix;
-                    var boundingBox = BoundingVolumesExtensions.FromMatrix(meshWorld);
 
-                    if (_frustum.Intersects(boundingBox))
-                    {
+                    Vector3 transformedMin = Vector3.Transform(size.Min, worldMatrix);
+                    Vector3 transformedMax = Vector3.Transform(size.Max, worldMatrix);
+
+                    BoundingBox boundingBox = new BoundingBox(transformedMin, transformedMax);
+
+                    //if (_frustum.Intersects(boundingBox))
+                    //{
                         ShadowMapEffect.Parameters["World"].SetValue(meshWorld);
                         ShadowMapEffect.Parameters["baseTexture"].SetValue(Textura);
                         ShadowMapEffect.Parameters["WorldViewProjection"].SetValue(meshWorld * viewProjection);
                         ShadowMapEffect.Parameters["InverseTransposeWorld"].SetValue(Matrix.Transpose(Matrix.Invert(meshWorld)));
 
                         mesh.Draw();
-                    }
+                    //}
                 }
             }
         }
@@ -132,11 +138,13 @@ namespace TGC.MonoGame.TP.ObstaculoPozo
         
         public void agregarNuevoPozo(float Rotacion, Vector3 Posicion, Materiales _materiales)
         {
-            Posicion += Vector3.Transform(new Vector3(0,-15,0), Matrix.CreateRotationY(Rotacion));
+            _materiales._muros.AgregarMurosPozo(Rotacion, Posicion);
 
+            Posicion = new Vector3(Posicion.X / 67, Posicion.Y / 100, Posicion.Z / 67);
+
+            Posicion += Vector3.Transform(new Vector3(1,-14,0), Matrix.CreateRotationY(Rotacion));
             Matrix transform = Matrix.CreateRotationY(Rotacion) *  Matrix.CreateTranslation(Posicion) *Matrix.CreateScale(escala);
 
-            _materiales._muros.AgregarMurosPozo(Rotacion, Posicion);
 
             _pozos.Add(transform);
 

@@ -56,7 +56,7 @@ namespace TGC.MonoGame.TP.MaterialesJuego {
             _hamburguesas = new PowerUpHamburguesas(view,projection);
             _espadas = new PowerUpEspadas(view,projection);
             _piedras = new ObstaculosPiedras(view,projection);
-            _pozos = new ObstaculosPozos();
+            _pozos = new ObstaculosPozos(view, projection);
             _checkPoints = new CheckPoints(view,projection);
             _marcadoresCheckPoints = new MarcadoresCheckPoints(view,projection);
             _muros = new Muros(frustrum);
@@ -205,9 +205,11 @@ namespace TGC.MonoGame.TP.MaterialesJuego {
             List<BoundingBox> CollidersPistaCurvaDerecha = _pistasCurvasDerechas.Colliders;
             List<BoundingBox> CollidersPistaCurvaIzquierda = _pistasCurvasIzquierdas.Colliders;
             List<BoundingBox> CollidersPiedras = _piedras.Colliders;
+            List<BoundingBox> CollidersPozos = _pozos.Colliders;
+
             List<BoundingBox> CollidersCheckpoints = _checkPoints.Colliders;
             List<BoundingBox> CollidersMarcadoresCheckpoints = _marcadoresCheckPoints.Colliders;
-            CollidersDibujo = CollidersMarcadoresCheckpoints;
+            CollidersDibujo = CollidersPozos;
 
             esfera.Colliders.AddRange(CollidersPistaRecta);
             esfera.Colliders.AddRange(CollidersPistaCurvaDerecha);

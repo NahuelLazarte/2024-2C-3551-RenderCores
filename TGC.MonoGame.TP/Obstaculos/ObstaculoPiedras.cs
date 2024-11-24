@@ -28,6 +28,7 @@ namespace TGC.MonoGame.TP.ObstaculoPiedras{
         private BoundingFrustum _frustum;
         private Texture2D Textura { get; set; }
         Random random = new Random();
+        
         public ObstaculosPiedras(Matrix view, Matrix projection) {
             Initialize(view,projection);
         }

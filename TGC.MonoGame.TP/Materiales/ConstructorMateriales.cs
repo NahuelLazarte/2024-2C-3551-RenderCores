@@ -40,18 +40,19 @@ namespace TGC.MonoGame.TP.Constructor{
         }
 
         public void CargarElementos(Materiales _materiales) {
-            
-            
-            AgregarPistaRecta(_materiales._pistasRectas, _materiales);
-            AgregarObstaculoCarretilla(_materiales._carretillas);
-            
-            AgregarPistaRecta(_materiales._pistasRectas, _materiales);
 
-            //AgregarObstaculoPozo(_materiales._pozos, _materiales);
-            
-            AgregarPistaRecta(_materiales._pistasRectas, _materiales);
-            AgregarPistaRecta(_materiales._pistasRectas, _materiales);
 
+            AgregarPistaRecta(_materiales._pistasRectas, _materiales);
+            AgregarPistaRecta(_materiales._pistasRectas, _materiales);
+            AgregarPistaRecta(_materiales._pistasRectas, _materiales);
+            AgregarPistaRecta(_materiales._pistasRectas, _materiales);
+            AgregarPistaCurvaDerecha(_materiales._pistasCurvasDerechas, _materiales);
+
+            AgregarPistaRecta(_materiales._pistasRectas, _materiales);
+            AgregarPistaRecta(_materiales._pistasRectas, _materiales);
+            AgregarPistaRecta(_materiales._pistasRectas, _materiales);
+            AgregarPistaRecta(_materiales._pistasRectas, _materiales);
+            AgregarObstaculoPozo(_materiales._pozos, _materiales);
             //AgregarObstaculoPozo(_materiales._pozos, _materiales);
 
             AgregarObstaculoCarretilla(_materiales._carretillas);

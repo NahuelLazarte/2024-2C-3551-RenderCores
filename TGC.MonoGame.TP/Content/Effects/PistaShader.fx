@@ -16,10 +16,12 @@
 float4x4 World;
 float4x4 View;
 float4x4 Projection;
-
+static const float modulatedEpsilon = 0.000041200182749889791011810302734375;
+static const float maxEpsilon = 0.000023200045689009130001068115234375;
 float3 DiffuseColor;
-
+float3 lightPosition;
 float Time = 0;
+
 uniform texture Texture;
 uniform sampler2D TextureSampler = sampler_state {
     Texture = (Texture);
@@ -28,6 +30,17 @@ uniform sampler2D TextureSampler = sampler_state {
     AddressU = Wrap;
     AddressV = Wrap;
 };
+texture shadowMap;
+sampler2D shadowMapSampler = sampler_state
+{
+    Texture = <shadowMap>;
+    MinFilter = Point;
+    MagFilter = Point;
+    MipFilter = Point;
+    AddressU = Clamp;
+    AddressV = Clamp;
+};
+
 float2 TextureScale = float2(20, 20); 
 
 struct VertexShaderInput
@@ -44,10 +57,12 @@ struct VertexShaderOutput
 {
 	float4 Position : SV_POSITION;
 	float3 Color : COLOR0; 
-
+    float4 WorldSpacePosition : TEXCOORD1;
 	float4 WorldPosition : TEXCOORD1;
 	float2 TextureCoordinates : TEXCOORD2;
 	float4 LocalPosition : TEXCOORD3;
+	float4 LightSpacePosition : TEXCOORD2;
+    float4 Normal : TEXCOORD3;
 };
 
 VertexShaderOutput MainVS(in VertexShaderInput input)
@@ -73,10 +88,19 @@ float4 MainPS(VertexShaderOutput input) : COLOR
 {
     // Use the texture coordinates directly
     float2 TextureCoordinates = input.TextureCoordinates;
+	float3 lightSpacePosition = input.LightSpacePosition.xyz / input.LightSpacePosition.w;
+	float2 shadowMapTextureCoordinates = 0.5 * lightSpacePosition.xy + 0.5;
+	shadowMapTextureCoordinates.y = 1.0 - shadowMapTextureCoordinates.y;
 
+	float3 lightDirection = normalize(lightPosition - input.WorldSpacePosition.xyz);
+	float inclinationBias = max(modulatedEpsilon * (1.0 - dot(input.Normal.xyz, lightDirection)), maxEpsilon);
+
+	float shadowMapDepth = tex2D(shadowMapSampler, shadowMapTextureCoordinates).r + inclinationBias;
+
+	float notInShadow = step(lightSpacePosition.z, shadowMapDepth);
     // Sample the texture using the texture coordinates
     float4 sample = tex2D(TextureSampler, TextureCoordinates);
-    return float4(sample.rgb, 1.0);
+    return float4(sample.rgb * notInShadow, 1.0);
 }
 
 technique BasicColorDrawing

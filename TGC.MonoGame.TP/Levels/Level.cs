@@ -17,6 +17,8 @@ namespace TGC.MonoGame.TP.Levels
         protected GraphicsDevice GraphicsDevice { get; }
         protected ContentManager Content { get; }
 
+        public FollowCamera FrustrumCamera { get; set; }
+
         public Sphere esfera; 
 
         private Matrix rotation = Matrix.Identity;
@@ -34,6 +36,7 @@ namespace TGC.MonoGame.TP.Levels
         public abstract void Update(GameTime gameTime);
         public abstract void Draw(GameTime gameTime);
         public abstract void UnloadContent();
+        public bool leveIsActive = false;
 
         protected ConstructorMateriales _constructorMateriales { get; set; }
 

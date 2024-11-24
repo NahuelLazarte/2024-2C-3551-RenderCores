@@ -64,7 +64,7 @@ struct ShadowedVertexShaderOutput
     float2 TextureCoordinates : TEXCOORD0;
     float4 WorldSpacePosition : TEXCOORD1;
     float4 LightSpacePosition : TEXCOORD2;
-    float3 Normal : TEXCOORD3;
+    float4 Normal : TEXCOORD3;
 };
 
 DepthPassVertexShaderOutput DepthVS(DepthPassVertexShaderInput input)
@@ -88,7 +88,7 @@ ShadowedVertexShaderOutput MainVS(ShadowedVertexShaderInput input)
     output.TextureCoordinates = input.TextureCoordinates;
     output.WorldSpacePosition = mul(input.Position, World);
     output.LightSpacePosition = mul(output.WorldSpacePosition, LightViewProjection);
-    output.Normal = normalize(mul(float4(input.Normal, 0), InverseTransposeWorld).xyz);
+    output.Normal = mul(float4(input.Normal, 0.0), InverseTransposeWorld);   
     return output;
 }
 

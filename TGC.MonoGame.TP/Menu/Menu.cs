@@ -129,7 +129,7 @@ namespace TGC.MonoGame.MenuPrincipal
             Game.isGodModeActive ? Color.Red : Color.Gray, 0f,
             font.MeasureString(godModeText) / 2, new Vector2(scale), SpriteEffects.None, 0f);
 
-            string musicText = $"Musica: {(isMusicActive ? "ON" : "OFF")}";
+            string musicText = $"Musica: {(Game.isMusicPlaying ? "ON" : "OFF")}";
             spriteBatch.DrawString(font, musicText, startPosition + new Vector2(0, (options.Length + 1) * 40 * scale),
             isMusicActive ? Color.Green : Color.Gray, 0f,
             font.MeasureString(musicText) / 2, new Vector2(scale), SpriteEffects.None, 0f);

@@ -59,7 +59,7 @@ namespace TGC.MonoGame.TP.PistaCurvaDerecha
         {
             _frustum = new BoundingFrustum(view * projection * scale);
         }
-
+        /*
         public void Draw(GameTime gameTime, Matrix view, Matrix projection)
         {
 
@@ -83,6 +83,55 @@ namespace TGC.MonoGame.TP.PistaCurvaDerecha
                 }
             }
 
+        }*/
+
+        public void Draw(GameTime gameTime, Effect ShadowMapEffect, Matrix view, Matrix projection)
+        {
+            var viewProjection = view * projection;
+
+            foreach (var worldMatrix in _pistasCurvas)
+            {
+                foreach (var mesh in ModeloPistaCurva.Meshes)
+                {
+                    var meshWorld = mesh.ParentBone.Transform * worldMatrix;
+                    var boundingBox = BoundingVolumesExtensions.FromMatrix(meshWorld);
+
+                    if (_frustum.Intersects(boundingBox))
+                    {
+                        ShadowMapEffect.Parameters["World"].SetValue(meshWorld);
+                        ShadowMapEffect.Parameters["baseTexture"].SetValue(Texture);
+                        ShadowMapEffect.Parameters["WorldViewProjection"].SetValue(meshWorld * viewProjection);
+                        ShadowMapEffect.Parameters["InverseTransposeWorld"].SetValue(Matrix.Transpose(Matrix.Invert(meshWorld)));
+
+                        mesh.Draw();
+                    }
+                }
+            }
+        }
+
+
+        public void ShadowMapRender(Effect ShadowMapEffect, Matrix LightView, Matrix Projection)
+        {
+
+            foreach (var worldMatrix in _pistasCurvas)
+            {
+                foreach (var modelMesh in ModeloPistaCurva.Meshes)
+                {
+                    var modelMeshesBaseTransforms = new Matrix[ModeloPistaCurva.Bones.Count];
+                    ModeloPistaCurva.CopyAbsoluteBoneTransformsTo(modelMeshesBaseTransforms);
+
+                    // Combina las transformaciones locales y globales.
+                    var meshWorld = modelMeshesBaseTransforms[modelMesh.ParentBone.Index] * worldMatrix;
+                    ShadowMapEffect.Parameters["WorldViewProjection"].SetValue(meshWorld * LightView * Projection);
+
+                    foreach (var part in modelMesh.MeshParts)
+                    {
+                        part.Effect = ShadowMapEffect; // Aplica el shader de sombras
+                    }
+
+                    modelMesh.Draw(); // Dibuja el mesh en el mapa de sombras
+                }
+            }
         }
 
         public Vector3 Desplazamiento()

@@ -23,6 +23,8 @@ namespace TGC.MonoGame.TP.ObstaculoPozo
         public BoundingSphere _envolturaEsfera{ get; set; }
         float escala = 2f;
         BoundingBox size;
+        private Texture2D Texture { get; set; }
+
         private BoundingFrustum _frustum;
 
         public ObstaculosPozos()
@@ -55,7 +57,7 @@ namespace TGC.MonoGame.TP.ObstaculoPozo
                     meshPart.Effect = Effect;
                 }
             }
-
+            Texture = Content.Load<Texture2D>("Textures/texturaPiedra");
             size = BoundingVolumesExtensions.CreateAABBFrom(ModeloPozo);
         }
 
@@ -66,31 +68,56 @@ namespace TGC.MonoGame.TP.ObstaculoPozo
                     Game.Respawn();
                 }
             }
-            _frustum = new BoundingFrustum(view * projection);
+            _frustum = new BoundingFrustum(view * projection * scale);
         }
 
-        public void Draw(GameTime gameTime, Matrix view, Matrix projection)
+        public void Draw(GameTime gameTime, Effect ShadowMapEffect, Matrix view, Matrix projection)
         {
-            
+            var viewProjection = view * projection;
 
-            Effect.Parameters["View"].SetValue(view);
-            Effect.Parameters["Projection"].SetValue(projection);
-            //Effect.Parameters["DiffuseColor"].SetValue(new Vector3(0.5f, 0.5f, 0.5f));
-
-            foreach (var mesh in ModeloPozo.Meshes)
+            foreach (var worldMatrix in _pozos)
             {
-                for (int i = 0; i < _pozos.Count; i++)
+                foreach (var mesh in ModeloPozo.Meshes)
                 {
-                    Matrix _pisoWorld = _pozos[i];
-                    BoundingBox boundingBox = BoundingVolumesExtensions.FromMatrix(_pisoWorld);
-                    
-                    /*if(_frustum.Intersects(boundingBox)){
-                        Effect.Parameters["World"].SetValue(mesh.ParentBone.Transform * _pisoWorld);*/
-                    //    mesh.Draw();
-                    //}
+                    var meshWorld = mesh.ParentBone.Transform * worldMatrix;
+                    var boundingBox = BoundingVolumesExtensions.FromMatrix(meshWorld);
+
+                    if (_frustum.Intersects(boundingBox))
+                    {
+                        ShadowMapEffect.Parameters["World"].SetValue(meshWorld);
+                        ShadowMapEffect.Parameters["baseTexture"].SetValue(Texture);
+                        ShadowMapEffect.Parameters["WorldViewProjection"].SetValue(meshWorld * viewProjection);
+                        ShadowMapEffect.Parameters["InverseTransposeWorld"].SetValue(Matrix.Transpose(Matrix.Invert(meshWorld)));
+
+                        mesh.Draw();
+                    }
                 }
             }
+        }
 
+
+        public void ShadowMapRender(Effect ShadowMapEffect, Matrix LightView, Matrix Projection)
+        {
+
+            foreach (var worldMatrix in _pozos)
+            {
+                foreach (var modelMesh in ModeloPozo.Meshes)
+                {
+                    var modelMeshesBaseTransforms = new Matrix[ModeloPozo.Bones.Count];
+                    ModeloPozo.CopyAbsoluteBoneTransformsTo(modelMeshesBaseTransforms);
+
+                    // Combina las transformaciones locales y globales.
+                    var meshWorld = modelMeshesBaseTransforms[modelMesh.ParentBone.Index] * worldMatrix;
+                    ShadowMapEffect.Parameters["WorldViewProjection"].SetValue(meshWorld * LightView * Projection);
+
+                    foreach (var part in modelMesh.MeshParts)
+                    {
+                        part.Effect = ShadowMapEffect; // Aplica el shader de sombras
+                    }
+
+                    modelMesh.Draw(); // Dibuja el mesh en el mapa de sombras
+                }
+            }
         }
 
         public Vector3 Desplazamiento()

@@ -69,15 +69,18 @@ namespace TGC.MonoGame.TP.PistaRecta
             _frustum = new BoundingFrustum(view * projection * scale); // * scale
         }
 
-        public void Draw(GameTime gameTime, Matrix view, Matrix projection)
+        /*
+        public void Draw(GameTime gameTime, Matrix view, Matrix projection, RenderTarget2D ShadowMapRenderTarget, Vector3 LightPosition, Matrix ligtViewProj)
         {
 
             Effect.Parameters["View"].SetValue(view);
             Effect.Parameters["Projection"].SetValue(projection);
-            //Effect.Parameters["DiffuseColor"].SetValue(new Vector3(0.2f, 0.2f, 0.2f));
-
             Effect.Parameters["Texture"]?.SetValue(Texture);
-
+            Effect.Parameters["ShadowMap"]?.SetValue(ShadowMapRenderTarget);
+            
+            //Effect.Parameters["lightPosition"].SetValue(ligtViewProj);
+            //Effect.Parameters["LightViewProjection"].SetValue(ligtViewProj);
+            
             // Dibujar las pistas
             foreach (var mesh in ModeloPistaRecta.Meshes)
             {
@@ -88,6 +91,8 @@ namespace TGC.MonoGame.TP.PistaRecta
                     
                     if(_frustum.Intersects(boundingBox)){
                         Effect.Parameters["World"].SetValue(mesh.ParentBone.Transform * _pisoWorld);
+                        //Effect.Parameters["WorldViewProjection"].SetValue(_pisoWorld *mesh.ParentBone.Transform* view * projection);
+                        //Effect.Parameters["InverseTransposeWorld"].SetValue(Matrix.Transpose(Matrix.Invert(_pisoWorld * mesh.ParentBone.Transform)));
                         mesh.Draw();
                     }
                 }
@@ -96,6 +101,55 @@ namespace TGC.MonoGame.TP.PistaRecta
             //BasicColorDrawing
 
             
+        }*/
+
+        public void Draw(GameTime gameTime, Effect ShadowMapEffect, Matrix view, Matrix projection)
+        {
+            var viewProjection = view * projection;
+
+            foreach (var worldMatrix in _pistasRectas)
+            {
+                foreach (var mesh in ModeloPistaRecta.Meshes)
+                {
+                    var meshWorld = mesh.ParentBone.Transform * worldMatrix;
+                    var boundingBox = BoundingVolumesExtensions.FromMatrix(meshWorld);
+
+                    if (_frustum.Intersects(boundingBox))
+                    {
+                        ShadowMapEffect.Parameters["World"].SetValue(meshWorld);
+                        ShadowMapEffect.Parameters["baseTexture"].SetValue(Texture);
+                        ShadowMapEffect.Parameters["WorldViewProjection"].SetValue(meshWorld * viewProjection);
+                        ShadowMapEffect.Parameters["InverseTransposeWorld"].SetValue(Matrix.Transpose(Matrix.Invert(meshWorld)));
+
+                        mesh.Draw();
+                    }
+                }
+            }
+        }
+
+
+        public void ShadowMapRender(Effect ShadowMapEffect, Matrix LightView, Matrix Projection)
+        {
+
+            foreach (var worldMatrix in _pistasRectas)
+            {
+                foreach (var modelMesh in ModeloPistaRecta.Meshes)
+                {
+                    var modelMeshesBaseTransforms = new Matrix[ModeloPistaRecta.Bones.Count];
+                    ModeloPistaRecta.CopyAbsoluteBoneTransformsTo(modelMeshesBaseTransforms);
+
+                    // Combina las transformaciones locales y globales.
+                    var meshWorld = modelMeshesBaseTransforms[modelMesh.ParentBone.Index] * worldMatrix;
+                    ShadowMapEffect.Parameters["WorldViewProjection"].SetValue(meshWorld * LightView * Projection);
+
+                    foreach (var part in modelMesh.MeshParts)
+                    {
+                        part.Effect = ShadowMapEffect; // Aplica el shader de sombras
+                    }
+
+                    modelMesh.Draw(); // Dibuja el mesh en el mapa de sombras
+                }
+            }
         }
 
         public Vector3 Desplazamiento()

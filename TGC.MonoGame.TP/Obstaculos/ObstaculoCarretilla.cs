@@ -123,33 +123,55 @@ namespace TGC.MonoGame.TP.ObstaculoCarretilla {
             Colliders[index] = box;
         }
 
-        public void Draw(GameTime gameTime, Matrix view, Matrix projection) {
-            Effect.Parameters["View"].SetValue(view);
-            Effect.Parameters["Projection"].SetValue(projection);
-//            Effect.Parameters["DiffuseColor"].SetValue(new Vector3(0.5f, 0.5f, 0.5f));
+        public void Draw(GameTime gameTime, Effect ShadowMapEffect, Matrix view, Matrix projection)
+        {
+            var viewProjection = view * projection;
 
-            foreach (var mesh in ModeloCarretilla.Meshes) {
-                for (int i = 0; i < _obstaculosCarretilla.Count; i++) {
-                    var carretilla = _obstaculosCarretilla[i];
-                    BoundingBox boundingBox = BoundingVolumesExtensions.FromMatrix(carretilla.Transform);
-                    if(_frustum.Intersects(boundingBox)){
-                        Effect.Parameters["World"].SetValue(mesh.ParentBone.Transform * carretilla.Transform);
-                        string meshName = mesh.Name.ToLower();
-                        switch (meshName) {
-                            case "wheel":
-                                //Effect.Parameters["DiffuseColor"].SetValue(new Vector3(0f, 0f, 0f)); 
-                                Effect.Parameters["Texture"]?.SetValue(TexturaMetal);
-                                break;
-                            case "cart":
-                                //Effect.Parameters["DiffuseColor"].SetValue(new Vector3(0.545f, 0.271f, 0.075f));
-                                Effect.Parameters["Texture"]?.SetValue(TexturaMadera);
-                                break;
-                        }
+            foreach (var worldMatrix in _obstaculosCarretilla)
+            {
+                foreach (var mesh in ModeloCarretilla.Meshes)
+                {
+                    var meshWorld = mesh.ParentBone.Transform * worldMatrix.Transform;
+                    var boundingBox = BoundingVolumesExtensions.FromMatrix(meshWorld);
+
+                    if (_frustum.Intersects(boundingBox))
+                    {
+                        ShadowMapEffect.Parameters["World"].SetValue(meshWorld);
+                        ShadowMapEffect.Parameters["baseTexture"].SetValue(Texture);
+                        ShadowMapEffect.Parameters["WorldViewProjection"].SetValue(meshWorld * viewProjection);
+                        ShadowMapEffect.Parameters["InverseTransposeWorld"].SetValue(Matrix.Transpose(Matrix.Invert(meshWorld)));
+
                         mesh.Draw();
                     }
                 }
             }
         }
+
+
+        public void ShadowMapRender(Effect ShadowMapEffect, Matrix LightView, Matrix Projection)
+        {
+
+            foreach (var worldMatrix in _obstaculosCarretilla)
+            {
+                foreach (var modelMesh in ModeloCarretilla.Meshes)
+                {
+                    var modelMeshesBaseTransforms = new Matrix[ModeloCarretilla.Bones.Count];
+                    ModeloCarretilla.CopyAbsoluteBoneTransformsTo(modelMeshesBaseTransforms);
+
+                    // Combina las transformaciones locales y globales.
+                    var meshWorld = modelMeshesBaseTransforms[modelMesh.ParentBone.Index] * worldMatrix.Transform;
+                    ShadowMapEffect.Parameters["WorldViewProjection"].SetValue(meshWorld * LightView * Projection);
+
+                    foreach (var part in modelMesh.MeshParts)
+                    {
+                        part.Effect = ShadowMapEffect; // Aplica el shader de sombras
+                    }
+
+                    modelMesh.Draw(); // Dibuja el mesh en el mapa de sombras
+                }
+            }
+        }
+
 
         public void AgregarNuevoObstaculo(float rotationY, Vector3 Posicion) {
             // Crear transformación inicial

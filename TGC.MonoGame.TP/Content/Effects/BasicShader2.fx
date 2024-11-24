@@ -31,6 +31,9 @@ float3 eyePosition;
 #define LIGHT_COUNT 4
 
 static const float PI = 3.14159265359;
+static const float modulatedEpsilon = 0.000041200182749889791011810302734375;
+static const float maxEpsilon = 0.000023200045689009130001068115234375;
+
 
 // DiffuseMap
 texture Texture;
@@ -91,6 +94,17 @@ sampler2D aoSampler = sampler_state
 	MIPFILTER = LINEAR;
 };
 
+texture shadowMap;
+sampler2D shadowMapSampler = sampler_state
+{
+    Texture = <shadowMap>;
+    MinFilter = Point;
+    MagFilter = Point;
+    MipFilter = Point;
+    AddressU = Clamp;
+    AddressV = Clamp;
+};
+
 //input Vertex Shader
 struct Light
 {
@@ -114,11 +128,12 @@ struct VertexShaderInput{
 
 struct VertexShaderOutput{
 	//Devuelve la posicion del vertice rasterizado
-
+    float4 LightSpacePosition : TEXCOORD2; //AGREGUE
+    float4 WorldSpacePosition : TEXCOORD1; //AGREGUE
 	float4 Position : SV_POSITION;
 	float2 TextureCoordinates : TEXCOORD0;
-	float3 Normal : TEXCOORD1;
-	float4 WorldPosition : TEXCOORD2;
+	float3 Normal : TEXCOORD3;
+	float4 WorldPosition : TEXCOORD4;
 };
 
 VertexShaderOutput MainVS(in VertexShaderInput input)
@@ -139,7 +154,21 @@ VertexShaderOutput MainVS(in VertexShaderInput input)
 
 float4 MainPS(VertexShaderOutput input) : COLOR{
 	float4 textureSample = tex2D(TextureSampler, input.TextureCoordinates);
-	return float4(textureSample.rgb , 1.0);
+	// Shader de pista con sampling
+
+	float3 lightSpacePosition = input.LightSpacePosition.xyz / input.LightSpacePosition.w;
+	float2 shadowMapTextureCoordinates = 0.5 * lightSpacePosition.xy + 0.5;
+	shadowMapTextureCoordinates.y = 1.0 - shadowMapTextureCoordinates.y;
+
+	float3 lightDirection = normalize(lightPosition - input.WorldSpacePosition.xyz);
+	float inclinationBias = max(modulatedEpsilon * (1.0 - dot(input.Normal, lightDirection)), maxEpsilon);
+
+	float shadowMapDepth = tex2D(shadowMapSampler, shadowMapTextureCoordinates).r + inclinationBias;
+
+	float notInShadow = step(lightSpacePosition.z, shadowMapDepth);
+
+	
+	return float4(textureSample.rgb * notInShadow, 1.0);
 }
 
 technique Render

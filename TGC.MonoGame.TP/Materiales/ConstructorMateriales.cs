@@ -46,8 +46,13 @@ namespace TGC.MonoGame.TP.Constructor{
             AgregarObstaculoCarretilla(_materiales._carretillas);
             
             AgregarPistaRecta(_materiales._pistasRectas, _materiales);
+
+            AgregarObstaculoPozo(_materiales._pozos, _materiales);
             
             AgregarPistaRecta(_materiales._pistasRectas, _materiales);
+            AgregarPistaRecta(_materiales._pistasRectas, _materiales);
+
+            AgregarObstaculoPozo(_materiales._pozos, _materiales);
 
             AgregarObstaculoCarretilla(_materiales._carretillas);
             
@@ -64,6 +69,9 @@ namespace TGC.MonoGame.TP.Constructor{
             AgregarPistaRecta(_materiales._pistasRectas, _materiales);
             AgregarPowerUpHamburguesa(_materiales._hamburguesas);
             AgregarPistaCurvaDerecha(_materiales._pistasCurvasDerechas, _materiales);
+
+            AgregarObstaculoPozo(_materiales._pozos, _materiales);
+
             AgregarPistaRecta(_materiales._pistasRectas, _materiales);
             AgregarObstaculoCarretilla(_materiales._carretillas);
             AgregarPistaRecta(_materiales._pistasRectas, _materiales);
@@ -156,11 +164,11 @@ namespace TGC.MonoGame.TP.Constructor{
 
         void AgregarObstaculoPozo(ObstaculosPozos unPozo,  Materiales _materialesAux)
         {
-            Vector3 desplazamiento = unPozo.Desplazamiento() * 60f;
+            Vector3 desplazamiento = unPozo.Desplazamiento() * 62.55f;
 
-            Vector3 posicionObstaculo = new(posicionActual.X / 68f, posicionActual.Y / 70f, posicionActual.Z / 68f);
+            //Vector3 posicionObstaculo = new(posicionActual.X, posicionActual.Y, posicionActual.Z);
 
-            unPozo.agregarNuevoPozo(rotacionActual, posicionObstaculo, _materialesAux);
+            unPozo.agregarNuevoPozo(rotacionActual, posicionActual, _materialesAux);
             //Console.WriteLine($"Pista Curva dibujada: Posicion en ejes: X = {posicionActual.X}, Y = {posicionActual.Y}, Z = {posicionActual.Z}");
 
             posicionActual += Vector3.Transform(desplazamiento, Matrix.CreateRotationY(rotacionActual));

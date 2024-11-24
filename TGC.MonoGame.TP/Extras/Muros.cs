@@ -224,11 +224,22 @@ namespace TGC.MonoGame.TP.MurosExtra{
             Colliders.Add(boxIzquierda);
         }
         public void AgregarMurosPozo(float Rotacion, Vector3 Posicion) {
+            /*float a = 1.47f;
+            a = 100f;
             
-            var posicionMuros = new Vector3(Posicion.X / 1.47f , (Posicion.Y + 15f)/  1.47f  , Posicion.Z/  1.47f );
+            var posicionMuros = new Vector3(Posicion.X / a , (Posicion.Y + 15f)/  a  , Posicion.Z/  a );
             
-            var desplazamientoDerecha = new Vector3(25.22f , -12f , 9f);
-            var desplazamientoIzquierda = new Vector3(-25.22f , -12f, -9f);
+            //var desplazamientoDerecha = new Vector3(25.22f , -12f , 9f);
+            //var desplazamientoIzquierda = new Vector3(-25.22f , -12f, -9f);
+            var desplazamientoDerecha = new Vector3(100f * 2, -12f , 9f);
+            var desplazamientoIzquierda = new Vector3(-25.22f , -12f, -9f);*/
+
+            var posicionMuros = new Vector3(Posicion.X, Posicion.Y, Posicion.Z);
+            //var desplazamientoDerecha = new Vector3(0f, -11.63f * 100, -10f * 100) ;
+            //var desplazamientoIzquierda = new Vector3(0f, -11.63f * 100, 10f * 100);
+
+            var desplazamientoDerecha = new Vector3(0f, -11.48f * 100, -10f * 100) ;
+            var desplazamientoIzquierda = new Vector3(0f, -11.48f * 100, 10f * 100);
             
             var posicionDerecha = posicionMuros + Vector3.Transform(desplazamientoDerecha, Matrix.CreateRotationY(Rotacion));
             var posicionIzquierda = posicionMuros + Vector3.Transform(desplazamientoIzquierda, Matrix.CreateRotationY(Rotacion));

@@ -132,7 +132,7 @@ namespace TGC.MonoGame.TP.MaterialesJuego {
             ShadowMapEffect.CurrentTechnique = ShadowMapEffect.Techniques["DepthPass"];
 
             _piedras.ShadowMapRender(ShadowMapEffect, TargetLightCamera.View, TargetLightCamera.Projection);
-
+            
             #endregion
 
             #region Pass 2: Renderizar la escena con sombras
@@ -146,7 +146,7 @@ namespace TGC.MonoGame.TP.MaterialesJuego {
             ShadowMapEffect.Parameters["shadowMapSize"].SetValue(Vector2.One * ShadowmapSize);
             ShadowMapEffect.Parameters["LightViewProjection"].SetValue(TargetLightCamera.View * TargetLightCamera.Projection);
 
-            _piedras.Draw(gameTime, ShadowMapEffect, view, projection);
+//            _piedras.Draw(gameTime, ShadowMapEffect, view, projection);
 
             LightBox.Draw(Matrix.CreateTranslation(LightPosition), TargetLightCamera.View, TargetLightCamera.Projection);
 

@@ -135,6 +135,7 @@ namespace TGC.MonoGame.TP
         {
             LightBoxWorld = Matrix.CreateScale(3f) * Matrix.CreateTranslation(position);
             esfera.Effect.Parameters["lightPosition"].SetValue(position);
+            //_materiales._muros.Effect.Parameters["lightPosition"].SetValue(position);
         }
 
         public override void Update(GameTime gameTime)
@@ -217,8 +218,9 @@ namespace TGC.MonoGame.TP
             else
             {*/
 
-            //ddd}            
+            //ddd}  
             ObjectsToDraw(gameTime);
+            
             esfera.Draw(FrustrumCamera.ViewMatrix, FrustrumCamera.ProjectionMatrix, FrustrumCamera.position);
             Gizmos.DrawSphere(esfera.GetBoundingSphere().Center, esfera.GetBoundingSphere().Radius * Vector3.One, Color.White);
             //DrawEnvironmentMap();

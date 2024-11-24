@@ -18,7 +18,7 @@ namespace TGC.MonoGame.TP.ObstaculoPiedras{
         public const string ContentFolderEffects = "Effects/";
         public Effect Effect { get; set; }
         public Matrix scale = Matrix.CreateScale(1f);
-        public Model ModeloPez { get; set; }
+        public Model ModeloPiedra { get; set; }
         public List<BoundingBox> Colliders { get; set; }
         private float Rotation { get; set; }
         private List<Matrix> _obstaculosPiedras { get; set; }
@@ -26,7 +26,7 @@ namespace TGC.MonoGame.TP.ObstaculoPiedras{
         public SoundEffect CollisionSound { get; set; }
         BoundingBox size;
         private BoundingFrustum _frustum;
-        private Texture2D Texture { get; set; }
+        private Texture2D Textura { get; set; }
         Random random = new Random();
         public ObstaculosPiedras(Matrix view, Matrix projection) {
             Initialize(view,projection);
@@ -43,19 +43,18 @@ namespace TGC.MonoGame.TP.ObstaculoPiedras{
         }
 
         public void LoadContent(ContentManager Content, Effect ShadowMapEffect){
-            ModeloPez = Content.Load<Model>("Models/" + "obstaculos/rockLarge");
-            Effect = Content.Load<Effect>("Effects/" + "BasicShader");
-
-            /*
-            foreach (var mesh in ModeloPez.Meshes){
+            ModeloPiedra = Content.Load<Model>("Models/" + "obstaculos/rockLargeWithTexture");
+            Effect = Content.Load<Effect>("Effects/" + "BasicShader2");
+            Textura = Content.Load<Texture2D>("Textures/texturaMetal");
+            
+            foreach (var mesh in ModeloPiedra.Meshes){
                 foreach (var meshPart in mesh.MeshParts){
                     meshPart.Effect = Effect;
                 }
             }
-            */
+            
             CollisionSound = Content.Load<SoundEffect>("Audio/ColisionPez"); // Ajusta la ruta según sea necesario
-            size = BoundingVolumesExtensions.CreateAABBFrom(ModeloPez);
-            Texture = Content.Load<Texture2D>("Textures/texturaPiedra");
+            size = BoundingVolumesExtensions.CreateAABBFrom(ModeloPiedra);
         }
 
         public void Update(GameTime gameTime, Level Game, Matrix view, Matrix projection) {
@@ -73,15 +72,16 @@ namespace TGC.MonoGame.TP.ObstaculoPiedras{
 
 
 
-        /*
-                public void Draw(GameTime gameTime, Matrix view, Matrix projection)
+        
+                /*public void Draw(GameTime gameTime, Matrix view, Matrix projection)
                 {
                     Effect.Parameters["View"].SetValue(view);
                     Effect.Parameters["Projection"].SetValue(projection);
-                    Effect.Parameters["DiffuseColor"].SetValue(new Vector3(0.5f, 0.5f, 0.5f));
+                    //Effect.Parameters["DiffuseColor"].SetValue(new Vector3(0.5f, 0.5f, 0.5f));
+                    Effect.Parameters["Texture"]?.SetValue(Textura);
 
 
-                    foreach (var mesh in ModeloPez.Meshes){
+                    foreach (var mesh in ModeloPiedra.Meshes){
                         for(int i=0; i < _obstaculosPiedras.Count; i++){
                             Matrix _pisoWorld = _obstaculosPiedras[i];
                             BoundingBox boundingBox = BoundingVolumesExtensions.FromMatrix(_pisoWorld);
@@ -92,18 +92,18 @@ namespace TGC.MonoGame.TP.ObstaculoPiedras{
                             }
                         }
                     }
-                }
-        */
+                }*/
+        
 
         public void ShadowMapRender(Effect ShadowMapEffect, Matrix LightView, Matrix Projection)
         {
             
             foreach (var worldMatrix in _obstaculosPiedras)
             {
-                foreach (var modelMesh in ModeloPez.Meshes)
+                foreach (var modelMesh in ModeloPiedra.Meshes)
                 {
-                    var modelMeshesBaseTransforms = new Matrix[ModeloPez.Bones.Count];
-                    ModeloPez.CopyAbsoluteBoneTransformsTo(modelMeshesBaseTransforms);
+                    var modelMeshesBaseTransforms = new Matrix[ModeloPiedra.Bones.Count];
+                    ModeloPiedra.CopyAbsoluteBoneTransformsTo(modelMeshesBaseTransforms);
 
                     // Combina las transformaciones locales y globales.
                     var meshWorld = modelMeshesBaseTransforms[modelMesh.ParentBone.Index] * worldMatrix;
@@ -124,10 +124,11 @@ namespace TGC.MonoGame.TP.ObstaculoPiedras{
         public void Draw(GameTime gameTime, Effect ShadowMapEffect, Matrix view, Matrix projection)
         {
             var viewProjection = view * projection;
+            ShadowMapEffect.Parameters["Texture"].SetValue(Textura);
 
             foreach (var worldMatrix in _obstaculosPiedras)
             {
-                foreach (var mesh in ModeloPez.Meshes)
+                foreach (var mesh in ModeloPiedra.Meshes)
                 {
                     var meshWorld = mesh.ParentBone.Transform * worldMatrix;
                     var boundingBox = BoundingVolumesExtensions.FromMatrix(meshWorld);
@@ -135,7 +136,6 @@ namespace TGC.MonoGame.TP.ObstaculoPiedras{
                     if (_frustum.Intersects(boundingBox))
                     {
                         ShadowMapEffect.Parameters["World"].SetValue(meshWorld);
-                        ShadowMapEffect.Parameters["baseTexture"].SetValue(Texture);
                         ShadowMapEffect.Parameters["WorldViewProjection"].SetValue(meshWorld * viewProjection);
                         ShadowMapEffect.Parameters["InverseTransposeWorld"].SetValue(Matrix.Transpose(Matrix.Invert(meshWorld)));
 

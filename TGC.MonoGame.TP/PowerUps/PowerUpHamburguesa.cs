@@ -32,6 +32,12 @@ namespace TGC.MonoGame.TP.PowerUpHamburguesa
         private int hamburguesasCount;
         private BoundingFrustum _frustum;
 
+        protected Texture TexturaCarne { get; set; }
+        protected Texture TexturaLechuga { get; set; }
+        protected Texture TexturaPan { get; set; }
+        protected Texture TexturaQueso { get; set; }
+        protected Texture TexturaTomate { get; set; }
+
         public PowerUpHamburguesas(Matrix view, Matrix projection)
         {
             Initialize(view, projection);
@@ -57,8 +63,13 @@ namespace TGC.MonoGame.TP.PowerUpHamburguesa
 
         public void LoadContent(ContentManager Content, GraphicsDevice graphicsDevice)
         {
-            ModeloHamburguesa = Content.Load<Model>("Models/" + "PowerUps/burger");
-            Effect = Content.Load<Effect>("Effects/" + "BasicShader");
+            ModeloHamburguesa = Content.Load<Model>("Models/" + "PowerUps/burgerWithTexture");
+            Effect = Content.Load<Effect>("Effects/" + "BasicShader2");
+            TexturaCarne = Content.Load<Texture2D>("Textures/carne");
+            TexturaPan = Content.Load<Texture2D>("Textures/pan");
+            TexturaLechuga = Content.Load<Texture2D>("Textures/lechuga");
+            TexturaQueso = Content.Load<Texture2D>("Textures/queso");
+            TexturaTomate = Content.Load<Texture2D>("Textures/tomate");
             spriteBatch = new SpriteBatch(graphicsDevice); // Inicializa SpriteBatch
             spriteFont = Content.Load<SpriteFont>("SpriteFonts/" + "CascadiaCodePl");
 
@@ -117,7 +128,7 @@ namespace TGC.MonoGame.TP.PowerUpHamburguesa
         {
             Effect.Parameters["View"].SetValue(view);
             Effect.Parameters["Projection"].SetValue(projection);
-            Effect.Parameters["DiffuseColor"].SetValue(Color.Chocolate.ToVector3());
+            //Effect.Parameters["DiffuseColor"].SetValue(Color.Chocolate.ToVector3());
 
 
             foreach (var mesh in ModeloHamburguesa.Meshes)
@@ -135,25 +146,25 @@ namespace TGC.MonoGame.TP.PowerUpHamburguesa
                         switch (meshName)
                         {
                             case "bunbottom":
-                                Effect.Parameters["DiffuseColor"].SetValue(new Vector3(0.8f, 0.52f, 0.25f)); // Color para el pan de abajo
+                                Effect.Parameters["Texture"]?.SetValue(TexturaPan);
                                 break;
                             case "buntop":
-                                Effect.Parameters["DiffuseColor"].SetValue(new Vector3(0.8f, 0.52f, 0.25f)); // Color para el pan de arriba
+                                Effect.Parameters["Texture"]?.SetValue(TexturaPan);
                                 break;
                             case "cheese":
-                                Effect.Parameters["DiffuseColor"].SetValue(Color.Yellow.ToVector3()); // Color para el queso
+                                Effect.Parameters["Texture"]?.SetValue(TexturaQueso);
                                 break;
                             case "patty":
-                                Effect.Parameters["DiffuseColor"].SetValue(new Vector3(0.5f, 0.25f, 0.1f)); // Color para la carne
+                                Effect.Parameters["Texture"]?.SetValue(TexturaCarne);
                                 break;
                             case "salad":
-                                Effect.Parameters["DiffuseColor"].SetValue(Color.Green.ToVector3()); // Color para la lechuga
+                                Effect.Parameters["Texture"]?.SetValue(TexturaLechuga);
                                 break;
                             case "tomato":
-                                Effect.Parameters["DiffuseColor"].SetValue(Color.Red.ToVector3()); // Color para el tomate
+                                Effect.Parameters["Texture"]?.SetValue(TexturaTomate);
                                 break;
                             default:
-                                Effect.Parameters["DiffuseColor"].SetValue(Color.White.ToVector3()); // Color por defecto
+                                //Effect.Parameters["DiffuseColor"].SetValue(Color.White.ToVector3()); // Color por defecto
                                 break;
                         }
                         mesh.Draw();

@@ -21,7 +21,9 @@ namespace TGC.MonoGame.TP.ObstaculoCarretilla {
         public Matrix scale = Matrix.CreateScale(1f);
         public Model ModeloCarretilla { get; set; }
         public List<BoundingBox> Colliders { get; set; }
-        
+        private Texture2D TexturaMadera { get; set; }
+        private Texture2D TexturaMetal { get; set; }
+
         // Clase para representar el estado de cada carretilla
         private class Carretilla {
             public Matrix Transform;
@@ -51,10 +53,15 @@ namespace TGC.MonoGame.TP.ObstaculoCarretilla {
             Colliders = new List<BoundingBox>();
             _frustum = new BoundingFrustum(view * projection);
         }
+//P: "DocumentUrl", "KString", "Url", "", "G:\TP-TGC\2024-1C-3551-RenderCores\TGC.MonoGame.TP\Content\Models\obstaculos\cartWithTextures2.fbx"
+//			P: "SrcDocumentUrl", "KString", "Url", "", "G:\TP-TGC\2024-1C-3551-RenderCores\TGC.MonoGame.TP\Content\Models\obstaculos\cartWithTextures2.fbx"
+
 
         public void LoadContent(ContentManager Content) {
-            ModeloCarretilla = Content.Load<Model>("Models/" + "obstaculos/cart");
-            Effect = Content.Load<Effect>("Effects/" + "BasicShader");
+            ModeloCarretilla = Content.Load<Model>("Models/" + "obstaculos/cartWithTextures2");
+            Effect = Content.Load<Effect>("Effects/" + "BasicShader2");
+            TexturaMadera = Content.Load<Texture2D>("Textures/texturaMadera");
+            TexturaMetal = Content.Load<Texture2D>("Textures/texturaMetal");
 
             foreach (var mesh in ModeloCarretilla.Meshes) {
                 Console.WriteLine($"Meshname carreta: {mesh.Name}");
@@ -119,7 +126,7 @@ namespace TGC.MonoGame.TP.ObstaculoCarretilla {
         public void Draw(GameTime gameTime, Matrix view, Matrix projection) {
             Effect.Parameters["View"].SetValue(view);
             Effect.Parameters["Projection"].SetValue(projection);
-            Effect.Parameters["DiffuseColor"].SetValue(new Vector3(0.5f, 0.5f, 0.5f));
+//            Effect.Parameters["DiffuseColor"].SetValue(new Vector3(0.5f, 0.5f, 0.5f));
 
             foreach (var mesh in ModeloCarretilla.Meshes) {
                 for (int i = 0; i < _obstaculosCarretilla.Count; i++) {
@@ -130,10 +137,12 @@ namespace TGC.MonoGame.TP.ObstaculoCarretilla {
                         string meshName = mesh.Name.ToLower();
                         switch (meshName) {
                             case "wheel":
-                                Effect.Parameters["DiffuseColor"].SetValue(new Vector3(0f, 0f, 0f)); 
+                                //Effect.Parameters["DiffuseColor"].SetValue(new Vector3(0f, 0f, 0f)); 
+                                Effect.Parameters["Texture"]?.SetValue(TexturaMetal);
                                 break;
                             case "cart":
-                                Effect.Parameters["DiffuseColor"].SetValue(new Vector3(0.545f, 0.271f, 0.075f)); 
+                                //Effect.Parameters["DiffuseColor"].SetValue(new Vector3(0.545f, 0.271f, 0.075f));
+                                Effect.Parameters["Texture"]?.SetValue(TexturaMadera);
                                 break;
                         }
                         mesh.Draw();

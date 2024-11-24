@@ -26,8 +26,8 @@ namespace TGC.MonoGame.TP.PistaRecta
         float escala = 0.03f;        
         BoundingBox Pistasize;
         private BoundingFrustum _frustum;
-
-        protected Texture Texture { get; set; }
+        private Texture2D NormalTexture { get; set; }
+        private Texture2D Texture { get; set; }
         public PistasRectas(Matrix view, Matrix projection)
         {
             Initialize(view,projection);
@@ -49,6 +49,8 @@ namespace TGC.MonoGame.TP.PistaRecta
             Effect = Content.Load<Effect>("Effects/" + "BasicShader2");
 
             Texture = Content.Load<Texture2D>("Textures/texturaMadera");
+            NormalTexture = Content.Load<Texture2D>("Textures/NormalMapMadera");
+
             //Effect.CurrentTechnique = Effect.Techniques["LightingTechnique"];
 
             foreach (var mesh in ModeloPistaRecta.Meshes)
@@ -120,6 +122,7 @@ namespace TGC.MonoGame.TP.PistaRecta
                         ShadowMapEffect.Parameters["baseTexture"].SetValue(Texture);
                         ShadowMapEffect.Parameters["WorldViewProjection"].SetValue(meshWorld * viewProjection);
                         ShadowMapEffect.Parameters["InverseTransposeWorld"].SetValue(Matrix.Transpose(Matrix.Invert(meshWorld)));
+                        ShadowMapEffect.Parameters["normalMap"].SetValue(NormalTexture);
 
                         mesh.Draw();
                     }

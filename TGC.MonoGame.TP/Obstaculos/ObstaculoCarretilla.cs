@@ -23,6 +23,8 @@ namespace TGC.MonoGame.TP.ObstaculoCarretilla {
         public List<BoundingBox> Colliders { get; set; }
         private Texture2D TexturaMadera { get; set; }
         private Texture2D TexturaMetal { get; set; }
+        private Texture2D NormalMapTexturaMetal { get; set; }
+        private Texture2D NormalMapTexturaMadera { get; set; }
 
         // Clase para representar el estado de cada carretilla
         private class Carretilla {
@@ -62,6 +64,8 @@ namespace TGC.MonoGame.TP.ObstaculoCarretilla {
             Effect = Content.Load<Effect>("Effects/" + "BasicShader2");
             TexturaMadera = Content.Load<Texture2D>("Textures/texturaMadera");
             TexturaMetal = Content.Load<Texture2D>("Textures/texturaMetal");
+            NormalMapTexturaMetal = Content.Load<Texture2D>("Textures/NormalMapMetal");
+            NormalMapTexturaMadera = Content.Load<Texture2D>("Textures/NormalMapMadera");
 
             foreach (var mesh in ModeloCarretilla.Meshes) {
                 Console.WriteLine($"Meshname carreta: {mesh.Name}");
@@ -140,9 +144,13 @@ namespace TGC.MonoGame.TP.ObstaculoCarretilla {
                         switch (meshName) {
                             case "wheel":
                                 ShadowMapEffect.Parameters["baseTexture"]?.SetValue(TexturaMetal);
+                                ShadowMapEffect.Parameters["normalMap"].SetValue(NormalMapTexturaMetal);
+
                                 break;
                             case "cart":
                                 ShadowMapEffect.Parameters["baseTexture"]?.SetValue(TexturaMadera);
+                                ShadowMapEffect.Parameters["normalMap"].SetValue(NormalMapTexturaMadera);
+
                                 break;
                         }
                         //ShadowMapEffect.Parameters["baseTexture"].SetValue(TexturaMadera);

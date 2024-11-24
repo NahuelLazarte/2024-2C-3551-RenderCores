@@ -52,6 +52,17 @@ sampler2D shadowMapSampler = sampler_state
     AddressV = Clamp;
 };
 
+// Declaración de la textura y el sampler para el mapa normal
+texture normalMap;
+sampler2D normalSampler = sampler_state
+{
+    Texture = <normalMap>;
+    MagFilter = Linear;
+    MinFilter = Linear;
+    AddressU = Clamp;
+    AddressV = Clamp;
+};
+
 // Estructuras para datos entre shaders
 struct DepthPassVertexShaderInput
 {
@@ -69,7 +80,7 @@ struct ShadowedVertexShaderInput
     float4 Position : POSITION0;
     float3 Normal : NORMAL;
     float2 TextureCoordinates : TEXCOORD0;
-};
+}; 
 
 struct ShadowedVertexShaderOutput
 {
@@ -95,6 +106,24 @@ float4 DepthPS(DepthPassVertexShaderOutput input) : COLOR
     return float4(depth, depth, depth, 1.0);
 }
 
+// Función para calcular normales desde el mapa normal
+float3 getNormalFromMap(float2 textureCoordinates, float3 worldPosition, float3 worldNormal)
+{
+    float3 tangentNormal = tex2D(normalSampler, textureCoordinates).xyz * 2.0 - 1.0;
+
+    float3 Q1 = ddx(worldPosition);
+    float3 Q2 = ddy(worldPosition);
+    float2 st1 = ddx(textureCoordinates);
+    float2 st2 = ddy(textureCoordinates);
+
+    worldNormal = normalize(worldNormal.xyz);
+    float3 T = normalize(Q1 * st2.y - Q2 * st1.y);
+    float3 B = -normalize(cross(worldNormal, T));
+    float3x3 TBN = float3x3(T, B, worldNormal);
+
+    return normalize(mul(tangentNormal, TBN));
+}
+
 // Sombrado principal del vértice
 ShadowedVertexShaderOutput MainVS(ShadowedVertexShaderInput input)
 {
@@ -103,7 +132,7 @@ ShadowedVertexShaderOutput MainVS(ShadowedVertexShaderInput input)
     output.TextureCoordinates = input.TextureCoordinates;
     output.WorldSpacePosition = mul(input.Position, World);
     output.LightSpacePosition = mul(output.WorldSpacePosition, LightViewProjection);
-    output.Normal = mul(float4(input.Normal, 0.0), InverseTransposeWorld);
+    output.Normal = mul(float4(input.Normal, 0.0), InverseTransposeWorld); // Normal en espacio del mundo
     return output;
 }
 
@@ -117,7 +146,9 @@ float4 ShadowedPCFPS(ShadowedVertexShaderOutput input) : COLOR
 
     // Vector hacia la luz
     float3 lightDirection = normalize(lightPosition - input.WorldSpacePosition.xyz);
-    float3 normal = normalize(input.Normal.xyz);
+
+    // Calcular normales ajustadas por el mapa normal
+    float3 normal = getNormalFromMap(input.TextureCoordinates, input.WorldSpacePosition.xyz, input.Normal.xyz);
 
     // Sesgo para sombras
     float inclinationBias = max(modulatedEpsilon * (1.0 - dot(normal, lightDirection)), maxEpsilon);
@@ -157,6 +188,8 @@ float4 ShadowedPCFPS(ShadowedVertexShaderOutput input) : COLOR
 
     return baseColor;
 }
+
+
 
 // Técnicas
 technique DepthPass

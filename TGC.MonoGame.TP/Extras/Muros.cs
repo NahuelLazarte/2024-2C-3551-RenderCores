@@ -22,7 +22,7 @@ namespace TGC.MonoGame.TP.MurosExtra{
         public Effect Effect { get; set; }
         private BasicEffect Efecto { get; set; }
         private Texture2D Texture { get; set; }
-        private Texture2D normalTexture { get; set; }
+        private Texture2D NormalTexture { get; set; }
         private Texture2D metallicTexture { get; set; }
         private Texture2D roughnessTexture { get; set; }
         private Texture2D aoTexture { get; set; }
@@ -63,8 +63,8 @@ namespace TGC.MonoGame.TP.MurosExtra{
         public void LoadContent(ContentManager Content, GraphicsDevice graphicsDevice){
             Effect = Content.Load<Effect>("Effects/" + "BasicShader2");
             Texture = Content.Load<Texture2D>("Textures/texturaPiedra");
-            /*normalTexture = Content.Load<Texture2D>("Textures/normalMapPiedra");
-            metallicTexture = Content.Load<Texture2D>("Textures/SpecularMapPiedra");
+            NormalTexture = Content.Load<Texture2D>("Textures/NormalMapPiedra");
+            /*metallicTexture = Content.Load<Texture2D>("Textures/SpecularMapPiedra");
             roughnessTexture = Content.Load<Texture2D>("Textures/DisplacementMapPiedra");
             aoTexture = Content.Load<Texture2D>("Textures/AmbientOcclusionMapPiedra");*/
             CollisionSound = Content.Load<SoundEffect>("Audio/ColisionPez");
@@ -127,6 +127,7 @@ namespace TGC.MonoGame.TP.MurosExtra{
                         ShadowMapEffect.Parameters["baseTexture"].SetValue(Texture);
                         ShadowMapEffect.Parameters["WorldViewProjection"].SetValue(meshWorld * viewProjection);
                         ShadowMapEffect.Parameters["InverseTransposeWorld"].SetValue(Matrix.Transpose(Matrix.Invert(meshWorld)));
+                        ShadowMapEffect.Parameters["normalMap"].SetValue(NormalTexture);
 
                         mesh.Draw();
                     }
@@ -145,6 +146,7 @@ namespace TGC.MonoGame.TP.MurosExtra{
                         ShadowMapEffect.Parameters["baseTexture"].SetValue(Texture);
                         ShadowMapEffect.Parameters["WorldViewProjection"].SetValue(meshWorld * viewProjection);
                         ShadowMapEffect.Parameters["InverseTransposeWorld"].SetValue(Matrix.Transpose(Matrix.Invert(meshWorld)));
+                        ShadowMapEffect.Parameters["normalMap"].SetValue(NormalTexture);
 
                         mesh.Draw();
                     }

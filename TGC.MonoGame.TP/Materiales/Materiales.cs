@@ -41,7 +41,7 @@ namespace TGC.MonoGame.TP.MaterialesJuego {
         public PowerUpEspadas _espadas { get; set; }
         public Muros _muros { get; set; }
         private List<BoundingBox> CollidersDibujo { get; set; }
-        private const int ShadowmapSize = 2048;
+        private const int ShadowmapSize = 4096;
         private readonly float LightCameraFarPlaneDistance = 3000f;
         private readonly float LightCameraNearPlaneDistance = 5f;
         private CubePrimitive LightBox;
@@ -141,6 +141,8 @@ namespace TGC.MonoGame.TP.MaterialesJuego {
             _muros.ShadowMapRender(ShadowMapEffect, TargetLightCamera.View, TargetLightCamera.Projection);
             _pozos.ShadowMapRender(ShadowMapEffect, TargetLightCamera.View, TargetLightCamera.Projection);
             _carretillas.ShadowMapRender(ShadowMapEffect, TargetLightCamera.View, TargetLightCamera.Projection);
+            _checkPoints.ShadowMapRender(ShadowMapEffect, TargetLightCamera.View, TargetLightCamera.Projection);
+
             esfera.ShadowMapRender(ShadowMapEffect, TargetLightCamera.View, TargetLightCamera.Projection);
             #endregion
 
@@ -155,22 +157,32 @@ namespace TGC.MonoGame.TP.MaterialesJuego {
             ShadowMapEffect.Parameters["shadowMap"].SetValue(ShadowMapRenderTarget);
             ShadowMapEffect.Parameters["lightPosition"].SetValue(LightPosition);
             ShadowMapEffect.Parameters["cameraPosition"].SetValue(position);
-            ShadowMapEffect.Parameters["ambientColor"].SetValue(new Vector3(0.6f, 0.6f, 0.6f));
-            ShadowMapEffect.Parameters["diffuseColor"].SetValue(new Vector3(0.8f, 0.8f, 0.8f));
+
+            //ESTO TIENE QUE IR POR CADA OBJETO
+            ShadowMapEffect.Parameters["ambientColor"].SetValue(new Vector3(0.5f, 0.5f, 0.5f));
+            ShadowMapEffect.Parameters["diffuseColor"].SetValue(new Vector3(0.6f, 0.6f, 0.6f));
             ShadowMapEffect.Parameters["specularColor"].SetValue(new Vector3(1f, 1f, 1f));
-            ShadowMapEffect.Parameters["shininess"].SetValue(16f);
+            ShadowMapEffect.Parameters["shininess"].SetValue(32f);
+            //ESTO TIENE QUE IR POR CADA OBJETO
+
 
             ShadowMapEffect.Parameters["shadowMapSize"].SetValue(shadowMapSizeA);
             ShadowMapEffect.Parameters["LightViewProjection"].SetValue(ligtViewProj);
 
+            //ShadowMapEffect.Parameters["useNormalMapping"].SetValue(true);
             _piedras.Draw(gameTime, ShadowMapEffect, view, projection);
+            _carretillas.Draw(gameTime, ShadowMapEffect, view, projection);
+            _pozos.Draw(gameTime, ShadowMapEffect, view, projection);
+            _pistasCurvasDerechas.Draw(gameTime, ShadowMapEffect, view, projection);
             _pistasRectas.Draw(gameTime, ShadowMapEffect, view, projection);
             _pistasCurvasIzquierdas.Draw(gameTime, ShadowMapEffect, view, projection);
-            _pistasCurvasDerechas.Draw(gameTime, ShadowMapEffect, view, projection);
             _muros.Draw(gameTime, ShadowMapEffect, view, projection);
-            _pozos.Draw(gameTime, ShadowMapEffect, view, projection);
-            _carretillas.Draw(gameTime, ShadowMapEffect, view, projection);
+            _checkPoints.Draw(gameTime, ShadowMapEffect, view, projection);
 
+            //ShadowMapEffect.Parameters["useNormalMapping"].SetValue(false);
+
+            /*
+            */
 
             // _pistasCurvasIzquierdas.Draw(gameTime, view, projection);
             //_pistasRectas.Draw(gameTime, view, projection);
@@ -182,8 +194,6 @@ namespace TGC.MonoGame.TP.MaterialesJuego {
             esfera.Draw(view, projection, position);
 
             _hamburguesas.Draw(gameTime, ShadowMapEffect, view, projection);
-
-            _checkPoints.Draw(gameTime, view, projection);
             _marcadoresCheckPoints.Draw(gameTime, view, projection);
             _espadas.Draw(gameTime, view, projection, graphicsDevice);
 

@@ -24,6 +24,7 @@ namespace TGC.MonoGame.TP.ObstaculoPozo
         float escala = 2f;
         BoundingBox size;
         private Texture2D Textura { get; set; }
+        private Texture2D NormalTextura { get; set; }
 
         private BoundingFrustum _frustum;
 
@@ -50,7 +51,8 @@ namespace TGC.MonoGame.TP.ObstaculoPozo
         {
             ModeloPozo = Content.Load<Model>("Models/" + "obstaculos/rockLargeWithTexture");
             Effect = Content.Load<Effect>("Effects/" + "BasicShader2");
-            Textura = Content.Load<Texture2D>("Textures/texturaMetal");
+            Textura = Content.Load<Texture2D>("Textures/texturaPiedra");
+            NormalTextura = Content.Load<Texture2D>("Textures/NormalMapPiedra");
 
             foreach (var mesh in ModeloPozo.Meshes)
             {
@@ -93,8 +95,9 @@ namespace TGC.MonoGame.TP.ObstaculoPozo
                         ShadowMapEffect.Parameters["baseTexture"].SetValue(Textura);
                         ShadowMapEffect.Parameters["WorldViewProjection"].SetValue(meshWorld * viewProjection);
                         ShadowMapEffect.Parameters["InverseTransposeWorld"].SetValue(Matrix.Transpose(Matrix.Invert(meshWorld)));
+                        ShadowMapEffect.Parameters["normalMap"].SetValue(NormalTextura);
 
-                        mesh.Draw();
+                    mesh.Draw();
                     //}
                 }
             }

@@ -27,6 +27,8 @@ namespace TGC.MonoGame.TP.ObstaculoPiedras{
         BoundingBox size;
         private BoundingFrustum _frustum;
         private Texture2D Textura { get; set; }
+        private Texture2D NormalMapTexture { get; set; }
+
         Random random = new Random();
         
         public ObstaculosPiedras(Matrix view, Matrix projection) {
@@ -46,8 +48,8 @@ namespace TGC.MonoGame.TP.ObstaculoPiedras{
         public void LoadContent(ContentManager Content){
             ModeloPiedra = Content.Load<Model>("Models/" + "obstaculos/rockLargeWithTexture");
             Effect = Content.Load<Effect>("Effects/" + "BasicShader2");
-            Textura = Content.Load<Texture2D>("Textures/texturaMetal");
-            
+            Textura = Content.Load<Texture2D>("Textures/texturaPiedra");
+            NormalMapTexture = Content.Load<Texture2D>("Textures/NormalMapPiedra");
             foreach (var mesh in ModeloPiedra.Meshes){
                 foreach (var meshPart in mesh.MeshParts){
                     meshPart.Effect = Effect;
@@ -79,6 +81,7 @@ namespace TGC.MonoGame.TP.ObstaculoPiedras{
                         ShadowMapEffect.Parameters["baseTexture"].SetValue(Textura);
                         ShadowMapEffect.Parameters["WorldViewProjection"].SetValue(meshWorld * viewProjection);
                         ShadowMapEffect.Parameters["InverseTransposeWorld"].SetValue(Matrix.Transpose(Matrix.Invert(meshWorld)));
+                        ShadowMapEffect.Parameters["normalMap"].SetValue(NormalMapTexture);
 
                         mesh.Draw();
                     }

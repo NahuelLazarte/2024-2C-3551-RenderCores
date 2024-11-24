@@ -28,6 +28,16 @@ namespace TGC.MonoGame.TP.CheckPoint{
         public SoundEffect CollisionSound { get; set; }
         BoundingBox size;
         private BoundingFrustum _frustum;
+
+        private Texture2D NormalMapTexturaMetal { get; set; }
+        private Texture2D NormalMapTexturaMadera { get; set; }
+        private Texture2D NormalMapTexturaPiedra { get; set; }
+        private Texture2D NormalMapTexturaFuego { get; set; }
+        private Texture2D TexturaMadera { get; set; }
+        private Texture2D TexturaMetal { get; set; }
+        private Texture2D TexturaPiedra { get; set; }
+        private Texture2D TexturaFuego { get; set; }
+
         public CheckPoints(Matrix view, Matrix projection) {
             Initialize(view,projection);
         }
@@ -46,6 +56,16 @@ namespace TGC.MonoGame.TP.CheckPoint{
         public void LoadContent(ContentManager Content){
             ModeloCheckPoint = Content.Load<Model>("Models/" + "CheckPoint/campfire"); // HAY QUE MOVERLO DE CARPETA
             Effect = Content.Load<Effect>("Effects/" + "BasicShader");
+
+            TexturaMadera = Content.Load<Texture2D>("Textures/texturaMadera");
+            TexturaMetal = Content.Load<Texture2D>("Textures/texturaMetal");
+            TexturaPiedra = Content.Load<Texture2D>("Textures/texturaPiedra");
+            TexturaFuego = Content.Load<Texture2D>("Textures/texturaFuego");
+
+            NormalMapTexturaMetal = Content.Load<Texture2D>("Textures/NormalMapMetal");
+            NormalMapTexturaMadera = Content.Load<Texture2D>("Textures/NormalMapMadera");
+            NormalMapTexturaPiedra = Content.Load<Texture2D>("Textures/NormalMapPiedra");
+            NormalMapTexturaFuego = Content.Load<Texture2D>("Textures/NormalMapFuego");
 
             foreach (var mesh in ModeloCheckPoint.Meshes){
                 Console.WriteLine($"Meshname pistacurva {mesh.Name}");
@@ -80,7 +100,7 @@ namespace TGC.MonoGame.TP.CheckPoint{
             _frustum = new BoundingFrustum(view * projection);
 
         }
-
+        /*
         public void Draw(GameTime gameTime, Matrix view, Matrix projection)
         {
             Effect.Parameters["View"].SetValue(view);
@@ -113,6 +133,77 @@ namespace TGC.MonoGame.TP.CheckPoint{
                         }
                         mesh.Draw();
                     }
+                }
+            }
+        }
+        */
+        public void Draw(GameTime gameTime, Effect ShadowMapEffect, Matrix view, Matrix projection)
+        {
+            var viewProjection = view * projection;
+
+            foreach (var worldMatrix in _checkPoints)
+            {
+                foreach (var mesh in ModeloCheckPoint.Meshes)
+                {
+                    var meshWorld = mesh.ParentBone.Transform * worldMatrix;
+                    var boundingBox = BoundingVolumesExtensions.FromMatrix(meshWorld);
+
+                    if (_frustum.Intersects(boundingBox))
+                    {
+                        ShadowMapEffect.Parameters["World"].SetValue(meshWorld);
+                        string meshName = mesh.Name.ToLower();
+                        switch (meshName)
+                        {
+                            
+                            case "campfire":
+                                ShadowMapEffect.Parameters["baseTexture"]?.SetValue(TexturaMadera);
+                                ShadowMapEffect.Parameters["normalMap"].SetValue(NormalMapTexturaMadera);
+                                
+                                break;
+                            case "bucket":
+                                ShadowMapEffect.Parameters["baseTexture"]?.SetValue(TexturaMetal);
+                                ShadowMapEffect.Parameters["normalMap"].SetValue(NormalMapTexturaMetal);
+                                break;
+                            case "rocks":
+                                ShadowMapEffect.Parameters["baseTexture"]?.SetValue(TexturaPiedra);
+                                ShadowMapEffect.Parameters["normalMap"].SetValue(NormalMapTexturaPiedra);
+                                break;
+                            case "wood":
+                                ShadowMapEffect.Parameters["baseTexture"]?.SetValue(TexturaFuego);
+                                ShadowMapEffect.Parameters["normalMap"].SetValue(NormalMapTexturaFuego);
+                                break;
+                        }
+                        //ShadowMapEffect.Parameters["baseTexture"].SetValue(TexturaMadera);
+                        ShadowMapEffect.Parameters["WorldViewProjection"].SetValue(meshWorld * viewProjection);
+                        ShadowMapEffect.Parameters["InverseTransposeWorld"].SetValue(Matrix.Transpose(Matrix.Invert(meshWorld)));
+
+                        mesh.Draw();
+                    }
+                }
+            }
+        }
+
+
+        public void ShadowMapRender(Effect ShadowMapEffect, Matrix LightView, Matrix Projection)
+        {
+
+            foreach (var worldMatrix in _checkPoints)
+            {
+                foreach (var modelMesh in ModeloCheckPoint.Meshes)
+                {
+                    var modelMeshesBaseTransforms = new Matrix[ModeloCheckPoint.Bones.Count];
+                    ModeloCheckPoint.CopyAbsoluteBoneTransformsTo(modelMeshesBaseTransforms);
+
+                    // Combina las transformaciones locales y globales.
+                    var meshWorld = modelMeshesBaseTransforms[modelMesh.ParentBone.Index] * worldMatrix;
+                    ShadowMapEffect.Parameters["WorldViewProjection"].SetValue(meshWorld * LightView * Projection);
+
+                    foreach (var part in modelMesh.MeshParts)
+                    {
+                        part.Effect = ShadowMapEffect; // Aplica el shader de sombras
+                    }
+
+                    modelMesh.Draw(); // Dibuja el mesh en el mapa de sombras
                 }
             }
         }

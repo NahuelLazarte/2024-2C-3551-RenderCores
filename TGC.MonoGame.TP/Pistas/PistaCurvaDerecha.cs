@@ -22,6 +22,8 @@ namespace TGC.MonoGame.TP.PistaCurvaDerecha
         public List<BoundingBox> Colliders { get; set; }
         private List<Matrix> _pistasCurvas { get; set; }
         private Texture2D Texture { get; set; }
+        private Texture2D NormalTexture { get; set; }
+
         BoundingBox size;
         private BoundingFrustum _frustum;
         public PistasCurvasDerechas(Matrix view, Matrix projection)
@@ -42,6 +44,7 @@ namespace TGC.MonoGame.TP.PistaCurvaDerecha
             Console.WriteLine($"Modelo de pista curva cargado");
             Effect = Content.Load<Effect>("Effects/" + "BasicShader2");
             Texture = Content.Load<Texture2D>("Textures/texturaMadera");
+            NormalTexture = Content.Load<Texture2D>("Textures/NormalMapMadera");
 
             foreach (var mesh in ModeloPistaCurva.Meshes)
             {
@@ -102,6 +105,7 @@ namespace TGC.MonoGame.TP.PistaCurvaDerecha
                         ShadowMapEffect.Parameters["baseTexture"].SetValue(Texture);
                         ShadowMapEffect.Parameters["WorldViewProjection"].SetValue(meshWorld * viewProjection);
                         ShadowMapEffect.Parameters["InverseTransposeWorld"].SetValue(Matrix.Transpose(Matrix.Invert(meshWorld)));
+                        ShadowMapEffect.Parameters["normalMap"].SetValue(NormalTexture);
 
                         mesh.Draw();
                     }

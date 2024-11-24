@@ -154,7 +154,12 @@ namespace TGC.MonoGame.TP.MaterialesJuego {
             ShadowMapEffect.CurrentTechnique = ShadowMapEffect.Techniques["DrawShadowedPCF"];
             ShadowMapEffect.Parameters["shadowMap"].SetValue(ShadowMapRenderTarget);
             ShadowMapEffect.Parameters["lightPosition"].SetValue(LightPosition);
-            
+            ShadowMapEffect.Parameters["cameraPosition"].SetValue(position);
+            ShadowMapEffect.Parameters["ambientColor"].SetValue(new Vector3(0.6f, 0.6f, 0.6f));
+            ShadowMapEffect.Parameters["diffuseColor"].SetValue(new Vector3(0.8f, 0.8f, 0.8f));
+            ShadowMapEffect.Parameters["specularColor"].SetValue(new Vector3(1f, 1f, 1f));
+            ShadowMapEffect.Parameters["shininess"].SetValue(16f);
+
             ShadowMapEffect.Parameters["shadowMapSize"].SetValue(shadowMapSizeA);
             ShadowMapEffect.Parameters["LightViewProjection"].SetValue(ligtViewProj);
 

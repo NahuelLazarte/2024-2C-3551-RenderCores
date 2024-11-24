@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using TGC.MonoGame.TP.Camera;
 
 
 namespace TGC.MonoGame.TP.Modelos
@@ -17,6 +18,8 @@ namespace TGC.MonoGame.TP.Modelos
         public Effect Effect { get; set; } // mejorar
         protected Texture Texture { get; set; }
         protected Texture NormalTexture { get; set; }
+        private RenderTargetCube EnvironmentMapRenderTarget { get; set; }
+        private StaticCamera CubeMapCamera { get; set; }
 
 
         public void SetPosition(Vector3 newPosition) { Position = newPosition; }
@@ -102,6 +105,43 @@ namespace TGC.MonoGame.TP.Modelos
 
                     modelMesh.Draw(); // Dibuja el mesh en el mapa de sombras
                 }
+        }
+
+        private void SetCubemapCameraForOrientation(CubeMapFace face)
+        {
+            switch (face)
+            {
+                default:
+                case CubeMapFace.PositiveX:
+                    CubeMapCamera.FrontDirection = -Vector3.UnitX;
+                    CubeMapCamera.UpDirection = Vector3.Down;
+                    break;
+
+                case CubeMapFace.NegativeX:
+                    CubeMapCamera.FrontDirection = Vector3.UnitX;
+                    CubeMapCamera.UpDirection = Vector3.Down;
+                    break;
+
+                case CubeMapFace.PositiveY:
+                    CubeMapCamera.FrontDirection = Vector3.Down;
+                    CubeMapCamera.UpDirection = Vector3.UnitZ;
+                    break;
+
+                case CubeMapFace.NegativeY:
+                    CubeMapCamera.FrontDirection = Vector3.Up;
+                    CubeMapCamera.UpDirection = -Vector3.UnitZ;
+                    break;
+
+                case CubeMapFace.PositiveZ:
+                    CubeMapCamera.FrontDirection = -Vector3.UnitZ;
+                    CubeMapCamera.UpDirection = Vector3.Down;
+                    break;
+
+                case CubeMapFace.NegativeZ:
+                    CubeMapCamera.FrontDirection = Vector3.UnitZ;
+                    CubeMapCamera.UpDirection = Vector3.Down;
+                    break;
+            }
         }
 
     }

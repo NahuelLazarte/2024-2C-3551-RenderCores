@@ -77,7 +77,7 @@ namespace TGC.MonoGame.TP.MaterialesJuego {
             MathHelper.PiOver2);        
 
             ShadowMapEffect = Content.Load<Effect>("Effects/ShadowMap");
-            ShadowMapEffectPelota = Content.Load<Effect>("Effects/ShadowMap");
+            ShadowMapEffectPelota = Content.Load<Effect>("Effects/ShadowMapPelota");
             // Create a shadow map. It stores depth from the light position
             ShadowMapRenderTarget = new RenderTarget2D(graphicsDevice, ShadowmapSize, ShadowmapSize, false,
             SurfaceFormat.Single, DepthFormat.Depth24, 0, RenderTargetUsage.PlatformContents);
@@ -143,22 +143,6 @@ namespace TGC.MonoGame.TP.MaterialesJuego {
             _carretillas.ShadowMapRender(ShadowMapEffect, TargetLightCamera.View, TargetLightCamera.Projection);
             _checkPoints.ShadowMapRender(ShadowMapEffect, TargetLightCamera.View, TargetLightCamera.Projection);
             esfera.ShadowMapRender(ShadowMapEffect, TargetLightCamera.View, TargetLightCamera.Projection);
-
-            graphicsDevice.DepthStencilState = DepthStencilState.Default;
-            graphicsDevice.SetRenderTarget(ShadowMapRenderTarget);
-            graphicsDevice.Clear(ClearOptions.Target | ClearOptions.DepthBuffer, Color.Black, 1f, 0);
-
-            ShadowMapEffectPelota.CurrentTechnique = ShadowMapEffect.Techniques["DepthPass"];
-            _piedras.ShadowMapRender(ShadowMapEffectPelota, TargetLightCamera.View, TargetLightCamera.Projection);
-            _pistasRectas.ShadowMapRender(ShadowMapEffectPelota, TargetLightCamera.View, TargetLightCamera.Projection);
-            _pistasCurvasIzquierdas.ShadowMapRender(ShadowMapEffectPelota, TargetLightCamera.View, TargetLightCamera.Projection);
-            _pistasCurvasDerechas.ShadowMapRender(ShadowMapEffectPelota, TargetLightCamera.View, TargetLightCamera.Projection);
-            _hamburguesas.ShadowMapRender(ShadowMapEffectPelota, TargetLightCamera.View, TargetLightCamera.Projection);
-            _muros.ShadowMapRender(ShadowMapEffectPelota, TargetLightCamera.View, TargetLightCamera.Projection);
-            _pozos.ShadowMapRender(ShadowMapEffectPelota, TargetLightCamera.View, TargetLightCamera.Projection);
-            _carretillas.ShadowMapRender(ShadowMapEffectPelota, TargetLightCamera.View, TargetLightCamera.Projection);
-            _checkPoints.ShadowMapRender(ShadowMapEffectPelota, TargetLightCamera.View, TargetLightCamera.Projection);
-            esfera.ShadowMapRender(ShadowMapEffectPelota, TargetLightCamera.View, TargetLightCamera.Projection);
             #endregion
 
             #region Pass 2: Renderizar la escena con sombras
@@ -168,7 +152,7 @@ namespace TGC.MonoGame.TP.MaterialesJuego {
             var shadowMapSizeA = Vector2.One * ShadowmapSize;
             var ligtViewProj = TargetLightCamera.View * TargetLightCamera.Projection;
 
-            ShadowMapEffectPelota.CurrentTechnique = ShadowMapEffect.Techniques["DrawShadowedPCF"];
+            ShadowMapEffectPelota.CurrentTechnique = ShadowMapEffectPelota.Techniques["DrawShadowedPCF"];
             ShadowMapEffectPelota.Parameters["shadowMap"].SetValue(ShadowMapRenderTarget);
             ShadowMapEffectPelota.Parameters["lightPosition"].SetValue(LightPosition);
             ShadowMapEffectPelota.Parameters["cameraPosition"].SetValue(position);

@@ -36,7 +36,7 @@ namespace TGC.MonoGame.TP.Constructor{
         {
             posicionActual = new Vector3(0f, 0f, 0f);
             posicionCheckPoint = new Vector3(0f, 4f, 0f);
-
+            
         }
 
         public void CargarElementos(Materiales _materiales) {

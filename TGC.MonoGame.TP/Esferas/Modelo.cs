@@ -53,6 +53,13 @@ namespace TGC.MonoGame.TP.Modelos
 
         public virtual void Draw(Matrix view, Matrix projection, Vector3 cameraPosition)
         {
+            foreach (var mesh in Model3D.Meshes)
+            {
+                foreach (var meshPart in mesh.MeshParts)
+                {
+                    meshPart.Effect = Effect;
+                }
+            }
 
             var viewProjection = view * projection;
 
@@ -76,6 +83,29 @@ namespace TGC.MonoGame.TP.Modelos
                 mesh.Draw();
             }
         }
+
+        public void ShadowMapRender(Effect ShadowMapEffect, Matrix LightView, Matrix Projection)
+        {
+
+            
+            foreach (var modelMesh in Model3D.Meshes)
+                {
+                    var modelMeshesBaseTransforms = new Matrix[Model3D.Bones.Count];
+                    Model3D.CopyAbsoluteBoneTransformsTo(modelMeshesBaseTransforms);
+
+                    // Combina las transformaciones locales y globales.
+                    var meshWorld = modelMeshesBaseTransforms[modelMesh.ParentBone.Index] * World ;
+                    ShadowMapEffect.Parameters["WorldViewProjection"].SetValue(World * LightView * Projection);
+
+                    foreach (var part in modelMesh.MeshParts)
+                    {
+                        part.Effect = ShadowMapEffect; // Aplica el shader de sombras
+                    }
+
+                    modelMesh.Draw(); // Dibuja el mesh en el mapa de sombras
+                }
+        }
+
     }
 }
 

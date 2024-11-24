@@ -223,7 +223,7 @@ namespace TGC.MonoGame.TP
             //ddd}  
             ObjectsToDraw(gameTime);
             
-            esfera.Draw(FrustrumCamera.ViewMatrix, FrustrumCamera.ProjectionMatrix, FrustrumCamera.position);
+            //esfera.Draw(FrustrumCamera.ViewMatrix, FrustrumCamera.ProjectionMatrix, FrustrumCamera.position);
             Gizmos.DrawSphere(esfera.GetBoundingSphere().Center, esfera.GetBoundingSphere().Radius * Vector3.One, Color.White);
             //DrawEnvironmentMap();
         }
@@ -233,7 +233,7 @@ namespace TGC.MonoGame.TP
             SkyBox.Draw(FrustrumCamera.ViewMatrix, FrustrumCamera.ProjectionMatrix, FrustrumCamera.position);
 
             //Objetos
-            _materiales.Draw(gameTime, FrustrumCamera.ViewMatrix, FrustrumCamera.ProjectionMatrix, GraphicsDevice);
+            _materiales.Draw(gameTime, esfera, FrustrumCamera.ViewMatrix, FrustrumCamera.ProjectionMatrix, GraphicsDevice, FrustrumCamera.position);
             
 
             Vector3 start = new Vector3(0, 0, 0);

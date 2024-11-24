@@ -23,6 +23,7 @@ using TGC.MonoGame.TP.Levels;
 using TGC.MonoGame.TP.Camera;
 using TGC.MonoGame.TP.Geometries;
 
+
 namespace TGC.MonoGame.TP.MaterialesJuego {
     public class Materiales {
         private Gizmos.Gizmos Gizmos;
@@ -120,7 +121,7 @@ namespace TGC.MonoGame.TP.MaterialesJuego {
             Gizmos.UpdateViewProjection(view, projection);
         }
 
-        public void Draw(GameTime gameTime, Matrix view, Matrix projection, GraphicsDevice graphicsDevice )
+        public void Draw(GameTime gameTime, Sphere esfera, Matrix view, Matrix projection, GraphicsDevice graphicsDevice, Vector3 position )
         {
 
             #region Pass 1: Renderizar el Shadow Map
@@ -140,7 +141,7 @@ namespace TGC.MonoGame.TP.MaterialesJuego {
             _muros.ShadowMapRender(ShadowMapEffect, TargetLightCamera.View, TargetLightCamera.Projection);
             _pozos.ShadowMapRender(ShadowMapEffect, TargetLightCamera.View, TargetLightCamera.Projection);
             _carretillas.ShadowMapRender(ShadowMapEffect, TargetLightCamera.View, TargetLightCamera.Projection);
-
+            esfera.ShadowMapRender(ShadowMapEffect, TargetLightCamera.View, TargetLightCamera.Projection);
             #endregion
 
             #region Pass 2: Renderizar la escena con sombras
@@ -173,6 +174,7 @@ namespace TGC.MonoGame.TP.MaterialesJuego {
 
             #endregion
 
+            esfera.Draw(view, projection, position);
 
             _hamburguesas.Draw(gameTime, ShadowMapEffect, view, projection);
 

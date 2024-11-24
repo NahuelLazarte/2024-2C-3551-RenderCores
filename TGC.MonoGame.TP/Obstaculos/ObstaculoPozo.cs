@@ -152,6 +152,8 @@ namespace TGC.MonoGame.TP.ObstaculoPozo
             Vector3 transformedMax = Vector3.Transform(size.Max, transform);
 
             BoundingBox box = new BoundingBox(transformedMin, transformedMax);
+             box = new BoundingBox(size.Min * escala + Posicion * escala, size.Max * escala + Posicion * escala);
+
             Colliders.Add(box);
         }
 

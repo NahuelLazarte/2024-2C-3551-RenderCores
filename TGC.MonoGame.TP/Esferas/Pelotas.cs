@@ -22,6 +22,7 @@ namespace TGC.MonoGame.TP.Pelotas
 
         public Texture Texture1, Texture2, Texture3, Texture4;
         public Texture NormalTexture1, NormalTexture2, NormalTexture3, NormalTexture4;
+
         bool primera = true;
 
         internal void Update(GameTime gameTime, Modelos.Sphere esfera, ContentManager content)
@@ -32,6 +33,7 @@ namespace TGC.MonoGame.TP.Pelotas
             {
                 primera = false;
                 esfera.SetTexture(Texture2);
+                esfera.SetNormalTexture(NormalTexture2);
                 esfera.SetColor(new Vector3(0.75f, 0.75f, 0.75f));
                 LinearSpeed = 15f;
                 RotationSpeed = 50f;
@@ -41,6 +43,8 @@ namespace TGC.MonoGame.TP.Pelotas
             {
                 primera = false;
                 esfera.SetTexture(Texture3);
+                esfera.SetNormalTexture(NormalTexture3);
+
                 esfera.SetColor(new Vector3(0.54f, 0.27f, 0.07f));
                 LinearSpeed = 30f;
                 RotationSpeed = 20f;
@@ -53,6 +57,8 @@ namespace TGC.MonoGame.TP.Pelotas
             {
                 primera = false;
                 esfera.SetTexture(Texture4);
+                esfera.SetNormalTexture(NormalTexture4);
+
                 esfera.SetColor(new Vector3(0.9f, 0.9f, 0.9f));
                 LinearSpeed = 40f;
                 RotationSpeed = 15f;
@@ -64,6 +70,8 @@ namespace TGC.MonoGame.TP.Pelotas
             if (keyboardState.IsKeyDown(Keys.D4) && !primera)
             {
                 esfera.SetTexture(Texture1);
+                esfera.SetNormalTexture(NormalTexture1);
+
                 esfera.SetColor(new Vector3(0.9f, 0.9f, 0.9f));
                 LinearSpeed = 30f;
                 RotationSpeed = 30f;

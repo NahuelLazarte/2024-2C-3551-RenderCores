@@ -1,3 +1,5 @@
+
+
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Media;
@@ -96,7 +98,7 @@ namespace TGC.MonoGame.TP.Levels
             Gizmos.DrawFrustum(FrustrumCamera.ViewMatrix * FrustrumCamera.ProjectionMatrix, Color.Aqua);
             Gizmos.Draw();*/
 
-            esfera.Draw(Camera.ViewMatrix, Camera.ProjectionMatrix,Camera.position);
+            //esfera.Draw(Camera.ViewMatrix, Camera.ProjectionMatrix,Camera.position);
         }
 
         public override void UnloadContent()

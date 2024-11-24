@@ -122,25 +122,68 @@ namespace TGC.MonoGame.TP.MaterialesJuego {
 
         public void Draw(GameTime gameTime, Matrix view, Matrix projection, GraphicsDevice graphicsDevice )
         {
-            _pistasCurvasDerechas.Draw(gameTime, view, projection);
-            _pistasCurvasIzquierdas.Draw(gameTime, view, projection);
-            _pistasRectas.Draw(gameTime, view, projection);
+
+            #region Pass 1: Renderizar el Shadow Map
+
+            graphicsDevice.DepthStencilState = DepthStencilState.Default;
+            graphicsDevice.SetRenderTarget(ShadowMapRenderTarget);
+            graphicsDevice.Clear(ClearOptions.Target | ClearOptions.DepthBuffer, Color.Black, 1f, 0);
+
+            ShadowMapEffect.CurrentTechnique = ShadowMapEffect.Techniques["DepthPass"];
+
+            
+            _piedras.ShadowMapRender(ShadowMapEffect, TargetLightCamera.View, TargetLightCamera.Projection);
+            _pistasRectas.ShadowMapRender(ShadowMapEffect, TargetLightCamera.View, TargetLightCamera.Projection);
+            _pistasCurvasIzquierdas.ShadowMapRender(ShadowMapEffect, TargetLightCamera.View, TargetLightCamera.Projection);
+            _pistasCurvasDerechas.ShadowMapRender(ShadowMapEffect, TargetLightCamera.View, TargetLightCamera.Projection);
+            _muros.ShadowMapRender(ShadowMapEffect, TargetLightCamera.View, TargetLightCamera.Projection);
+            _pozos.ShadowMapRender(ShadowMapEffect, TargetLightCamera.View, TargetLightCamera.Projection);
+            _carretillas.ShadowMapRender(ShadowMapEffect, TargetLightCamera.View, TargetLightCamera.Projection);
+
+            #endregion
+
+            #region Pass 2: Renderizar la escena con sombras
+            graphicsDevice.SetRenderTarget(null);
+            graphicsDevice.Clear(ClearOptions.Target | ClearOptions.DepthBuffer, Color.CornflowerBlue, 1f, 0);
+            
+            var shadowMapSizeA = Vector2.One * ShadowmapSize;
+            var ligtViewProj = TargetLightCamera.View * TargetLightCamera.Projection;
+
+            ShadowMapEffect.CurrentTechnique = ShadowMapEffect.Techniques["DrawShadowedPCF"];
+            ShadowMapEffect.Parameters["shadowMap"].SetValue(ShadowMapRenderTarget);
+            ShadowMapEffect.Parameters["lightPosition"].SetValue(LightPosition);
+            
+            ShadowMapEffect.Parameters["shadowMapSize"].SetValue(shadowMapSizeA);
+            ShadowMapEffect.Parameters["LightViewProjection"].SetValue(ligtViewProj);
+
+            _piedras.Draw(gameTime, ShadowMapEffect, view, projection);
+            _pistasRectas.Draw(gameTime, ShadowMapEffect, view, projection);
+            _pistasCurvasIzquierdas.Draw(gameTime, ShadowMapEffect, view, projection);
+            _pistasCurvasDerechas.Draw(gameTime, ShadowMapEffect, view, projection);
+            _muros.Draw(gameTime, ShadowMapEffect, view, projection);
+            _pozos.Draw(gameTime, ShadowMapEffect, view, projection);
+            _carretillas.Draw(gameTime, ShadowMapEffect, view, projection);
+
+
+            // _pistasCurvasIzquierdas.Draw(gameTime, view, projection);
+            //_pistasRectas.Draw(gameTime, view, projection);
+
+            LightBox.Draw(Matrix.CreateTranslation(LightPosition), TargetLightCamera.View, TargetLightCamera.Projection);
+
+            #endregion
+
+
+            _hamburguesas.Draw(gameTime, view, projection, graphicsDevice);
 
             _checkPoints.Draw(gameTime, view, projection);
             _marcadoresCheckPoints.Draw(gameTime, view, projection);
-            _piedras.Draw(gameTime, view, projection);
-
-            _pozos.Draw(gameTime, view, projection);
-            _muros.Draw(gameTime, view, projection);
-            _carretillas.Draw(gameTime, view, projection);
-            _hamburguesas.Draw(gameTime, view, projection, graphicsDevice);
             _espadas.Draw(gameTime, view, projection, graphicsDevice);
 
             foreach (var boundingBoxPista in CollidersDibujo)
             {
                 Gizmos.DrawCube((boundingBoxPista.Max + boundingBoxPista.Min) / 2f, boundingBoxPista.Max - boundingBoxPista.Min, Color.Green);
             }
-             Gizmos.Draw(); // PARA DIBUJAR LOS CUBOS DE GIZMOS
+            Gizmos.Draw(); // PARA DIBUJAR LOS CUBOS DE GIZMOS
             
         }
 

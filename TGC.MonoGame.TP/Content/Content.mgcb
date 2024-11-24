@@ -105,18 +105,6 @@
 /processorParam:DebugMode=Auto
 /build:Effects/Gizmos.fx
 
-#begin Effects/PistaShader.fx
-/importer:EffectImporter
-/processor:EffectProcessor
-/processorParam:DebugMode=Auto
-/build:Effects/PistaShader.fx
-
-#begin Effects/ShadowMap.fx
-/importer:EffectImporter
-/processor:EffectProcessor
-/processorParam:DebugMode=Auto
-/build:Effects/ShadowMap.fx
-
 #begin Effects/ShadowMap.fx
 /importer:EffectImporter
 /processor:EffectProcessor

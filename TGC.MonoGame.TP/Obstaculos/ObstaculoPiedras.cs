@@ -61,25 +61,29 @@ namespace TGC.MonoGame.TP.ObstaculoPiedras{
 
 
         
-                public void Draw(GameTime gameTime, Matrix view, Matrix projection)
+        public void Draw(GameTime gameTime, Effect ShadowMapEffect, Matrix view, Matrix projection)
+        {
+            var viewProjection = view * projection;
+
+            foreach (var worldMatrix in _obstaculosPiedras)
+            {
+                foreach (var mesh in ModeloPez.Meshes)
                 {
-                    Effect.Parameters["View"].SetValue(view);
-                    Effect.Parameters["Projection"].SetValue(projection);
-                    Effect.Parameters["DiffuseColor"].SetValue(new Vector3(0.5f, 0.5f, 0.5f));
+                    var meshWorld = mesh.ParentBone.Transform * worldMatrix;
+                    var boundingBox = BoundingVolumesExtensions.FromMatrix(meshWorld);
 
+                    if (_frustum.Intersects(boundingBox))
+                    {
+                        ShadowMapEffect.Parameters["World"].SetValue(meshWorld);
+                        ShadowMapEffect.Parameters["baseTexture"].SetValue(Texture);
+                        ShadowMapEffect.Parameters["WorldViewProjection"].SetValue(meshWorld * viewProjection);
+                        ShadowMapEffect.Parameters["InverseTransposeWorld"].SetValue(Matrix.Transpose(Matrix.Invert(meshWorld)));
 
-                    foreach (var mesh in ModeloPez.Meshes){
-                        for(int i=0; i < _obstaculosPiedras.Count; i++){
-                            Matrix _pisoWorld = _obstaculosPiedras[i];
-                            BoundingBox boundingBox = BoundingVolumesExtensions.FromMatrix(_pisoWorld);
-
-                            if(_frustum.Intersects(boundingBox)){
-                                Effect.Parameters["World"].SetValue(mesh.ParentBone.Transform * _pisoWorld);
-                                mesh.Draw();
-                            }
-                        }
+                        mesh.Draw();
                     }
                 }
+            }
+        }
         
 
         public void ShadowMapRender(Effect ShadowMapEffect, Matrix LightView, Matrix Projection)

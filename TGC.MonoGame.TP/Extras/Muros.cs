@@ -107,59 +107,91 @@ namespace TGC.MonoGame.TP.MurosExtra{
             _frustumEsquinas = new BoundingFrustum(view * projection * Matrix.CreateScale(escalaMurosEsquina));
             _frustumMuros = new BoundingFrustum(view * projection * Matrix.CreateScale(escalaMuros));
         }
+        
+        
 
-        public void Draw(GameTime gameTime, Matrix view, Matrix projection)
+        public void Draw(GameTime gameTime, Effect ShadowMapEffect, Matrix view, Matrix projection)
         {
-            //time += Convert.ToSingle(gameTime.ElapsedGameTime.TotalSeconds);
-            Effect.Parameters["View"].SetValue(view);
-            Effect.Parameters["Projection"].SetValue(projection);
-            Effect.Parameters["Texture"]?.SetValue(Texture);
-            /*Effect.Parameters["metallicTexture"]?.SetValue(metallicTexture);
-            Effect.Parameters["roughnessTexture"]?.SetValue(roughnessTexture);
-            Effect.Parameters["aoTexture"]?.SetValue(aoTexture);
-            Effect.Parameters["normalTexture"]?.SetValue(normalTexture);
-            Effect.Parameters["lightPosition"].SetValue(Vector3.Up * 45f);
-            Effect.Parameters["lightColor"].SetValue(new Vector3(253, 251, 211));*/
-            //Effect.CurrentTechnique = Effect.Techniques["LightingTechnique"];
-            /*Efecto.Projection = projection;
-            Efecto.View = view;*/
+            var viewProjection = view * projection;
 
-            // Dibujar los muros
-            //Effect.Parameters["DiffuseColor"].SetValue(Color.Gray.ToVector3()); // Color para los muros
+            foreach (var worldMatrix in _muros)
+            {
+                foreach (var mesh in ModeloMuro.Meshes)
+                {
+                    var meshWorld = mesh.ParentBone.Transform * worldMatrix;
+                    var boundingBox = BoundingVolumesExtensions.FromMatrix(meshWorld);
 
-            foreach (var mesh in ModeloMuro.Meshes){
-                for (int i = 0; i < _muros.Count; i++) {
-                    Matrix _muroWorld = _muros[i];
-                    BoundingBox boundingBox = BoundingVolumesExtensions.FromMatrix(_muroWorld);
+                    if (_frustumMuros.Intersects(boundingBox))
+                    {
+                        ShadowMapEffect.Parameters["World"].SetValue(meshWorld);
+                        ShadowMapEffect.Parameters["baseTexture"].SetValue(Texture);
+                        ShadowMapEffect.Parameters["WorldViewProjection"].SetValue(meshWorld * viewProjection);
+                        ShadowMapEffect.Parameters["InverseTransposeWorld"].SetValue(Matrix.Transpose(Matrix.Invert(meshWorld)));
 
-                    if(_frustumMuros.Intersects(boundingBox)){
-
-                        /*Effect.Parameters["World"].SetValue(mesh.ParentBone.Transform * _muroWorld);
-                        Effect.Parameters["View"].SetValue(Camera.View);
-                        Effect.Parameters["Projection"].SetValue(Camera.Projection);
-                        //Effect.Parameters["WorldViewProjection"].SetValue(Camera.WorldMatrix * Camera.View * Camera.Projection);
-                        Effect.Parameters["ModelTexture"].SetValue(Texture);
-                        Effect.Parameters["Time"].SetValue(time);*/
-                        Effect.Parameters["World"].SetValue(mesh.ParentBone.Transform * _muroWorld);
-                        //Efecto.World = mesh.ParentBone.Transform * _muroWorld;
                         mesh.Draw();
                     }
                 }
             }
-
-            foreach (var mesh in ModeloMuroEsquina.Meshes)
+            foreach (var worldMatrix in _murosEsquina)
             {
-                for (int i = 0; i < _murosEsquina.Count; i++)
+                foreach (var mesh in ModeloMuroEsquina.Meshes)
                 {
-                    Matrix _muroWorld = _murosEsquina[i];
-                    BoundingBox boundingBox = BoundingVolumesExtensions.FromMatrix(_muroWorld);
-                    
-                    if(_frustumEsquinas.Intersects(boundingBox)){
-                    //Effect.Parameters["World"].SetValue(mesh.ParentBone.Transform * _muroWorld);
-                        //Efecto.World = mesh.ParentBone.Transform * _muroWorld;
-                        Effect.Parameters["World"].SetValue(mesh.ParentBone.Transform * _muroWorld);
-                        mesh.Draw(); 
-                    } 
+                    var meshWorld = mesh.ParentBone.Transform * worldMatrix;
+                    var boundingBox = BoundingVolumesExtensions.FromMatrix(meshWorld);
+
+                    if (_frustumEsquinas.Intersects(boundingBox))
+                    {
+                        ShadowMapEffect.Parameters["World"].SetValue(meshWorld);
+                        ShadowMapEffect.Parameters["baseTexture"].SetValue(Texture);
+                        ShadowMapEffect.Parameters["WorldViewProjection"].SetValue(meshWorld * viewProjection);
+                        ShadowMapEffect.Parameters["InverseTransposeWorld"].SetValue(Matrix.Transpose(Matrix.Invert(meshWorld)));
+
+                        mesh.Draw();
+                    }
+                }
+            }
+        }
+
+
+        public void ShadowMapRender(Effect ShadowMapEffect, Matrix LightView, Matrix Projection)
+        {
+
+            foreach (var worldMatrix in _muros)
+            {
+                foreach (var modelMesh in ModeloMuro.Meshes)
+                {
+                    var modelMeshesBaseTransforms = new Matrix[ModeloMuro.Bones.Count];
+                    ModeloMuro.CopyAbsoluteBoneTransformsTo(modelMeshesBaseTransforms);
+
+                    // Combina las transformaciones locales y globales.
+                    var meshWorld = modelMeshesBaseTransforms[modelMesh.ParentBone.Index] * worldMatrix;
+                    ShadowMapEffect.Parameters["WorldViewProjection"].SetValue(meshWorld * LightView * Projection);
+
+                    foreach (var part in modelMesh.MeshParts)
+                    {
+                        part.Effect = ShadowMapEffect; // Aplica el shader de sombras
+                    }
+
+                    modelMesh.Draw(); // Dibuja el mesh en el mapa de sombras
+                }
+            }
+            foreach (var worldMatrix in _murosEsquina)
+            {
+                foreach (var modelMesh in ModeloMuroEsquina.Meshes)
+                {
+                    var modelMeshesBaseTransforms = new Matrix[ModeloMuroEsquina.Bones.Count];
+                    ModeloMuroEsquina.CopyAbsoluteBoneTransformsTo(modelMeshesBaseTransforms);
+
+                    // Combina las transformaciones locales y globales.
+                    var meshWorld = modelMeshesBaseTransforms[modelMesh.ParentBone.Index] * worldMatrix;
+                    ShadowMapEffect.Parameters["WorldViewProjection"].SetValue(meshWorld * LightView * Projection);
+
+                    foreach (var part in modelMesh.MeshParts)
+                    {
+                        part.Effect = ShadowMapEffect; // Aplica el shader de sombras
+                    }
+
+                    modelMesh.Draw(); // Dibuja el mesh en el mapa de sombras
                 }
             }
         }

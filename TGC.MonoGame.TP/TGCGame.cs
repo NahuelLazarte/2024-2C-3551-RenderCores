@@ -124,7 +124,7 @@ namespace TGC.MonoGame.TP
             {
                 if (!(MediaPlayer.Volume == 0.3f)) MediaPlayer.Volume = 0.3f;
                 nivelActual.Update(gameTime);
-                menu.Update(this, gameTime);
+                menu.Update(this, gameTime, nivelActual.esfera);
             }
             else
             {
@@ -170,28 +170,40 @@ namespace TGC.MonoGame.TP
             }
 
             // Dibuja el menú si está activo
-            
+
             if (isMenuActive)
             {
                 // Calcula el tiempo para girar la cámara
-            float elapsedTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
-            float rotationSpeed = 0.3f; // Velocidad de rotación
-            float radius = 100f; // Distancia de la cámara a la pelota
+                float elapsedTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
+                float rotationSpeed = 0.3f; // Velocidad de rotación
+                float radius = 100f; // Distancia de la cámara a la esfera
 
+                // Ángulo de rotación basado en el tiempo
                 float angle = rotationSpeed * (float)gameTime.TotalGameTime.TotalSeconds;
 
-                // Calcula la posición de la cámara en un círculo inclinado a 45 grados
+                // Cálculo de la posición de la cámara en un círculo inclinado
                 float height = radius * (float)Math.Sin(MathHelper.PiOver4); // Altura a 45 grados
-                float distance = radius * (float)Math.Cos(MathHelper.PiOver4 - 10); // Distancia horizontal a 45 grados
+                float distance = radius * (float)Math.Cos(MathHelper.PiOver4); // Distancia horizontal a 45 grados
 
-                var position = new Vector3((float)Math.Cos(angle) * distance, height, (float)Math.Sin(angle) * distance);
+                Vector3 esferaPosicion = nivelActual.esfera.GetPosition();
+                Vector3 position = new Vector3(
+                    (float)Math.Cos(angle) * distance + esferaPosicion.X,
+                    height + esferaPosicion.Y, // Asegura que se ajuste en el eje Y
+                    (float)Math.Sin(angle) * distance + esferaPosicion.Z
+                );
 
-                nivelActual.FrustrumCamera = new FollowCamera(GraphicsDevice, position, Vector3.One, Vector3.Up);
-                
+                // Calcula la dirección hacia la esfera
+                Vector3 direction = Vector3.Normalize(esferaPosicion - position);
+
+                // Configura la cámara para mirar hacia la esfera
+                nivelActual.FrustrumCamera = new FollowCamera(GraphicsDevice, position, esferaPosicion, Vector3.Up);
+
+                // Render del menú
                 SpriteBatch.Begin();
                 menu.Draw(SpriteBatch, menuFont, this);
                 SpriteBatch.End();
             }
+
 
             // Restaura los estados originales
             GraphicsDevice.RasterizerState = originalRasterizerState;

@@ -4,8 +4,9 @@ using Microsoft.Xna.Framework.Media;
 using Microsoft.Xna.Framework.Input;
 
 using TGC.MonoGame.TP;
-
+using TGC.MonoGame.TP.Modelos;
 using System;
+//using BepuPhysics.Collidables;
 
 namespace TGC.MonoGame.MenuPrincipal
 {
@@ -23,7 +24,7 @@ namespace TGC.MonoGame.MenuPrincipal
         {
             options = new Option[] { new Play(), new SelectLevel(), new GodMode(), new Music() ,new Exit() };
         }
-        public void Update(TGCGame Game, GameTime gameTime)
+        public void Update(TGCGame Game, GameTime gameTime, Sphere esfera)
         {
             var keyboardState = Keyboard.GetState();
             float elapsedTime = (float)gameTime.ElapsedGameTime.TotalSeconds;

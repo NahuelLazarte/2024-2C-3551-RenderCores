@@ -47,12 +47,12 @@ namespace TGC.MonoGame.TP.Constructor{
             
             AgregarPistaRecta(_materiales._pistasRectas, _materiales);
 
-            AgregarObstaculoPozo(_materiales._pozos, _materiales);
+            //AgregarObstaculoPozo(_materiales._pozos, _materiales);
             
             AgregarPistaRecta(_materiales._pistasRectas, _materiales);
             AgregarPistaRecta(_materiales._pistasRectas, _materiales);
 
-            AgregarObstaculoPozo(_materiales._pozos, _materiales);
+            //AgregarObstaculoPozo(_materiales._pozos, _materiales);
 
             AgregarObstaculoCarretilla(_materiales._carretillas);
             
@@ -61,7 +61,7 @@ namespace TGC.MonoGame.TP.Constructor{
             AgregarObstaculoCarretilla(_materiales._carretillas);
             AgregarPistaRecta(_materiales._pistasRectas, _materiales);
             AgregarPistaRecta(_materiales._pistasRectas, _materiales);
-            AgregarObstaculoPozo(_materiales._pozos, _materiales);
+            //AgregarObstaculoPozo(_materiales._pozos, _materiales);
 
             //AgregarObstaculoPozo(_materiales._pozos, _materiales);
             AgregarPistaRecta(_materiales._pistasRectas, _materiales);
@@ -71,7 +71,7 @@ namespace TGC.MonoGame.TP.Constructor{
             AgregarPowerUpHamburguesa(_materiales._hamburguesas);
             AgregarPistaCurvaDerecha(_materiales._pistasCurvasDerechas, _materiales);
 
-            AgregarObstaculoPozo(_materiales._pozos, _materiales);
+            //AgregarObstaculoPozo(_materiales._pozos, _materiales);
 
             AgregarPistaRecta(_materiales._pistasRectas, _materiales);
             AgregarObstaculoCarretilla(_materiales._carretillas);
@@ -178,7 +178,7 @@ namespace TGC.MonoGame.TP.Constructor{
         {
             Vector3 posicionObstaculo = new(posicionActual.X / 167f, posicionActual.Y / 180f + 0.5f, posicionActual.Z / 167f);
             unPowerUp.AgregarNuevoPowerUp(rotacionActual, posicionObstaculo);
-            //Console.WriteLine($"Obstaculo Pez dibujado: Posicion en ejes: X = {posicionObstaculo.X}, Y = {posicionObstaculo.Y}, Z = {posicionObstaculo.Z}");
+            Console.WriteLine($"Obstaculo Hamburguesa dibujado: Posicion en ejes: X = {posicionObstaculo.X}, Y = {posicionObstaculo.Y}, Z = {posicionObstaculo.Z}");
             
         }
 

@@ -136,6 +136,7 @@ namespace TGC.MonoGame.TP.MaterialesJuego {
             _pistasRectas.ShadowMapRender(ShadowMapEffect, TargetLightCamera.View, TargetLightCamera.Projection);
             _pistasCurvasIzquierdas.ShadowMapRender(ShadowMapEffect, TargetLightCamera.View, TargetLightCamera.Projection);
             _pistasCurvasDerechas.ShadowMapRender(ShadowMapEffect, TargetLightCamera.View, TargetLightCamera.Projection);
+            _hamburguesas.ShadowMapRender(ShadowMapEffect, TargetLightCamera.View, TargetLightCamera.Projection);
             _muros.ShadowMapRender(ShadowMapEffect, TargetLightCamera.View, TargetLightCamera.Projection);
             _pozos.ShadowMapRender(ShadowMapEffect, TargetLightCamera.View, TargetLightCamera.Projection);
             _carretillas.ShadowMapRender(ShadowMapEffect, TargetLightCamera.View, TargetLightCamera.Projection);
@@ -173,7 +174,7 @@ namespace TGC.MonoGame.TP.MaterialesJuego {
             #endregion
 
 
-            _hamburguesas.Draw(gameTime, view, projection, graphicsDevice);
+            _hamburguesas.Draw(gameTime, ShadowMapEffect, view, projection);
 
             _checkPoints.Draw(gameTime, view, projection);
             _marcadoresCheckPoints.Draw(gameTime, view, projection);

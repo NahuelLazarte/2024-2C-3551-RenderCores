@@ -58,11 +58,11 @@ struct VertexShaderOutput
 	float4 Position : SV_POSITION;
 	float3 Color : COLOR0; 
     float4 WorldSpacePosition : TEXCOORD1;
-	float4 WorldPosition : TEXCOORD1;
-	float2 TextureCoordinates : TEXCOORD2;
-	float4 LocalPosition : TEXCOORD3;
-	float4 LightSpacePosition : TEXCOORD2;
-    float4 Normal : TEXCOORD3;
+	float4 WorldPosition : TEXCOORD2;
+	float2 TextureCoordinates : TEXCOORD3;
+	float4 LocalPosition : TEXCOORD4;
+	float4 LightSpacePosition : TEXCOORD5;
+    float4 Normal : TEXCOORD6;
 };
 
 VertexShaderOutput MainVS(in VertexShaderInput input)

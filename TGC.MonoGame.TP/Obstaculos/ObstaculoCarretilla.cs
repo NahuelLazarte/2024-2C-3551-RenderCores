@@ -134,10 +134,18 @@ namespace TGC.MonoGame.TP.ObstaculoCarretilla {
                     var meshWorld = mesh.ParentBone.Transform * worldMatrix.Transform;
                     var boundingBox = BoundingVolumesExtensions.FromMatrix(meshWorld);
 
-                    if (_frustum.Intersects(boundingBox))
-                    {
+                    if (_frustum.Intersects(boundingBox)){
                         ShadowMapEffect.Parameters["World"].SetValue(meshWorld);
-                        ShadowMapEffect.Parameters["baseTexture"].SetValue(Texture);
+                        string meshName = mesh.Name.ToLower();
+                        switch (meshName) {
+                            case "wheel":
+                                ShadowMapEffect.Parameters["baseTexture"]?.SetValue(TexturaMetal);
+                                break;
+                            case "cart":
+                                ShadowMapEffect.Parameters["baseTexture"]?.SetValue(TexturaMadera);
+                                break;
+                        }
+                        //ShadowMapEffect.Parameters["baseTexture"].SetValue(TexturaMadera);
                         ShadowMapEffect.Parameters["WorldViewProjection"].SetValue(meshWorld * viewProjection);
                         ShadowMapEffect.Parameters["InverseTransposeWorld"].SetValue(Matrix.Transpose(Matrix.Invert(meshWorld)));
 

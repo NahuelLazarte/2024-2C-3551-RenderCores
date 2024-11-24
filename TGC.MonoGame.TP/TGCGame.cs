@@ -56,7 +56,7 @@ namespace TGC.MonoGame.TP
         private SpriteBatch SpriteBatch { get; set; }
         private Song backgroundMusic;
         public bool isMusicActive = false;
-        public bool isMusicPlaying = false;
+        public bool isMusicPlaying = true;
         public bool isGodModeActive = false;
 
         private Level nivelActual;

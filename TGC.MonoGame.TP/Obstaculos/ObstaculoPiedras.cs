@@ -42,7 +42,7 @@ namespace TGC.MonoGame.TP.ObstaculoPiedras{
             
         }
 
-        public void LoadContent(ContentManager Content, Effect ShadowMapEffect){
+        public void LoadContent(ContentManager Content){
             ModeloPiedra = Content.Load<Model>("Models/" + "obstaculos/rockLargeWithTexture");
             Effect = Content.Load<Effect>("Effects/" + "BasicShader2");
             Textura = Content.Load<Texture2D>("Textures/texturaMetal");
@@ -67,7 +67,7 @@ namespace TGC.MonoGame.TP.ObstaculoPiedras{
 
             foreach (var worldMatrix in _obstaculosPiedras)
             {
-                foreach (var mesh in ModeloPez.Meshes)
+                foreach (var mesh in ModeloPiedra.Meshes)
                 {
                     var meshWorld = mesh.ParentBone.Transform * worldMatrix;
                     var boundingBox = BoundingVolumesExtensions.FromMatrix(meshWorld);
@@ -75,7 +75,7 @@ namespace TGC.MonoGame.TP.ObstaculoPiedras{
                     if (_frustum.Intersects(boundingBox))
                     {
                         ShadowMapEffect.Parameters["World"].SetValue(meshWorld);
-                        ShadowMapEffect.Parameters["baseTexture"].SetValue(Texture);
+                        ShadowMapEffect.Parameters["baseTexture"].SetValue(Textura);
                         ShadowMapEffect.Parameters["WorldViewProjection"].SetValue(meshWorld * viewProjection);
                         ShadowMapEffect.Parameters["InverseTransposeWorld"].SetValue(Matrix.Transpose(Matrix.Invert(meshWorld)));
 
@@ -112,7 +112,7 @@ namespace TGC.MonoGame.TP.ObstaculoPiedras{
 
 
 
-        public void Draw(GameTime gameTime, Effect ShadowMapEffect, Matrix view, Matrix projection)
+        /*public void Draw(GameTime gameTime, Effect ShadowMapEffect, Matrix view, Matrix projection)
         {
             var viewProjection = view * projection;
             ShadowMapEffect.Parameters["Texture"].SetValue(Textura);
@@ -134,7 +134,7 @@ namespace TGC.MonoGame.TP.ObstaculoPiedras{
                     }
                 }
             }
-        }
+        }*/
 
 
         public void AgregarNuevoObstaculo(float Rotacion, Vector3 Posicion) {

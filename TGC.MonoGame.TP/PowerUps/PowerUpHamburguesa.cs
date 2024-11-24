@@ -70,24 +70,17 @@ namespace TGC.MonoGame.TP.PowerUpHamburguesa
             TexturaLechuga = Content.Load<Texture2D>("Textures/lechuga");
             TexturaQueso = Content.Load<Texture2D>("Textures/queso");
             TexturaTomate = Content.Load<Texture2D>("Textures/tomate");
-            spriteBatch = new SpriteBatch(graphicsDevice); // Inicializa SpriteBatch
-            spriteFont = Content.Load<SpriteFont>("SpriteFonts/" + "CascadiaCodePl");
+            
+            /*spriteBatch = new SpriteBatch(graphicsDevice); // Inicializa SpriteBatch
+            spriteFont = Content.Load<SpriteFont>("SpriteFonts/" + "CascadiaCodePl");*/
 
-            foreach (var mesh in ModeloHamburguesa.Meshes)
-            {
-
-                foreach (var meshPart in mesh.MeshParts)
-                {
-
+            foreach (var mesh in ModeloHamburguesa.Meshes){
+                foreach (var meshPart in mesh.MeshParts){
                     meshPart.Effect = Effect;
                 }
             }
 
             CollisionSound = Content.Load<SoundEffect>("Audio/ColisionPez");
-
-
-            Console.WriteLine(ModeloHamburguesa != null ? "Modelo cargado exitosamente" : "Error al cargar el modelo");
-
         }
 
         public void Update(GameTime gameTime, Level Game, Matrix view, Matrix projection)
@@ -121,52 +114,45 @@ namespace TGC.MonoGame.TP.PowerUpHamburguesa
 
         }
 
+        /*public void Draw(GameTime gameTime, Effect ShadowMapEffect, Matrix view, Matrix projection, GraphicsDevice graphicsDevice){
+            var viewProjection = view * projection;
 
-
-
-        public void Draw(GameTime gameTime, Matrix view, Matrix projection, GraphicsDevice graphicsDevice)
-        {
-            Effect.Parameters["View"].SetValue(view);
-            Effect.Parameters["Projection"].SetValue(projection);
-            //Effect.Parameters["DiffuseColor"].SetValue(Color.Chocolate.ToVector3());
-
-
-            foreach (var mesh in ModeloHamburguesa.Meshes)
-            {
-                string meshName = mesh.Name.ToLower();
+            foreach (var mesh in ModeloHamburguesa.Meshes){
 
                 for (int i = 0; i < _hamburguesas.Count; i++)
                 {
                     Matrix _pisoWorld = _hamburguesas[i];
+                    var meshWorld = mesh.ParentBone.Transform * _pisoWorld;
                     BoundingBox boundingBox = BoundingVolumesExtensions.FromMatrix(_pisoWorld);
 
-                    if (_frustum.Intersects(boundingBox))
-                    {
-                        Effect.Parameters["World"].SetValue(mesh.ParentBone.Transform * _pisoWorld);
-                        switch (meshName)
-                        {
+                    if (_frustum.Intersects(boundingBox)){
+                        ShadowMapEffect.Parameters["World"].SetValue(meshWorld);
+                        string meshName = mesh.Name.ToLower();
+                        switch (meshName){
                             case "bunbottom":
-                                Effect.Parameters["Texture"]?.SetValue(TexturaPan);
+                                ShadowMapEffect.Parameters["Texture"]?.SetValue(TexturaPan);
                                 break;
                             case "buntop":
-                                Effect.Parameters["Texture"]?.SetValue(TexturaPan);
+                                ShadowMapEffect.Parameters["Texture"]?.SetValue(TexturaPan);
                                 break;
                             case "cheese":
-                                Effect.Parameters["Texture"]?.SetValue(TexturaQueso);
+                                ShadowMapEffect.Parameters["Texture"]?.SetValue(TexturaQueso);
                                 break;
                             case "patty":
-                                Effect.Parameters["Texture"]?.SetValue(TexturaCarne);
+                                ShadowMapEffect.Parameters["Texture"]?.SetValue(TexturaCarne);
                                 break;
                             case "salad":
-                                Effect.Parameters["Texture"]?.SetValue(TexturaLechuga);
+                                ShadowMapEffect.Parameters["Texture"]?.SetValue(TexturaLechuga);
                                 break;
                             case "tomato":
-                                Effect.Parameters["Texture"]?.SetValue(TexturaTomate);
+                                ShadowMapEffect.Parameters["Texture"]?.SetValue(TexturaTomate);
                                 break;
                             default:
-                                //Effect.Parameters["DiffuseColor"].SetValue(Color.White.ToVector3()); // Color por defecto
+                                ShadowMapEffect.Parameters["Texture"]?.SetValue(TexturaPan);
                                 break;
                         }
+                        ShadowMapEffect.Parameters["WorldViewProjection"].SetValue(meshWorld * viewProjection);
+                        ShadowMapEffect.Parameters["InverseTransposeWorld"].SetValue(Matrix.Transpose(Matrix.Invert(meshWorld)));
                         mesh.Draw();
                     }
                 }
@@ -187,8 +173,79 @@ namespace TGC.MonoGame.TP.PowerUpHamburguesa
             graphicsDevice.BlendState = originalBlendState;
             graphicsDevice.DepthStencilState = originalDepthStencilState;
             graphicsDevice.SamplerStates[0] = originalSamplerState; // Restaura el sampler state
-        }
+        }*/
 
+        public void Draw(GameTime gameTime, Effect ShadowMapEffect, Matrix view, Matrix projection)
+        {
+            var viewProjection = view * projection;
+
+            foreach (var worldMatrix in _hamburguesas)
+            {
+                foreach (var mesh in ModeloHamburguesa.Meshes)
+                {
+                    var meshWorld = mesh.ParentBone.Transform * worldMatrix;
+                    var boundingBox = BoundingVolumesExtensions.FromMatrix(meshWorld);
+
+                    if (_frustum.Intersects(boundingBox))
+                    {
+                        ShadowMapEffect.Parameters["World"].SetValue(meshWorld);
+                        string meshName = mesh.Name.ToLower();
+                        switch (meshName){
+                            case "bunbottom":
+                                ShadowMapEffect.Parameters["baseTexture"]?.SetValue(TexturaPan);
+                                break;
+                            case "buntop":
+                                ShadowMapEffect.Parameters["baseTexture"]?.SetValue(TexturaPan);
+                                break;
+                            case "cheese":
+                                ShadowMapEffect.Parameters["baseTexture"]?.SetValue(TexturaQueso);
+                                break;
+                            case "patty":
+                                ShadowMapEffect.Parameters["baseTexture"]?.SetValue(TexturaCarne);
+                                break;
+                            case "salad":
+                                ShadowMapEffect.Parameters["baseTexture"]?.SetValue(TexturaLechuga);
+                                break;
+                            case "tomato":
+                                ShadowMapEffect.Parameters["baseTexture"]?.SetValue(TexturaTomate);
+                                break;
+                            default:
+                                ShadowMapEffect.Parameters["baseTexture"]?.SetValue(TexturaPan);
+                                break;
+                        }
+                        ShadowMapEffect.Parameters["WorldViewProjection"].SetValue(meshWorld * viewProjection);
+                        ShadowMapEffect.Parameters["InverseTransposeWorld"].SetValue(Matrix.Transpose(Matrix.Invert(meshWorld)));
+
+                        mesh.Draw();
+                    }
+                }
+            }
+        }
+        
+
+        public void ShadowMapRender(Effect ShadowMapEffect, Matrix LightView, Matrix Projection)
+        {
+            
+            foreach (var worldMatrix in _hamburguesas)
+            {
+                foreach (var modelMesh in ModeloHamburguesa.Meshes)
+                {
+                    var modelMeshesBaseTransforms = new Matrix[ModeloHamburguesa.Bones.Count];
+                    ModeloHamburguesa.CopyAbsoluteBoneTransformsTo(modelMeshesBaseTransforms);
+
+                    // Combina las transformaciones locales y globales.
+                    var meshWorld = modelMeshesBaseTransforms[modelMesh.ParentBone.Index] * worldMatrix;
+                    ShadowMapEffect.Parameters["WorldViewProjection"].SetValue(meshWorld * LightView * Projection);
+
+                    foreach (var part in modelMesh.MeshParts)
+                    {
+                        part.Effect = ShadowMapEffect; // Aplica el shader de sombras
+                    }
+
+                    modelMesh.Draw(); // Dibuja el mesh en el mapa de sombras
+                }
+            }
+        }
 
         public void AgregarNuevoPowerUp(float Rotacion, Vector3 Posicion)
         {

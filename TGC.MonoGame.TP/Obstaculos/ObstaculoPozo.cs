@@ -23,7 +23,7 @@ namespace TGC.MonoGame.TP.ObstaculoPozo
         public BoundingSphere _envolturaEsfera{ get; set; }
         float escala = 2f;
         BoundingBox size;
-        private Texture2D Texture { get; set; }
+        private Texture2D Textura { get; set; }
 
         private BoundingFrustum _frustum;
 
@@ -46,9 +46,9 @@ namespace TGC.MonoGame.TP.ObstaculoPozo
 
         public void LoadContent(ContentManager Content)
         {
-            ModeloPozo = Content.Load<Model>(ContentFolder3D + "obstaculos/rockLarge");
-
-            Effect = Content.Load<Effect>(ContentFolderEffects + "BasicShader");
+            ModeloPozo = Content.Load<Model>("Models/" + "obstaculos/rockLargeWithTexture");
+            Effect = Content.Load<Effect>("Effects/" + "BasicShader2");
+            Textura = Content.Load<Texture2D>("Textures/texturaMetal");
 
             foreach (var mesh in ModeloPozo.Meshes)
             {
@@ -57,7 +57,6 @@ namespace TGC.MonoGame.TP.ObstaculoPozo
                     meshPart.Effect = Effect;
                 }
             }
-            Texture = Content.Load<Texture2D>("Textures/texturaPiedra");
             size = BoundingVolumesExtensions.CreateAABBFrom(ModeloPozo);
         }
 
@@ -85,7 +84,7 @@ namespace TGC.MonoGame.TP.ObstaculoPozo
                     if (_frustum.Intersects(boundingBox))
                     {
                         ShadowMapEffect.Parameters["World"].SetValue(meshWorld);
-                        ShadowMapEffect.Parameters["baseTexture"].SetValue(Texture);
+                        ShadowMapEffect.Parameters["baseTexture"].SetValue(Textura);
                         ShadowMapEffect.Parameters["WorldViewProjection"].SetValue(meshWorld * viewProjection);
                         ShadowMapEffect.Parameters["InverseTransposeWorld"].SetValue(Matrix.Transpose(Matrix.Invert(meshWorld)));
 

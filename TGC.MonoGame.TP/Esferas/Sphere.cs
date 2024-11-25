@@ -19,7 +19,7 @@ namespace TGC.MonoGame.TP.Modelos
     {
         public float escala;
         Vector3 _velocity;
-        Pelota pelota;
+        public Pelota pelota;
         Vector3 direction;
         Vector3 direccionActual = new Vector3(0f,0f,0f);
         float rotationAngle;
@@ -68,12 +68,12 @@ namespace TGC.MonoGame.TP.Modelos
 
             pelota.Texture1 = content.Load<Texture2D>("Textures/texturaGolf");
             pelota.Texture2 = content.Load<Texture2D>("Textures/texturaMetal");
-            pelota.Texture3 = content.Load<Texture2D>("Textures/texturaMadera");
+            pelota.Texture3 = content.Load<Texture2D>("Textures/texturaMaderaPelota");
             pelota.Texture4 = content.Load<Texture2D>("Textures/texturaPlastico");
 
             pelota.NormalTexture1 = content.Load<Texture2D>("Textures/NormalMapGolf");
             pelota.NormalTexture2 = content.Load<Texture2D>("Textures/NormalMapMetal");
-            pelota.NormalTexture3 = content.Load<Texture2D>("Textures/NormalMapMadera");
+            pelota.NormalTexture3 = content.Load<Texture2D>("Textures/NormalMapMaderaPelota");
             pelota.NormalTexture4 = content.Load<Texture2D>("Textures/NormalMapPlastico");
 
             Texture = pelota.Texture1;
@@ -98,11 +98,20 @@ namespace TGC.MonoGame.TP.Modelos
 
             Effect.CurrentTechnique = Effect.Techniques["LightingTechnique"];
 
-            soundEffect1 = content.Load<SoundEffect>("Audio/stoneDrag1");
-            soundEffectInstance1 = soundEffect1.CreateInstance();
-            soundEffectInstance1.Volume = 0.2f;
+            // FALTA CARGAR AUDIOS
+            pelota.soundEffectMovimientoMadera = content.Load<SoundEffect>("Audio/movimientoMadera");
+            pelota.soundEffectCaidaMadera = content.Load<SoundEffect>("Audio/caidaMadera");
+            pelota.soundEffectMovimientoMetal = content.Load<SoundEffect>("Audio/stoneDrag1");
+            pelota.soundEffectCaidaMetal = content.Load<SoundEffect>("Audio/caidaMetal");
+            pelota.soundEffectMovimientoPlastico = content.Load<SoundEffect>("Audio/stoneDrag1");
+            pelota.soundEffectCaidaPlastico = content.Load<SoundEffect>("Audio/caidaPlastico");
+            pelota.soundEffectMovimientoGolf = content.Load<SoundEffect>("Audio/stoneDrag1");
+            pelota.soundEffectCaidaGolf = content.Load<SoundEffect>("Audio/caidaGolf");
+            // FALTA CARGAR AUDIOS
 
-            soundEffect2 = content.Load<SoundEffect>("Audio/stoneHit1");
+            pelota.soundEffectCaida = pelota.soundEffectCaidaGolf.CreateInstance();
+            pelota.soundEffectMovimiento = pelota.soundEffectMovimientoGolf.CreateInstance();
+
 
         }
 
@@ -146,7 +155,7 @@ namespace TGC.MonoGame.TP.Modelos
                     ApplyRotation(elapsedTime, direction);
                     if (!isMoving)
                     {
-                        soundEffectInstance1.Play();
+                        pelota.soundEffectMovimiento.Play();
                         isMoving = true;
                     }
                 }
@@ -165,7 +174,7 @@ namespace TGC.MonoGame.TP.Modelos
                     ApplyRotation(elapsedTime, -direction);
                     if (!isMoving)
                     {
-                        soundEffectInstance1.Play();
+                        pelota.soundEffectMovimiento.Play();
                         isMoving = true;
                     }
                 }
@@ -191,7 +200,7 @@ namespace TGC.MonoGame.TP.Modelos
                     ApplyRotation(elapsedTime, rightDirection);
                     if (!isMoving2)
                     {
-                        soundEffectInstance1.Play();
+                        pelota.soundEffectMovimiento.Play();
                         isMoving2 = true;
                     }
                 }
@@ -210,7 +219,7 @@ namespace TGC.MonoGame.TP.Modelos
                     ApplyRotation(elapsedTime, leftDirection);
                     if (!isMoving2)
                     {
-                        soundEffectInstance1.Play();
+                        pelota.soundEffectMovimiento.Play();
                         isMoving2 = true;
                     }
                 }
@@ -437,7 +446,7 @@ namespace TGC.MonoGame.TP.Modelos
                         }
 
                         SetPosition(posicionNueva);
-                        soundEffect2.Play();
+                        pelota.soundEffectCaida.Play();
 
                         if (pelota.rebota && Math.Abs(_velocity.Y) > pelota.umbralVelocidadRebote)
                         {

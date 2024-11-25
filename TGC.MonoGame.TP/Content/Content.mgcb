@@ -51,6 +51,30 @@
 /processorParam:TextureFormat=Compressed
 /build:3D/geometries/sphere.fbx
 
+#begin Audio/caidaGolf.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Audio/caidaGolf.wav
+
+#begin Audio/caidaMadera.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Audio/caidaMadera.wav
+
+#begin Audio/caidaMetal.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Audio/caidaMetal.wav
+
+#begin Audio/caidaPlastico.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Audio/caidaPlastico.wav
+
 #begin Audio/CheckPoint.ogg
 /importer:OggImporter
 /processor:SoundEffectProcessor
@@ -62,6 +86,12 @@
 /processor:SoundEffectProcessor
 /processorParam:Quality=Best
 /build:Audio/ColisionPez.ogg
+
+#begin Audio/movimientoMadera.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Audio/movimientoMadera.wav
 
 #begin Audio/prueba.mp3
 /importer:Mp3Importer
@@ -953,6 +983,18 @@
 /processorParam:TextureFormat=Color
 /build:Textures/NormalMapMadera.png
 
+#begin Textures/NormalMapMaderaPelota.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Textures/NormalMapMaderaPelota.png
+
 #begin Textures/NormalMapMetal.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -1084,6 +1126,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:Textures/texturaMadera.jpg
+
+#begin Textures/texturaMaderaPelota.jpg
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Textures/texturaMaderaPelota.jpg
 
 #begin Textures/texturaMetal.jpg
 /importer:TextureImporter

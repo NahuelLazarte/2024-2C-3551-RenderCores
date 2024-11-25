@@ -158,12 +158,12 @@ namespace TGC.MonoGame.TP.MaterialesJuego {
             ShadowMapEffectPelota.Parameters["lightPosition"].SetValue(LightPosition);
             ShadowMapEffectPelota.Parameters["cameraPosition"].SetValue(position);
 
-            //ESTO TIENE QUE IR POR CADA OBJETO
-            ShadowMapEffectPelota.Parameters["ambientColor"].SetValue(new Vector3(0.5f, 0.5f, 0.5f)); //esfera.pelota.ambientColor
-            ShadowMapEffectPelota.Parameters["diffuseColor"].SetValue(new Vector3(0.6f, 0.6f, 0.6f));//esfera.difuse
-            ShadowMapEffectPelota.Parameters["specularColor"].SetValue(new Vector3(1f, 1f, 1f));//esfera.specular
-            ShadowMapEffectPelota.Parameters["shininess"].SetValue(32f);//esfera.shinines
-            //ESTO TIENE QUE IR POR CADA OBJETO
+            
+            ShadowMapEffectPelota.Parameters["ambientColor"].SetValue(esfera.pelota.ambientColor); //esfera.pelota.ambientColor
+            ShadowMapEffectPelota.Parameters["diffuseColor"].SetValue(esfera.pelota.diffuseColor);//esfera.difuse
+            ShadowMapEffectPelota.Parameters["specularColor"].SetValue(esfera.pelota.specularColor);//esfera.specular
+            ShadowMapEffectPelota.Parameters["shininess"].SetValue(esfera.pelota.shininess);//esfera.shinines
+            
             ShadowMapEffectPelota.Parameters["shadowMapSize"].SetValue(shadowMapSizeA);
             ShadowMapEffectPelota.Parameters["LightViewProjection"].SetValue(ligtViewProj);
 
@@ -173,10 +173,6 @@ namespace TGC.MonoGame.TP.MaterialesJuego {
             ShadowMapEffect.Parameters["shadowMap"].SetValue(ShadowMapRenderTarget);
             ShadowMapEffect.Parameters["lightPosition"].SetValue(LightPosition);
             ShadowMapEffect.Parameters["cameraPosition"].SetValue(position);
-
-            //ESTO TIENE QUE IR POR CADA OBJETO
-            
-            //ESTO TIENE QUE IR POR CADA OBJETO
             ShadowMapEffect.Parameters["shadowMapSize"].SetValue(shadowMapSizeA);
             ShadowMapEffect.Parameters["LightViewProjection"].SetValue(ligtViewProj);
 

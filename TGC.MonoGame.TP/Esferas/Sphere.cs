@@ -101,11 +101,11 @@ namespace TGC.MonoGame.TP.Modelos
             // FALTA CARGAR AUDIOS
             pelota.soundEffectMovimientoMadera = content.Load<SoundEffect>("Audio/movimientoMadera");
             pelota.soundEffectCaidaMadera = content.Load<SoundEffect>("Audio/caidaMadera");
-            pelota.soundEffectMovimientoMetal = content.Load<SoundEffect>("Audio/stoneDrag1");
+            pelota.soundEffectMovimientoMetal = content.Load<SoundEffect>("Audio/movimientoPiedra");
             pelota.soundEffectCaidaMetal = content.Load<SoundEffect>("Audio/caidaMetal");
-            pelota.soundEffectMovimientoPlastico = content.Load<SoundEffect>("Audio/stoneDrag1");
+            pelota.soundEffectMovimientoPlastico = content.Load<SoundEffect>("Audio/movimientoPiedra");
             pelota.soundEffectCaidaPlastico = content.Load<SoundEffect>("Audio/caidaPlastico");
-            pelota.soundEffectMovimientoGolf = content.Load<SoundEffect>("Audio/stoneDrag1");
+            pelota.soundEffectMovimientoGolf = content.Load<SoundEffect>("Audio/movimientoPiedra");
             pelota.soundEffectCaidaGolf = content.Load<SoundEffect>("Audio/caidaGolf");
             // FALTA CARGAR AUDIOS
 

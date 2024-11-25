@@ -273,13 +273,13 @@ namespace TGC.MonoGame.TP.MaterialesJuego
 
 
             _espadas.Draw(gameTime, view, projection, graphicsDevice);
-
+            /*
             foreach (var boundingBoxPista in CollidersDibujo)
             {
                 Gizmos.DrawCube((boundingBoxPista.Max + boundingBoxPista.Min) / 2f, boundingBoxPista.Max - boundingBoxPista.Min, Color.Green);
             }
             Gizmos.Draw(); // PARA DIBUJAR LOS CUBOS DE GIZMOS
-
+            */
         }
 
         public void ColliderEsfera(BoundingSphere boundingSphere)

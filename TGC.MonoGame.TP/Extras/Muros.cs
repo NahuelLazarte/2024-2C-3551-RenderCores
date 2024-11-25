@@ -46,7 +46,7 @@ namespace TGC.MonoGame.TP.MurosExtra{
 
         //0.09
         float escalaMurosEsquina = 0.09f;
-        float escalaMurosPared = 1f;
+        float escalaMurosPared = 0.03f;
 
         private BoundingFrustum _frustumMuros;
         private BoundingFrustum _frustumEsquinas;
@@ -265,12 +265,13 @@ namespace TGC.MonoGame.TP.MurosExtra{
         public void AgregarMurosPistaRecta(float Rotacion, Vector3 Posicion) {
             //var posicionMuros = new Vector3(Posicion.X / 100f, Posicion.Y / 100f, Posicion.Z / 100f);
             var posicionMuros = new Vector3(Posicion.X, Posicion.Y, Posicion.Z);
+
             //var desplazamientoDerecha = new Vector3(25.22f, -12f, 9f);
             var desplazamientoDerecha = new Vector3(0f, -11.63f * 100, -10f * 100) ;
             //var desplazamientoIzquierda = new Vector3(-25.22f, -12f, -9f);
             var desplazamientoIzquierda = new Vector3(-0f, -11.63f * 100, 10f * 100);
             
-            var desplazamientoAbajo = new Vector3(-0f, 0f,0f);
+            var desplazamientoAbajo = new Vector3(-0f, -5.95f * 100, 0f);
 
 
             // Calcular las posiciones de los muros aplicando la rotación
@@ -295,7 +296,7 @@ namespace TGC.MonoGame.TP.MurosExtra{
             BoundingBox boxIzquierda = CreateTransformedBoundingBox(muroIzquierda, MuroSize, 5.0f);
             Colliders.Add(boxIzquierda);
 
-            BoundingBox boxAbajo = CreateTransformedBoundingBox(muroAbajo, MuroParedSize, 0f);
+            BoundingBox boxAbajo = CreateTransformedBoundingBox(muroAbajo, MuroParedSize, 1f);
             Colliders.Add(boxAbajo);
         }
         public void AgregarMurosPistaCurvaDerecha(float Rotacion, Vector3 Posicion) {
@@ -348,15 +349,22 @@ namespace TGC.MonoGame.TP.MurosExtra{
 
             var desplazamientoDerecha = new Vector3(0f, -11.48f * 100, -10f * 100) ;
             var desplazamientoIzquierda = new Vector3(0f, -11.48f * 100, 10f * 100);
-            
+            var desplazamientoAbajo = new Vector3(-0f, -20f * 1000, 0f);
+
+
             var posicionDerecha = posicionMuros + Vector3.Transform(desplazamientoDerecha, Matrix.CreateRotationY(Rotacion));
             var posicionIzquierda = posicionMuros + Vector3.Transform(desplazamientoIzquierda, Matrix.CreateRotationY(Rotacion));
+            var posicionAbajo = posicionMuros + Vector3.Transform(desplazamientoAbajo, Matrix.CreateRotationY(Rotacion));
+
 
             Matrix muroDerecha = Matrix.CreateRotationY(Rotacion + MathHelper.ToRadians(-90)) * Matrix.CreateTranslation(posicionDerecha) * Matrix.CreateScale(escalaMuros);
             Matrix muroIzquierda = Matrix.CreateRotationY(Rotacion + MathHelper.ToRadians(90)) * Matrix.CreateTranslation(posicionIzquierda) * Matrix.CreateScale(escalaMuros);
+            Matrix muroAbajo = Matrix.CreateRotationY(Rotacion + MathHelper.ToRadians(90)) * Matrix.CreateTranslation(posicionAbajo) * Matrix.CreateScale(new Vector3(escalaMurosPared, escalaMurosPared/20, escalaMurosPared));
+
 
             _muros.Add(muroDerecha);
             _muros.Add(muroIzquierda);
+            _murosPared.Add(muroAbajo);
 
             // Crear y agregar los BoundingBox
             BoundingBox boxDerecha = CreateTransformedBoundingBox(muroDerecha, MuroSize, 5.0f);
@@ -364,6 +372,9 @@ namespace TGC.MonoGame.TP.MurosExtra{
 
             BoundingBox boxIzquierda = CreateTransformedBoundingBox(muroIzquierda, MuroSize, 5.0f);
             Colliders.Add(boxIzquierda);
+
+            BoundingBox boxAbajo = CreateTransformedBoundingBox(muroAbajo, MuroParedSize, 1f);
+            Colliders.Add(boxAbajo);
         }
 
         private BoundingBox CreateTransformedBoundingBox(Matrix transform, BoundingBox size, float yDecrement) {

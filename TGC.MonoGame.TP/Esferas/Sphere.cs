@@ -67,12 +67,12 @@ namespace TGC.MonoGame.TP.Modelos
             Effect = content.Load<Effect>("Effects/" + "SphereShader");
 
             pelota.Texture1 = content.Load<Texture2D>("Textures/texturaGolf");
-            pelota.Texture2 = content.Load<Texture2D>("Textures/texturaMetal");
+            pelota.Texture2 = content.Load<Texture2D>("Textures/texturaMetal2");
             pelota.Texture3 = content.Load<Texture2D>("Textures/texturaMaderaPelota");
             pelota.Texture4 = content.Load<Texture2D>("Textures/texturaPlastico");
 
             pelota.NormalTexture1 = content.Load<Texture2D>("Textures/NormalMapGolf");
-            pelota.NormalTexture2 = content.Load<Texture2D>("Textures/NormalMapMetal");
+            pelota.NormalTexture2 = content.Load<Texture2D>("Textures/NormalMapMetal2");
             pelota.NormalTexture3 = content.Load<Texture2D>("Textures/NormalMapMaderaPelota");
             pelota.NormalTexture4 = content.Load<Texture2D>("Textures/NormalMapPlastico");
 

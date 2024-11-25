@@ -103,7 +103,7 @@ namespace TGC.MonoGame.TP.Modelos
                 Effect.Parameters["environmentMap"].SetValue(EnvironmentMapRenderTarget);
                 Effect.Parameters["eyePosition"].SetValue(cameraPosition);
 
-
+                Effect.Parameters["baseTexture"].SetValue(Texture);
                 // World is used to transform from model space to world space
                 Effect.Parameters["World"].SetValue(World);
                 // InverseTransposeWorld is used to rotate normals

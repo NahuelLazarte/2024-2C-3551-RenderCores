@@ -1064,6 +1064,18 @@
 /processorParam:TextureFormat=Color
 /build:Textures/NormalMapMetal.png
 
+#begin Textures/NormalMapMetal2.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Textures/NormalMapMetal2.png
+
 #begin Textures/NormalMapPiedra.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -1207,6 +1219,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:Textures/texturaMetal.jpg
+
+#begin Textures/texturaMetal2.jpg
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Textures/texturaMetal2.jpg
 
 #begin Textures/texturaPiedra.png
 /importer:TextureImporter

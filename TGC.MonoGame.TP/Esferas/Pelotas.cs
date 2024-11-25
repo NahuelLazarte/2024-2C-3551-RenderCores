@@ -60,6 +60,7 @@ namespace TGC.MonoGame.TP.Pelotas
             }
             if (keyboardState.IsKeyDown(Keys.D2)) // vidrio
             {
+                esfera.SetTexture(Texture1);
                 primera = false;
                 LinearSpeed = 15f;
                 RotationSpeed = 50f;

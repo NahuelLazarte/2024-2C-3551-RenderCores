@@ -22,7 +22,11 @@ namespace TGC.MonoGame.TP.MurosExtra{
         public Effect Effect { get; set; }
         private BasicEffect Efecto { get; set; }
         private Texture2D Texture { get; set; }
+        private Texture2D TexturePasto { get; set; }
+
         private Texture2D NormalTexture { get; set; }
+        private Texture2D NormalTexturePasto { get; set; }
+
         private Texture2D metallicTexture { get; set; }
         private Texture2D roughnessTexture { get; set; }
         private Texture2D aoTexture { get; set; }
@@ -34,6 +38,7 @@ namespace TGC.MonoGame.TP.MurosExtra{
         private List<Matrix> _muros { get; set; }
         private List<Matrix> _murosEsquina { get; set; }
         private List<Matrix> _murosPared { get; set; }
+        private List<Matrix> _pasto { get; set; }
 
         public BoundingSphere _envolturaEsfera { get; set; }
         public SoundEffect CollisionSound { get; set; }
@@ -65,6 +70,7 @@ namespace TGC.MonoGame.TP.MurosExtra{
             _muros = new List<Matrix>();
             _murosEsquina = new List<Matrix>();
             _murosPared = new List<Matrix>();
+            _pasto = new List<Matrix>();
 
             Colliders = new List<BoundingBox>();
         }
@@ -72,7 +78,11 @@ namespace TGC.MonoGame.TP.MurosExtra{
         public void LoadContent(ContentManager Content, GraphicsDevice graphicsDevice){
             Effect = Content.Load<Effect>("Effects/" + "BasicShader2");
             Texture = Content.Load<Texture2D>("Textures/texturaPiedra");
+            TexturePasto = Content.Load<Texture2D>("Textures/texturaPasto");
+
             NormalTexture = Content.Load<Texture2D>("Textures/NormalMapPiedra");
+            NormalTexturePasto = Content.Load<Texture2D>("Textures/NormalMapPasto");
+
             /*metallicTexture = Content.Load<Texture2D>("Textures/SpecularMapPiedra");
             roughnessTexture = Content.Load<Texture2D>("Textures/DisplacementMapPiedra");
             aoTexture = Content.Load<Texture2D>("Textures/AmbientOcclusionMapPiedra");*/
@@ -197,6 +207,26 @@ namespace TGC.MonoGame.TP.MurosExtra{
                     }
                 }
             }
+
+            foreach (var worldMatrix in _pasto)
+            {
+                foreach (var mesh in ModeloMuroPared.Meshes)
+                {
+                    var meshWorld = mesh.ParentBone.Transform * worldMatrix;
+                    var boundingBox = BoundingVolumesExtensions.FromMatrix(meshWorld);
+
+                    if (_frustumParedes.Intersects(boundingBox))
+                    {
+                        ShadowMapEffect.Parameters["World"].SetValue(meshWorld);
+                        ShadowMapEffect.Parameters["baseTexture"].SetValue(TexturePasto);
+                        ShadowMapEffect.Parameters["WorldViewProjection"].SetValue(meshWorld * viewProjection);
+                        ShadowMapEffect.Parameters["InverseTransposeWorld"].SetValue(Matrix.Transpose(Matrix.Invert(meshWorld)));
+                        ShadowMapEffect.Parameters["normalMap"].SetValue(NormalTexturePasto);
+
+                        mesh.Draw();
+                    }
+                }
+            }
         }
 
 
@@ -270,24 +300,27 @@ namespace TGC.MonoGame.TP.MurosExtra{
             var desplazamientoDerecha = new Vector3(0f, -11.63f * 100, -10f * 100) ;
             //var desplazamientoIzquierda = new Vector3(-25.22f, -12f, -9f);
             var desplazamientoIzquierda = new Vector3(-0f, -11.63f * 100, 10f * 100);
-            
             var desplazamientoAbajo = new Vector3(-0f, -5.95f * 100, 0f);
+            var desplazamientoAbajoPasto = new Vector3(-0f, -20f * 1000, 0f);
 
 
             // Calcular las posiciones de los muros aplicando la rotación
             var posicionDerecha = posicionMuros + Vector3.Transform(desplazamientoDerecha, Matrix.CreateRotationY(Rotacion));
             var posicionIzquierda = posicionMuros + Vector3.Transform(desplazamientoIzquierda, Matrix.CreateRotationY(Rotacion));
             var posicionAbajo = posicionMuros + Vector3.Transform(desplazamientoAbajo, Matrix.CreateRotationY(Rotacion));
+            var posicionAbajoPasto = posicionMuros + Vector3.Transform(desplazamientoAbajoPasto, Matrix.CreateRotationY(Rotacion));
 
             // Crear las matrices de transformación para los muros
             Matrix muroDerecha = Matrix.CreateRotationY(Rotacion + MathHelper.ToRadians(-90)) * Matrix.CreateTranslation(posicionDerecha) * Matrix.CreateScale(escalaMuros);
             Matrix muroIzquierda = Matrix.CreateRotationY(Rotacion + MathHelper.ToRadians(90)) * Matrix.CreateTranslation(posicionIzquierda) * Matrix.CreateScale(escalaMuros);
             Matrix muroAbajo = Matrix.CreateRotationY(Rotacion + MathHelper.ToRadians(90)) * Matrix.CreateTranslation(posicionAbajo) * Matrix.CreateScale(escalaMurosPared);
+            Matrix pastoAbajo = Matrix.CreateRotationY(Rotacion + MathHelper.ToRadians(90)) * Matrix.CreateTranslation(posicionAbajoPasto) * Matrix.CreateScale(new Vector3(escalaMurosPared, escalaMurosPared/20f , escalaMurosPared *10));
 
 
             _muros.Add(muroDerecha);
             _muros.Add(muroIzquierda);
             _murosPared.Add(muroAbajo);
+            _pasto.Add(pastoAbajo);
 
             // Crear y agregar los BoundingBox
             BoundingBox boxDerecha = CreateTransformedBoundingBox(muroDerecha, MuroSize, 5.0f);

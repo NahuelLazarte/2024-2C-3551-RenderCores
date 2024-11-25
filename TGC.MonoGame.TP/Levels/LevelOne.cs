@@ -138,6 +138,14 @@ namespace TGC.MonoGame.TP
             //_materiales._muros.Effect.Parameters["lightPosition"].SetValue(position);
         }
 
+        public override bool reachedLastCheckpoint(){
+            if (_materiales._checkPoints.Colliders.Count == 0){
+                return true;
+            } else {
+                return false;
+            }
+        }
+
         public override void Update(GameTime gameTime)
         {
             var keyboardState = Keyboard.GetState();

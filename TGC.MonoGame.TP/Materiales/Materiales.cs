@@ -35,6 +35,7 @@ namespace TGC.MonoGame.TP.MaterialesJuego {
         public PistasRectas _pistasRectas { get; set; }
         public PowerUpHamburguesas _hamburguesas { get; set; }
         public CheckPoints _checkPoints { get; set; }
+        public CheckPointFinal _checkPointFinal { get; set; }
         public MarcadoresCheckPoints _marcadoresCheckPoints { get; set; }
         public ObstaculosPiedras _piedras { get; set; }
         public ObstaculosPozos _pozos { get; set; }
@@ -62,6 +63,7 @@ namespace TGC.MonoGame.TP.MaterialesJuego {
             _piedras = new ObstaculosPiedras(view,projection);
             _pozos = new ObstaculosPozos(view, projection);
             _checkPoints = new CheckPoints(view,projection);
+            _checkPointFinal = new CheckPointFinal(view,projection);
             _marcadoresCheckPoints = new MarcadoresCheckPoints(view,projection);
             _muros = new Muros(frustrum);
             _carretillas = new ObstaculosCarretillas(view,projection);
@@ -100,6 +102,7 @@ namespace TGC.MonoGame.TP.MaterialesJuego {
             _piedras.LoadContent(Content);
             _pozos.LoadContent(Content);
             _checkPoints.LoadContent(Content);
+            _checkPointFinal.LoadContent(Content);
             _marcadoresCheckPoints.LoadContent(Content);
             _muros.LoadContent(Content, graphicsDevice);
             _carretillas.LoadContent(Content);
@@ -115,7 +118,8 @@ namespace TGC.MonoGame.TP.MaterialesJuego {
             _espadas.Update(gameTime, Game, view, projection);
             _hamburguesas.Update(gameTime, Game, view, projection);
             _checkPoints.Update(gameTime, Game, view, projection);
-            _marcadoresCheckPoints.Update(gameTime, Game, view, projection);
+            _checkPointFinal.Update(gameTime, view, projection);
+            _marcadoresCheckPoints.Update(gameTime, Game, view, projection, _checkPoints.getCheckPointActual());
             _piedras.Update(gameTime, Game, view, projection);
             _pozos.Update(gameTime, Game, view, projection);
             _muros.Update(gameTime, Game, view, projection, frustum);
@@ -143,6 +147,8 @@ namespace TGC.MonoGame.TP.MaterialesJuego {
             _pozos.ShadowMapRender(ShadowMapEffect, TargetLightCamera.View, TargetLightCamera.Projection);
             _carretillas.ShadowMapRender(ShadowMapEffect, TargetLightCamera.View, TargetLightCamera.Projection);
             _checkPoints.ShadowMapRender(ShadowMapEffect, TargetLightCamera.View, TargetLightCamera.Projection);
+            _checkPointFinal.ShadowMapRender(ShadowMapEffect, TargetLightCamera.View, TargetLightCamera.Projection);
+            _marcadoresCheckPoints.ShadowMapRender(ShadowMapEffect, TargetLightCamera.View, TargetLightCamera.Projection);
             esfera.ShadowMapRender(ShadowMapEffect, TargetLightCamera.View, TargetLightCamera.Projection);
             #endregion
 
@@ -189,6 +195,8 @@ namespace TGC.MonoGame.TP.MaterialesJuego {
             _pistasCurvasIzquierdas.Draw(gameTime, ShadowMapEffect, view, projection);
             _muros.Draw(gameTime, ShadowMapEffect, view, projection);
             _checkPoints.Draw(gameTime, ShadowMapEffect, view, projection);
+            _marcadoresCheckPoints.Draw(gameTime, ShadowMapEffect, view, projection);
+            _checkPointFinal.Draw(gameTime, ShadowMapEffect, view, projection);
             _hamburguesas.Draw(gameTime, ShadowMapEffect, view, projection);
 
             //ShadowMapEffect.Parameters["useNormalMapping"].SetValue(false);
@@ -205,7 +213,6 @@ namespace TGC.MonoGame.TP.MaterialesJuego {
 
 
             
-            _marcadoresCheckPoints.Draw(gameTime, view, projection);
             _espadas.Draw(gameTime, view, projection, graphicsDevice);
 
             foreach (var boundingBoxPista in CollidersDibujo)
@@ -224,6 +231,7 @@ namespace TGC.MonoGame.TP.MaterialesJuego {
             _pozos._envolturaEsfera = boundingSphere;
             _muros._envolturaEsfera = boundingSphere;
             _checkPoints._envolturaEsfera = boundingSphere;
+            //_checkPointFinal._envolturaEsfera = boundingSphere;
             _carretillas._envolturaEsfera = boundingSphere;
         }
 

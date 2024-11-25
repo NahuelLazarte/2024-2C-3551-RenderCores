@@ -19,6 +19,7 @@ namespace TGC.MonoGame.TP.MarcadorCheckPoint{
         public const string ContentFolder3D = "Models/";
         public const string ContentFolderEffects = "Effects/";
         public Effect Effect { get; set; }
+        public Texture2D Textura { get; set; }
         public Matrix scale = Matrix.CreateScale(1f);
         public Model ModeloMarcadorCheckPoint { get; set; }
         public List<BoundingBox> Colliders { get; set; }
@@ -26,6 +27,8 @@ namespace TGC.MonoGame.TP.MarcadorCheckPoint{
         private List<Matrix> _marcadoresCheckPoints { get; set; }
         private BoundingFrustum _frustum;
         private BoundingBox size;
+        public int checkpointActualAux { get; set; }
+        public int checkpointAux = 0;
         public MarcadoresCheckPoints(Matrix view, Matrix projection) {
             Initialize(view,projection);
         }
@@ -37,8 +40,9 @@ namespace TGC.MonoGame.TP.MarcadorCheckPoint{
         }
 
         public void LoadContent(ContentManager Content){
-            ModeloMarcadorCheckPoint = Content.Load<Model>("Models/" + "CheckPoint/windmill"); 
-            Effect = Content.Load<Effect>("Effects/" + "BasicShader");
+            ModeloMarcadorCheckPoint = Content.Load<Model>("Models/" + "CheckPoint/checkpointArrowWithTextures"); 
+            Effect = Content.Load<Effect>("Effects/" + "BasicShader2");
+            Textura = Content.Load<Texture2D>("Textures/" + "texturaMadera"); 
 
             foreach (var mesh in ModeloMarcadorCheckPoint.Meshes){
                 Console.WriteLine($"Meshname marcadorCheck {mesh.Name}");
@@ -51,56 +55,78 @@ namespace TGC.MonoGame.TP.MarcadorCheckPoint{
 
         }
 
-        public void Update(GameTime gameTime, Level Game, Matrix view, Matrix projection) {
+        public void Update(GameTime gameTime, Level Game, Matrix view, Matrix projection, int checkpointActual) {
             
             Rotation += Convert.ToSingle(gameTime.ElapsedGameTime.TotalSeconds);
 
             float sinOffset = (float)Math.Sin(Rotation) * 0.8f; // multiplicador para la amplitud
-
             for (int i = 0; i < _marcadoresCheckPoints.Count; i++)
             {
                 var originalPosition = _marcadoresCheckPoints[i].Translation; // Obtener la posición original
                 _marcadoresCheckPoints[i] = Matrix.CreateRotationY(Rotation) * Matrix.CreateTranslation(originalPosition.X, originalPosition.Y + (sinOffset) * 0.05f, originalPosition.Z);
-                // Comprobar colisión
-                var marcadorBoundingSphere = new BoundingSphere(originalPosition, scale.Translation.X); // Ajustar el tamaño de la esfera de colisión según sea necesario
-                if (true) // logica del checkpoint fue renovado
-                {
-                    // Acción al tocar el modelo
-                    Console.WriteLine($"¡Colisión con el pez en la posición {originalPosition}!");
+
+                checkpointActualAux = checkpointActual - checkpointAux;
+                if (i < checkpointActualAux){
                     _marcadoresCheckPoints.RemoveAt(i);
-                    
+                    Colliders.RemoveAt(i);
+                    checkpointAux++;
                 }
+
                 _frustum = new BoundingFrustum(view * projection);
 
-                
             }
         }
 
-        public void Draw(GameTime gameTime, Matrix view, Matrix projection)
+        public void Draw(GameTime gameTime, Effect ShadowMapEffect, Matrix view, Matrix projection)
         {
-            Effect.Parameters["View"].SetValue(view);
-            Effect.Parameters["Projection"].SetValue(projection);
-            Effect.Parameters["DiffuseColor"].SetValue(Color.Chocolate.ToVector3());
-
+            var viewProjection = view * projection;
             
-            foreach (var mesh in ModeloMarcadorCheckPoint.Meshes){
-                string meshName = mesh.Name.ToLower();
-                for (int i=0; i < _marcadoresCheckPoints.Count; i++){
-                    Matrix _pisoWorld = _marcadoresCheckPoints[i];
-                    BoundingBox boundingBox = BoundingVolumesExtensions.FromMatrix(_pisoWorld);
-                    
-                    if(_frustum.Intersects(boundingBox)){
-                        Effect.Parameters["World"].SetValue(mesh.ParentBone.Transform * _pisoWorld);
-                        Console.WriteLine($"Meshname marcador checkpoint {meshName}");
-                        mesh.Draw();
+            for (int i = 0; i < _marcadoresCheckPoints.Count; i++){
+                var worldMatrix = _marcadoresCheckPoints[i];
+                foreach (var mesh in ModeloMarcadorCheckPoint.Meshes)
+                    {
+                        var meshWorld = mesh.ParentBone.Transform * worldMatrix;
+                        var boundingBox = BoundingVolumesExtensions.FromMatrix(meshWorld);
+
+                        if (_frustum.Intersects(boundingBox) && checkpointActualAux == i){   
+                            ShadowMapEffect.Parameters["World"].SetValue(meshWorld);
+                            ShadowMapEffect.Parameters["baseTexture"]?.SetValue(Textura);
+                            ShadowMapEffect.Parameters["WorldViewProjection"].SetValue(meshWorld * viewProjection);
+                            ShadowMapEffect.Parameters["InverseTransposeWorld"].SetValue(Matrix.Transpose(Matrix.Invert(meshWorld)));
+
+                            mesh.Draw();
+                        }
                     }
+            }
+        }
+
+        public void ShadowMapRender(Effect ShadowMapEffect, Matrix LightView, Matrix Projection)
+        {
+            
+            foreach (var worldMatrix in _marcadoresCheckPoints)
+            {
+                foreach (var modelMesh in ModeloMarcadorCheckPoint.Meshes)
+                {
+                    var modelMeshesBaseTransforms = new Matrix[ModeloMarcadorCheckPoint.Bones.Count];
+                    ModeloMarcadorCheckPoint.CopyAbsoluteBoneTransformsTo(modelMeshesBaseTransforms);
+
+                    // Combina las transformaciones locales y globales.
+                    var meshWorld = modelMeshesBaseTransforms[modelMesh.ParentBone.Index] * worldMatrix;
+                    ShadowMapEffect.Parameters["WorldViewProjection"].SetValue(meshWorld * LightView * Projection);
+
+                    foreach (var part in modelMesh.MeshParts)
+                    {
+                        part.Effect = ShadowMapEffect; // Aplica el shader de sombras
+                    }
+
+                    modelMesh.Draw(); // Dibuja el mesh en el mapa de sombras
                 }
             }
         }
 
 
         public void AgregarNuevoMarcadorCheckPoint(float Rotacion, Vector3 Posicion) {
-            var transform = Matrix.CreateRotationY(Rotacion + MathHelper.ToRadians(-90)) * Matrix.CreateTranslation(Posicion) * Matrix.CreateScale(5f); 
+            var transform = Matrix.CreateRotationY(Rotacion + MathHelper.ToRadians(-90)) * Matrix.CreateTranslation(Posicion.X, Posicion.Y + 5f, Posicion.Z) * Matrix.CreateScale(5f); 
             _marcadoresCheckPoints.Add(transform);
             Vector3 transformedMin = Vector3.Transform(size.Min, transform);
             Vector3 transformedMax = Vector3.Transform(size.Max, transform);

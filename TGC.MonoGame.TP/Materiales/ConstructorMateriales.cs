@@ -26,6 +26,7 @@ namespace TGC.MonoGame.TP.Constructor{
 
         private Vector3 posicionActual { get; set; }
         public Vector3 posicionCheckPoint;
+        public bool touchedLastCheckpoint = false;
         float rotacionActual = 0f;
 
 
@@ -134,6 +135,7 @@ namespace TGC.MonoGame.TP.Constructor{
             AgregarObstaculoCarretilla(_materiales._carretillas);
             AgregarPistaRecta(_materiales._pistasRectas, _materiales);
             AgregarPistaCurvaIzquierda(_materiales._pistasCurvasIzquierdas, _materiales);
+            AgregarFinal(_materiales._checkPointFinal, _materiales);
 
         }
 
@@ -226,6 +228,17 @@ namespace TGC.MonoGame.TP.Constructor{
             
             //Console.WriteLine($"Obstaculo Pez dibujado: Posicion en ejes: X = {posicionObstaculo.X}, Y = {posicionObstaculo.Y}, Z = {posicionObstaculo.Z}");
             
+        }
+
+        void AgregarFinal(CheckPointFinal unCheckPointFinal, Materiales _materialesAux)
+        {
+            AgregarCheckPoint(_materialesAux._checkPoints, _materialesAux._marcadoresCheckPoints);
+            Vector3 desplazamiento = unCheckPointFinal.Desplazamiento();
+            float rotacion = unCheckPointFinal.Rotacion();
+            unCheckPointFinal.AgregarCheckPointFinal(rotacionActual, posicionActual, _materialesAux);
+            rotacionActual += rotacion;
+            posicionActual += Vector3.Transform(desplazamiento, Matrix.CreateRotationY(rotacionActual));
+            //Esferas.Add(posicionActual);
         }
         
 

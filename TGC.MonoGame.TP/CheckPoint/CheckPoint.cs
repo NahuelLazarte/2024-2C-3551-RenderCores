@@ -28,6 +28,8 @@ namespace TGC.MonoGame.TP.CheckPoint{
         public SoundEffect CollisionSound { get; set; }
         BoundingBox size;
         private BoundingFrustum _frustum;
+        public int checkpointActual;
+        public bool touchedLastCheckpoint = false;
 
         private Texture2D NormalMapTexturaMetal { get; set; }
         private Texture2D NormalMapTexturaMadera { get; set; }
@@ -46,6 +48,7 @@ namespace TGC.MonoGame.TP.CheckPoint{
             _checkPoints = new List<Matrix>();
             Colliders = new List<BoundingBox>();
             _frustum = new BoundingFrustum(view * projection);
+            checkpointActual = 0;
         }
 
         public void IniciarColliders() {
@@ -54,8 +57,8 @@ namespace TGC.MonoGame.TP.CheckPoint{
         }
 
         public void LoadContent(ContentManager Content){
-            ModeloCheckPoint = Content.Load<Model>("Models/" + "CheckPoint/campfire"); // HAY QUE MOVERLO DE CARPETA
-            Effect = Content.Load<Effect>("Effects/" + "BasicShader");
+            ModeloCheckPoint = Content.Load<Model>("Models/" + "CheckPoint/campfireWithTextures"); // HAY QUE MOVERLO DE CARPETA
+            Effect = Content.Load<Effect>("Effects/" + "BasicShader2");
 
             TexturaMadera = Content.Load<Texture2D>("Textures/texturaMadera");
             TexturaMetal = Content.Load<Texture2D>("Textures/texturaMetal");
@@ -89,11 +92,19 @@ namespace TGC.MonoGame.TP.CheckPoint{
 
             for (int i = 0; i < _checkPoints.Count; i++) {
                 var originalPosition = _checkPoints[i].Translation;
+                
                 if (_envolturaEsfera.Intersects(Colliders[i])) {
                     // Acción al tocar el modelo
                     // Aquí puedes realizar la acción que desees, como eliminar el pez, reducir vida, etc.
                     CollisionSound.Play();
                     _checkPoints.RemoveAt(i);
+                    Colliders.RemoveAt(i);
+                    checkpointActual++;
+                    Console.WriteLine($"Intercciono con CheckPoint {checkpointActual}!");
+                    if (_checkPoints.Count == 0){
+                        touchedLastCheckpoint = true;
+                        Game.nuevoCheckPoint(new Vector3(0f,0f,0f));
+                    }
                     Game.nuevoCheckPoint(originalPosition);
                 }
             }
@@ -137,6 +148,10 @@ namespace TGC.MonoGame.TP.CheckPoint{
             }
         }
         */
+        public int getCheckPointActual(){
+            return checkpointActual;
+        }
+
         public void Draw(GameTime gameTime, Effect ShadowMapEffect, Matrix view, Matrix projection)
         {
             var viewProjection = view * projection;

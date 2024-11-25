@@ -53,11 +53,15 @@ namespace TGC.MonoGame.TP
         private Menu menu;
         private SpriteFont menuFont; // Asegúrate de cargar una fuente para el menú
         public bool isMenuActive = true;
+        public bool gameInProgress = false;
         private SpriteBatch SpriteBatch { get; set; }
         private Song backgroundMusic;
         public bool isMusicActive = false;
         public bool isMusicPlaying = true;
         public bool isGodModeActive = false;
+        private float timer = 0f;
+        private float keyHoldDuration = 0.2f;
+        private KeyboardState previousKeyboardState;
 
         private Level nivelActual;
         private int nivelSeleccionado = 0;
@@ -122,6 +126,12 @@ namespace TGC.MonoGame.TP
 
             if (isMenuActive)
             {
+                if (gameInProgress == true && (keyboardState.IsKeyDown(Keys.Escape) && timer >= keyHoldDuration)){
+                    isMenuActive = false;
+                    gameInProgress = false;
+                    nivelActual.leveIsActive = true;
+                }
+
                 if (!(MediaPlayer.Volume == 0.3f)) MediaPlayer.Volume = 0.3f;
                 nivelActual.Update(gameTime);
                 menu.Update(this, gameTime, nivelActual.esfera);
@@ -130,9 +140,10 @@ namespace TGC.MonoGame.TP
             {
                 if (!(MediaPlayer.Volume == 0.1f)) MediaPlayer.Volume = 0.2f;
 
-                if (keyboardState.IsKeyDown(Keys.Escape))
+                if (keyboardState.IsKeyDown(Keys.Escape) || nivelActual.reachedLastCheckpoint() )
                 {
                     isMenuActive = true;
+                    gameInProgress = true;
                     nivelActual.leveIsActive = false;
                 }
 

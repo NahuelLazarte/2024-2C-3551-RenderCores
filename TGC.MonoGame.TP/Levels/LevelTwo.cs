@@ -11,6 +11,7 @@ using MonoGame.Framework;
 using TGC.MonoGame.TP.Geometries;
 using TGC.MonoGame.TP.Camera;
 using Vector3 = Microsoft.Xna.Framework.Vector3;
+using TGC.MonoGame.TP.MaterialesJuego;
 
 namespace TGC.MonoGame.TP.Levels
 {
@@ -18,7 +19,7 @@ namespace TGC.MonoGame.TP.Levels
     {   
         private Matrix rotation = Matrix.Identity;
         private Sphere esfera;
-        //private Materiales _materiales;
+        private Materiales _materiales { get; set; }
         //private ConstructorMateriales _constructorMateriales;
         //private LineDrawer lineDrawer;
         //private Gizmos.Gizmos Gizmos;
@@ -72,6 +73,14 @@ namespace TGC.MonoGame.TP.Levels
             LightBoxWorld = Matrix.CreateScale(3f) * Matrix.CreateTranslation(position);
             esfera.Effect.Parameters["lightPosition"].SetValue(position);
         }*/
+
+        public override bool reachedLastCheckpoint(){
+            if (_materiales._checkPoints.Colliders.Count == 0){
+                return true;
+            } else {
+                return false;
+            }
+        }
 
         public override void Update(GameTime gameTime)
         {

@@ -303,10 +303,11 @@ namespace TGC.MonoGame.TP.MaterialesJuego
             List<BoundingBox> CollidersPistaCurvaIzquierda = _pistasCurvasIzquierdas.Colliders;
             List<BoundingBox> CollidersPiedras = _piedras.Colliders;
             List<BoundingBox> CollidersPozos = _pozos.Colliders;
+            List<BoundingBox> CollidersMuros = _muros.Colliders;
 
             List<BoundingBox> CollidersCheckpoints = _checkPoints.Colliders;
             List<BoundingBox> CollidersMarcadoresCheckpoints = _marcadoresCheckPoints.Colliders;
-            CollidersDibujo = CollidersPozos;
+            CollidersDibujo = CollidersMuros;
 
             esfera.Colliders.AddRange(CollidersPistaRecta);
             esfera.Colliders.AddRange(CollidersPistaCurvaDerecha);

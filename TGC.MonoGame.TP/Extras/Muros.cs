@@ -27,23 +27,30 @@ namespace TGC.MonoGame.TP.MurosExtra{
         private Texture2D roughnessTexture { get; set; }
         private Texture2D aoTexture { get; set; }
         public Model ModeloMuro { get; set; }
+        public Model ModeloMuroPared { get; set; }
         public Model ModeloMuroEsquina { get; set; }
         public List<BoundingBox> Colliders { get; set; }
         private float Rotation { get; set; }
         private List<Matrix> _muros { get; set; }
         private List<Matrix> _murosEsquina { get; set; }
+        private List<Matrix> _murosPared { get; set; }
+
         public BoundingSphere _envolturaEsfera { get; set; }
         public SoundEffect CollisionSound { get; set; }
         BoundingBox MuroSize;
         BoundingBox MuroEsquinaSize;
+        BoundingBox MuroParedSize;
         //3f
         float escalaMuros = 0.03f;
         //10f
 
         //0.09
         float escalaMurosEsquina = 0.09f;
+        float escalaMurosPared = 1f;
+
         private BoundingFrustum _frustumMuros;
         private BoundingFrustum _frustumEsquinas;
+        private BoundingFrustum _frustumParedes;
         private float time;
 
         public Muros(BoundingFrustum frustrum){
@@ -51,12 +58,14 @@ namespace TGC.MonoGame.TP.MurosExtra{
             time = 0;
             _frustumMuros = frustrum;
             _frustumEsquinas = frustrum;
+            _frustumParedes = frustrum;
         }
 
         private void Initialize(){
             _muros = new List<Matrix>();
             _murosEsquina = new List<Matrix>();
-            
+            _murosPared = new List<Matrix>();
+
             Colliders = new List<BoundingBox>();
         }
 
@@ -85,9 +94,19 @@ namespace TGC.MonoGame.TP.MurosExtra{
                     meshPart.Effect = Effect;
                 }
             }
-            
+
+            ModeloMuroPared = Content.Load<Model>("Models/" + "Muros/towerSquareBase");
+            foreach (var mesh in ModeloMuroPared.Meshes)
+            {
+                foreach (var meshPart in mesh.MeshParts)
+                {
+                    meshPart.Effect = Effect;
+                }
+            }
+
             MuroSize = BoundingVolumesExtensions.CreateAABBFrom(ModeloMuro);
             MuroEsquinaSize = BoundingVolumesExtensions.CreateAABBFrom(ModeloMuroEsquina);
+            MuroParedSize = BoundingVolumesExtensions.CreateAABBFrom(ModeloMuroPared);
 
         }
 
@@ -106,9 +125,11 @@ namespace TGC.MonoGame.TP.MurosExtra{
             }
             _frustumEsquinas = new BoundingFrustum(view * projection * Matrix.CreateScale(escalaMurosEsquina));
             _frustumMuros = new BoundingFrustum(view * projection * Matrix.CreateScale(escalaMuros));
+            _frustumParedes = new BoundingFrustum(view * projection * Matrix.CreateScale(escalaMurosPared));
+
         }
-        
-        
+
+
 
         public void Draw(GameTime gameTime, Effect ShadowMapEffect, Matrix view, Matrix projection)
         {
@@ -145,6 +166,26 @@ namespace TGC.MonoGame.TP.MurosExtra{
                     var boundingBox = BoundingVolumesExtensions.FromMatrix(meshWorld);
 
                     if (_frustumEsquinas.Intersects(boundingBox))
+                    {
+                        ShadowMapEffect.Parameters["World"].SetValue(meshWorld);
+                        ShadowMapEffect.Parameters["baseTexture"].SetValue(Texture);
+                        ShadowMapEffect.Parameters["WorldViewProjection"].SetValue(meshWorld * viewProjection);
+                        ShadowMapEffect.Parameters["InverseTransposeWorld"].SetValue(Matrix.Transpose(Matrix.Invert(meshWorld)));
+                        ShadowMapEffect.Parameters["normalMap"].SetValue(NormalTexture);
+
+                        mesh.Draw();
+                    }
+                }
+            }
+
+            foreach (var worldMatrix in _murosPared)
+            {
+                foreach (var mesh in ModeloMuroPared.Meshes)
+                {
+                    var meshWorld = mesh.ParentBone.Transform * worldMatrix;
+                    var boundingBox = BoundingVolumesExtensions.FromMatrix(meshWorld);
+
+                    if (_frustumParedes.Intersects(boundingBox))
                     {
                         ShadowMapEffect.Parameters["World"].SetValue(meshWorld);
                         ShadowMapEffect.Parameters["baseTexture"].SetValue(Texture);
@@ -200,6 +241,25 @@ namespace TGC.MonoGame.TP.MurosExtra{
                     modelMesh.Draw(); // Dibuja el mesh en el mapa de sombras
                 }
             }
+            foreach (var worldMatrix in _murosPared)
+            {
+                foreach (var modelMesh in ModeloMuroPared.Meshes)
+                {
+                    var modelMeshesBaseTransforms = new Matrix[ModeloMuroPared.Bones.Count];
+                    ModeloMuroPared.CopyAbsoluteBoneTransformsTo(modelMeshesBaseTransforms);
+
+                    // Combina las transformaciones locales y globales.
+                    var meshWorld = modelMeshesBaseTransforms[modelMesh.ParentBone.Index] * worldMatrix;
+                    ShadowMapEffect.Parameters["WorldViewProjection"].SetValue(meshWorld * LightView * Projection);
+
+                    foreach (var part in modelMesh.MeshParts)
+                    {
+                        part.Effect = ShadowMapEffect; // Aplica el shader de sombras
+                    }
+
+                    modelMesh.Draw(); // Dibuja el mesh en el mapa de sombras
+                }
+            }
         }
 
         public void AgregarMurosPistaRecta(float Rotacion, Vector3 Posicion) {
@@ -209,17 +269,24 @@ namespace TGC.MonoGame.TP.MurosExtra{
             var desplazamientoDerecha = new Vector3(0f, -11.63f * 100, -10f * 100) ;
             //var desplazamientoIzquierda = new Vector3(-25.22f, -12f, -9f);
             var desplazamientoIzquierda = new Vector3(-0f, -11.63f * 100, 10f * 100);
+            
+            var desplazamientoAbajo = new Vector3(-0f, 0f,0f);
+
 
             // Calcular las posiciones de los muros aplicando la rotación
             var posicionDerecha = posicionMuros + Vector3.Transform(desplazamientoDerecha, Matrix.CreateRotationY(Rotacion));
             var posicionIzquierda = posicionMuros + Vector3.Transform(desplazamientoIzquierda, Matrix.CreateRotationY(Rotacion));
+            var posicionAbajo = posicionMuros + Vector3.Transform(desplazamientoAbajo, Matrix.CreateRotationY(Rotacion));
 
             // Crear las matrices de transformación para los muros
             Matrix muroDerecha = Matrix.CreateRotationY(Rotacion + MathHelper.ToRadians(-90)) * Matrix.CreateTranslation(posicionDerecha) * Matrix.CreateScale(escalaMuros);
             Matrix muroIzquierda = Matrix.CreateRotationY(Rotacion + MathHelper.ToRadians(90)) * Matrix.CreateTranslation(posicionIzquierda) * Matrix.CreateScale(escalaMuros);
+            Matrix muroAbajo = Matrix.CreateRotationY(Rotacion + MathHelper.ToRadians(90)) * Matrix.CreateTranslation(posicionAbajo) * Matrix.CreateScale(escalaMurosPared);
+
 
             _muros.Add(muroDerecha);
             _muros.Add(muroIzquierda);
+            _murosPared.Add(muroAbajo);
 
             // Crear y agregar los BoundingBox
             BoundingBox boxDerecha = CreateTransformedBoundingBox(muroDerecha, MuroSize, 5.0f);
@@ -227,6 +294,9 @@ namespace TGC.MonoGame.TP.MurosExtra{
 
             BoundingBox boxIzquierda = CreateTransformedBoundingBox(muroIzquierda, MuroSize, 5.0f);
             Colliders.Add(boxIzquierda);
+
+            BoundingBox boxAbajo = CreateTransformedBoundingBox(muroAbajo, MuroParedSize, 0f);
+            Colliders.Add(boxAbajo);
         }
         public void AgregarMurosPistaCurvaDerecha(float Rotacion, Vector3 Posicion) {
             float a = 3f;

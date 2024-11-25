@@ -27,7 +27,7 @@ namespace TGC.MonoGame.TP.ObstaculoPiedras{
         BoundingBox size;
         private BoundingFrustum _frustum;
         private Texture2D Textura { get; set; }
-        private Texture2D NormalMapTexture { get; set; }
+        private Texture2D NormalTextura { get; set; }
 
         Random random = new Random();
         
@@ -48,8 +48,8 @@ namespace TGC.MonoGame.TP.ObstaculoPiedras{
         public void LoadContent(ContentManager Content){
             ModeloPiedra = Content.Load<Model>("Models/" + "obstaculos/rockLargeWithTexture");
             Effect = Content.Load<Effect>("Effects/" + "BasicShader2");
-            Textura = Content.Load<Texture2D>("Textures/texturaPiedra");
-            NormalMapTexture = Content.Load<Texture2D>("Textures/NormalMapPiedra");
+            Textura = Content.Load<Texture2D>("Textures/texturaRoca");
+            NormalTextura = Content.Load<Texture2D>("Textures/NormalMapRoca");
             foreach (var mesh in ModeloPiedra.Meshes){
                 foreach (var meshPart in mesh.MeshParts){
                     meshPart.Effect = Effect;
@@ -77,11 +77,15 @@ namespace TGC.MonoGame.TP.ObstaculoPiedras{
 
                     if (_frustum.Intersects(boundingBox))
                     {
+                        ShadowMapEffect.Parameters["ambientColor"].SetValue(new Vector3(0.3f, 0.3f, 0.3f));
+                        ShadowMapEffect.Parameters["diffuseColor"].SetValue(new Vector3(0.5f, 0.5f, 0.5f));
+                        ShadowMapEffect.Parameters["specularColor"].SetValue(new Vector3(0.6f, 0.6f, 0.6f));
+                        ShadowMapEffect.Parameters["shininess"].SetValue(16f);
                         ShadowMapEffect.Parameters["World"].SetValue(meshWorld);
                         ShadowMapEffect.Parameters["baseTexture"].SetValue(Textura);
                         ShadowMapEffect.Parameters["WorldViewProjection"].SetValue(meshWorld * viewProjection);
                         ShadowMapEffect.Parameters["InverseTransposeWorld"].SetValue(Matrix.Transpose(Matrix.Invert(meshWorld)));
-                        ShadowMapEffect.Parameters["normalMap"].SetValue(NormalMapTexture);
+                        ShadowMapEffect.Parameters["normalMap"].SetValue(NormalTextura);
 
                         mesh.Draw();
                     }

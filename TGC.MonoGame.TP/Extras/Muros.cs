@@ -123,6 +123,10 @@ namespace TGC.MonoGame.TP.MurosExtra{
 
                     if (_frustumMuros.Intersects(boundingBox))
                     {
+                        ShadowMapEffect.Parameters["ambientColor"].SetValue(new Vector3(0.5f, 0.5f, 0.5f));
+                        ShadowMapEffect.Parameters["diffuseColor"].SetValue(new Vector3(0.6f, 0.6f, 0.6f));
+                        ShadowMapEffect.Parameters["specularColor"].SetValue(new Vector3(1f, 1f, 1f));
+                        ShadowMapEffect.Parameters["shininess"].SetValue(32f);
                         ShadowMapEffect.Parameters["World"].SetValue(meshWorld);
                         ShadowMapEffect.Parameters["baseTexture"].SetValue(Texture);
                         ShadowMapEffect.Parameters["WorldViewProjection"].SetValue(meshWorld * viewProjection);

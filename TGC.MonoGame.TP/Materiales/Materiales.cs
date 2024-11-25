@@ -22,6 +22,7 @@ using TGC.MonoGame.TP.ObstaculoCarretilla;
 using TGC.MonoGame.TP.Levels;
 using TGC.MonoGame.TP.Camera;
 using TGC.MonoGame.TP.Geometries;
+using TGC.MonoGame.TP.Fondo;
 
 
 namespace TGC.MonoGame.TP.MaterialesJuego {
@@ -123,7 +124,7 @@ namespace TGC.MonoGame.TP.MaterialesJuego {
             Gizmos.UpdateViewProjection(view, projection);
         }
 
-        public void Draw(GameTime gameTime, Sphere esfera, Matrix view, Matrix projection, GraphicsDevice graphicsDevice, Vector3 position )
+        public void Draw(GameTime gameTime, Sphere esfera, Matrix view, Matrix projection, GraphicsDevice graphicsDevice, Vector3 position, SkyBox skybox )
         {
 
             #region Pass 1: Renderizar el Shadow Map
@@ -158,10 +159,10 @@ namespace TGC.MonoGame.TP.MaterialesJuego {
             ShadowMapEffectPelota.Parameters["cameraPosition"].SetValue(position);
 
             //ESTO TIENE QUE IR POR CADA OBJETO
-            ShadowMapEffectPelota.Parameters["ambientColor"].SetValue(new Vector3(0.5f, 0.5f, 0.5f));
-            ShadowMapEffectPelota.Parameters["diffuseColor"].SetValue(new Vector3(0.6f, 0.6f, 0.6f));
-            ShadowMapEffectPelota.Parameters["specularColor"].SetValue(new Vector3(1f, 1f, 1f));
-            ShadowMapEffectPelota.Parameters["shininess"].SetValue(32f);
+            ShadowMapEffectPelota.Parameters["ambientColor"].SetValue(new Vector3(0.5f, 0.5f, 0.5f)); //esfera.pelota.ambientColor
+            ShadowMapEffectPelota.Parameters["diffuseColor"].SetValue(new Vector3(0.6f, 0.6f, 0.6f));//esfera.difuse
+            ShadowMapEffectPelota.Parameters["specularColor"].SetValue(new Vector3(1f, 1f, 1f));//esfera.specular
+            ShadowMapEffectPelota.Parameters["shininess"].SetValue(32f);//esfera.shinines
             //ESTO TIENE QUE IR POR CADA OBJETO
             ShadowMapEffectPelota.Parameters["shadowMapSize"].SetValue(shadowMapSizeA);
             ShadowMapEffectPelota.Parameters["LightViewProjection"].SetValue(ligtViewProj);
@@ -174,15 +175,13 @@ namespace TGC.MonoGame.TP.MaterialesJuego {
             ShadowMapEffect.Parameters["cameraPosition"].SetValue(position);
 
             //ESTO TIENE QUE IR POR CADA OBJETO
-            ShadowMapEffect.Parameters["ambientColor"].SetValue(new Vector3(0.5f, 0.5f, 0.5f));
-            ShadowMapEffect.Parameters["diffuseColor"].SetValue(new Vector3(0.6f, 0.6f, 0.6f));
-            ShadowMapEffect.Parameters["specularColor"].SetValue(new Vector3(1f, 1f, 1f));
-            ShadowMapEffect.Parameters["shininess"].SetValue(32f);
+            
             //ESTO TIENE QUE IR POR CADA OBJETO
             ShadowMapEffect.Parameters["shadowMapSize"].SetValue(shadowMapSizeA);
             ShadowMapEffect.Parameters["LightViewProjection"].SetValue(ligtViewProj);
-            
-            
+
+            skybox.Draw(view, projection, position);
+
             esfera.Draw(gameTime, ShadowMapEffectPelota, view, projection, graphicsDevice);
 
             //ShadowMapEffect.Parameters["useNormalMapping"].SetValue(true);

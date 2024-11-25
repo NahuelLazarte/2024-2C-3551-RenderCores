@@ -143,11 +143,19 @@ namespace TGC.MonoGame.TP.ObstaculoCarretilla {
                         string meshName = mesh.Name.ToLower();
                         switch (meshName) {
                             case "wheel":
+                                ShadowMapEffect.Parameters["ambientColor"].SetValue(new Vector3(0.5f, 0.5f, 0.5f));
+                                ShadowMapEffect.Parameters["diffuseColor"].SetValue(new Vector3(0.6f, 0.6f, 0.6f));
+                                ShadowMapEffect.Parameters["specularColor"].SetValue(new Vector3(1f, 1f, 1f));
+                                ShadowMapEffect.Parameters["shininess"].SetValue(32f);
                                 ShadowMapEffect.Parameters["baseTexture"]?.SetValue(TexturaMetal);
                                 ShadowMapEffect.Parameters["normalMap"].SetValue(NormalMapTexturaMetal);
 
                                 break;
                             case "cart":
+                                ShadowMapEffect.Parameters["ambientColor"].SetValue(new Vector3(0.5f, 0.5f, 0.5f));
+                                ShadowMapEffect.Parameters["diffuseColor"].SetValue(new Vector3(0.6f, 0.6f, 0.6f));
+                                ShadowMapEffect.Parameters["specularColor"].SetValue(new Vector3(1f, 1f, 1f));
+                                ShadowMapEffect.Parameters["shininess"].SetValue(32f);
                                 ShadowMapEffect.Parameters["baseTexture"]?.SetValue(TexturaMadera);
                                 ShadowMapEffect.Parameters["normalMap"].SetValue(NormalMapTexturaMadera);
 

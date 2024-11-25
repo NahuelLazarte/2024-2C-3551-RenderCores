@@ -156,19 +156,35 @@ namespace TGC.MonoGame.TP.CheckPoint{
                         {
                             
                             case "campfire":
+                                ShadowMapEffect.Parameters["ambientColor"].SetValue(new Vector3(0.5f, 0.5f, 0.5f));
+                                ShadowMapEffect.Parameters["diffuseColor"].SetValue(new Vector3(0.6f, 0.6f, 0.6f));
+                                ShadowMapEffect.Parameters["specularColor"].SetValue(new Vector3(1f, 1f, 1f));
+                                ShadowMapEffect.Parameters["shininess"].SetValue(32f);
                                 ShadowMapEffect.Parameters["baseTexture"]?.SetValue(TexturaMadera);
                                 ShadowMapEffect.Parameters["normalMap"].SetValue(NormalMapTexturaMadera);
                                 
                                 break;
                             case "bucket":
+                                ShadowMapEffect.Parameters["ambientColor"].SetValue(new Vector3(0.5f, 0.5f, 0.5f));
+                                ShadowMapEffect.Parameters["diffuseColor"].SetValue(new Vector3(0.6f, 0.6f, 0.6f));
+                                ShadowMapEffect.Parameters["specularColor"].SetValue(new Vector3(1f, 1f, 1f));
+                                ShadowMapEffect.Parameters["shininess"].SetValue(32f);
                                 ShadowMapEffect.Parameters["baseTexture"]?.SetValue(TexturaMetal);
                                 ShadowMapEffect.Parameters["normalMap"].SetValue(NormalMapTexturaMetal);
                                 break;
                             case "rocks":
+                                ShadowMapEffect.Parameters["ambientColor"].SetValue(new Vector3(0.5f, 0.5f, 0.5f));
+                                ShadowMapEffect.Parameters["diffuseColor"].SetValue(new Vector3(0.6f, 0.6f, 0.6f));
+                                ShadowMapEffect.Parameters["specularColor"].SetValue(new Vector3(1f, 1f, 1f));
+                                ShadowMapEffect.Parameters["shininess"].SetValue(32f);
                                 ShadowMapEffect.Parameters["baseTexture"]?.SetValue(TexturaPiedra);
                                 ShadowMapEffect.Parameters["normalMap"].SetValue(NormalMapTexturaPiedra);
                                 break;
                             case "wood":
+                                ShadowMapEffect.Parameters["ambientColor"].SetValue(new Vector3(0.5f, 0.5f, 0.5f));
+                                ShadowMapEffect.Parameters["diffuseColor"].SetValue(new Vector3(0.6f, 0.6f, 0.6f));
+                                ShadowMapEffect.Parameters["specularColor"].SetValue(new Vector3(1f, 1f, 1f));
+                                ShadowMapEffect.Parameters["shininess"].SetValue(32f);
                                 ShadowMapEffect.Parameters["baseTexture"]?.SetValue(TexturaFuego);
                                 ShadowMapEffect.Parameters["normalMap"].SetValue(NormalMapTexturaFuego);
                                 break;

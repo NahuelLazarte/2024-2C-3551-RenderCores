@@ -49,6 +49,7 @@ namespace TGC.MonoGame.TP.Constructor{
 
             AgregarPistaRecta(_materiales._pistasRectas, _materiales);
             AgregarPistaCurvaDerecha(_materiales._pistasCurvasDerechas, _materiales);
+            /*
             AgregarObstaculoPiedra(_materiales._piedras);
             AgregarObstaculoPiedra(_materiales._piedras);
             AgregarObstaculoPiedra(_materiales._piedras);
@@ -56,6 +57,7 @@ namespace TGC.MonoGame.TP.Constructor{
             AgregarObstaculoPiedra(_materiales._piedras);
             AgregarObstaculoPiedra(_materiales._piedras);
             AgregarObstaculoPiedra(_materiales._piedras);
+            */
             AgregarObstaculoPiedra(_materiales._piedras);
 
             AgregarPistaRecta(_materiales._pistasRectas, _materiales);

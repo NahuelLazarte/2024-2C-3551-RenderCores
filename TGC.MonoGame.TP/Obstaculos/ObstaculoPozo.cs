@@ -51,8 +51,8 @@ namespace TGC.MonoGame.TP.ObstaculoPozo
         {
             ModeloPozo = Content.Load<Model>("Models/" + "obstaculos/rockLargeWithTexture");
             Effect = Content.Load<Effect>("Effects/" + "BasicShader2");
-            Textura = Content.Load<Texture2D>("Textures/texturaPiedra");
-            NormalTextura = Content.Load<Texture2D>("Textures/NormalMapPiedra");
+            Textura = Content.Load<Texture2D>("Textures/texturaRoca");
+            NormalTextura = Content.Load<Texture2D>("Textures/NormalMapRoca");
 
             foreach (var mesh in ModeloPozo.Meshes)
             {
@@ -90,12 +90,15 @@ namespace TGC.MonoGame.TP.ObstaculoPozo
                     BoundingBox boundingBox = new BoundingBox(transformedMin, transformedMax);
 
                     //if (_frustum.Intersects(boundingBox))
-                    //{
-                        ShadowMapEffect.Parameters["World"].SetValue(meshWorld);
-                        ShadowMapEffect.Parameters["baseTexture"].SetValue(Textura);
-                        ShadowMapEffect.Parameters["WorldViewProjection"].SetValue(meshWorld * viewProjection);
-                        ShadowMapEffect.Parameters["InverseTransposeWorld"].SetValue(Matrix.Transpose(Matrix.Invert(meshWorld)));
-                        ShadowMapEffect.Parameters["normalMap"].SetValue(NormalTextura);
+                    ShadowMapEffect.Parameters["ambientColor"].SetValue(new Vector3(0.3f, 0.3f, 0.3f));
+                    ShadowMapEffect.Parameters["diffuseColor"].SetValue(new Vector3(0.5f, 0.5f, 0.5f));
+                    ShadowMapEffect.Parameters["specularColor"].SetValue(new Vector3(0.6f, 0.6f, 0.6f));
+                    ShadowMapEffect.Parameters["shininess"].SetValue(16f);
+                    ShadowMapEffect.Parameters["World"].SetValue(meshWorld);
+                    ShadowMapEffect.Parameters["baseTexture"].SetValue(Textura);
+                    ShadowMapEffect.Parameters["WorldViewProjection"].SetValue(meshWorld * viewProjection);
+                    ShadowMapEffect.Parameters["InverseTransposeWorld"].SetValue(Matrix.Transpose(Matrix.Invert(meshWorld)));
+                    ShadowMapEffect.Parameters["normalMap"].SetValue(NormalTextura);
 
                     mesh.Draw();
                     //}

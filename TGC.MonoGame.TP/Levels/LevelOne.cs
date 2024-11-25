@@ -230,10 +230,10 @@ namespace TGC.MonoGame.TP
         public void ObjectsToDraw(GameTime gameTime)
         {
             //Skybox
-            SkyBox.Draw(FrustrumCamera.ViewMatrix, FrustrumCamera.ProjectionMatrix, FrustrumCamera.position);
+            //SkyBox.Draw(FrustrumCamera.ViewMatrix, FrustrumCamera.ProjectionMatrix, FrustrumCamera.position);
 
             //Objetos
-            _materiales.Draw(gameTime, esfera, FrustrumCamera.ViewMatrix, FrustrumCamera.ProjectionMatrix, GraphicsDevice, FrustrumCamera.position);
+            _materiales.Draw(gameTime, esfera, FrustrumCamera.ViewMatrix, FrustrumCamera.ProjectionMatrix, GraphicsDevice, FrustrumCamera.position, SkyBox);
             
 
             Vector3 start = new Vector3(0, 0, 0);

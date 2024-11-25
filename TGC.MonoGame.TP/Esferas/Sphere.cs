@@ -87,6 +87,7 @@ namespace TGC.MonoGame.TP.Modelos
             //boundingSphere.Radius *= 0.026f;
             boundingSphere.Radius *= 0.023f;
 
+            /*
             Effect.Parameters["ambientColor"].SetValue(Microsoft.Xna.Framework.Color.White.ToVector3());
             Effect.Parameters["diffuseColor"].SetValue(Microsoft.Xna.Framework.Color.Yellow.ToVector3());
             Effect.Parameters["specularColor"].SetValue(Microsoft.Xna.Framework.Color.White.ToVector3());
@@ -96,7 +97,7 @@ namespace TGC.MonoGame.TP.Modelos
             Effect.Parameters["KSpecular"]?.SetValue(0f);
             Effect.Parameters["shininess"]?.SetValue(1f);
 
-            Effect.CurrentTechnique = Effect.Techniques["LightingTechnique"];
+            Effect.CurrentTechnique = Effect.Techniques["LightingTechnique"];*/
 
             // FALTA CARGAR AUDIOS
             pelota.soundEffectMovimientoMadera = content.Load<SoundEffect>("Audio/movimientoMadera");

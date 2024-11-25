@@ -25,8 +25,10 @@ using TGC.MonoGame.TP.Geometries;
 using TGC.MonoGame.TP.Fondo;
 
 
-namespace TGC.MonoGame.TP.MaterialesJuego {
-    public class Materiales {
+namespace TGC.MonoGame.TP.MaterialesJuego
+{
+    public class Materiales
+    {
         private Gizmos.Gizmos Gizmos;
         LineDrawer lineDrawer;
 
@@ -54,30 +56,32 @@ namespace TGC.MonoGame.TP.MaterialesJuego {
         private Effect ShadowMapEffectPelota { get; set; }
 
 
-        public Materiales(ContentManager Content, GraphicsDevice graphicsDevice, BoundingFrustum frustrum, Matrix view, Matrix projection) {
-            _pistasCurvasDerechas = new PistasCurvasDerechas(view,projection);
-            _pistasCurvasIzquierdas = new PistasCurvasIzquierdas(view,projection);
-            _pistasRectas = new PistasRectas(view,projection);
-            _hamburguesas = new PowerUpHamburguesas(view,projection);
-            _espadas = new PowerUpEspadas(view,projection);
-            _piedras = new ObstaculosPiedras(view,projection);
+        public Materiales(ContentManager Content, GraphicsDevice graphicsDevice, BoundingFrustum frustrum, Matrix view, Matrix projection)
+        {
+            _pistasCurvasDerechas = new PistasCurvasDerechas(view, projection);
+            _pistasCurvasIzquierdas = new PistasCurvasIzquierdas(view, projection);
+            _pistasRectas = new PistasRectas(view, projection);
+            _hamburguesas = new PowerUpHamburguesas(view, projection);
+            _espadas = new PowerUpEspadas(view, projection);
+            _piedras = new ObstaculosPiedras(view, projection);
             _pozos = new ObstaculosPozos(view, projection);
-            _checkPoints = new CheckPoints(view,projection);
-            _checkPointFinal = new CheckPointFinal(view,projection);
-            _marcadoresCheckPoints = new MarcadoresCheckPoints(view,projection);
+            _checkPoints = new CheckPoints(view, projection);
+            _checkPointFinal = new CheckPointFinal(view, projection);
+            _marcadoresCheckPoints = new MarcadoresCheckPoints(view, projection);
             _muros = new Muros(frustrum);
-            _carretillas = new ObstaculosCarretillas(view,projection);
+            _carretillas = new ObstaculosCarretillas(view, projection);
 
             CollidersDibujo = new List<BoundingBox>();
 
             Initialize(Content, graphicsDevice);
         }
 
-        private void Initialize(ContentManager Content, GraphicsDevice graphicsDevice) {
-            
+        private void Initialize(ContentManager Content, GraphicsDevice graphicsDevice)
+        {
+
             TargetLightCamera = new TargetCamera(1f, LightPosition, Vector3.Zero, graphicsDevice.Viewport);
             TargetLightCamera.BuildProjection(1f, LightCameraNearPlaneDistance, LightCameraFarPlaneDistance,
-            MathHelper.PiOver2);        
+            MathHelper.PiOver2);
 
             ShadowMapEffect = Content.Load<Effect>("Effects/ShadowMap");
             ShadowMapEffectPelota = Content.Load<Effect>("Effects/ShadowMapPelota");
@@ -111,7 +115,7 @@ namespace TGC.MonoGame.TP.MaterialesJuego {
 
         public void Update(GameTime gameTime, Level Game, Matrix view, Matrix projection, BoundingFrustum frustum)
         {
-            
+
             _pistasCurvasDerechas.Update(gameTime, view, projection);
             _pistasCurvasIzquierdas.Update(gameTime, view, projection);
             _pistasRectas.Update(gameTime, view, projection);
@@ -128,7 +132,7 @@ namespace TGC.MonoGame.TP.MaterialesJuego {
             Gizmos.UpdateViewProjection(view, projection);
         }
 
-        public void Draw(GameTime gameTime, Sphere esfera, Matrix view, Matrix projection, GraphicsDevice graphicsDevice, Vector3 position, SkyBox skybox )
+        public void Draw(GameTime gameTime, Sphere esfera, Matrix view, Matrix projection, GraphicsDevice graphicsDevice, Vector3 position, SkyBox skybox)
         {
 
             #region Pass 1: Renderizar el Shadow Map
@@ -155,7 +159,7 @@ namespace TGC.MonoGame.TP.MaterialesJuego {
             #region Pass 2: Renderizar la escena con sombras
             graphicsDevice.SetRenderTarget(null);
             graphicsDevice.Clear(ClearOptions.Target | ClearOptions.DepthBuffer, Color.CornflowerBlue, 1f, 0);
-            
+
             var shadowMapSizeA = Vector2.One * ShadowmapSize;
             var ligtViewProj = TargetLightCamera.View * TargetLightCamera.Projection;
 
@@ -164,12 +168,12 @@ namespace TGC.MonoGame.TP.MaterialesJuego {
             ShadowMapEffectPelota.Parameters["lightPosition"].SetValue(LightPosition);
             ShadowMapEffectPelota.Parameters["cameraPosition"].SetValue(position);
 
-            
+
             ShadowMapEffectPelota.Parameters["ambientColor"].SetValue(esfera.pelota.ambientColor); //esfera.pelota.ambientColor
             ShadowMapEffectPelota.Parameters["diffuseColor"].SetValue(esfera.pelota.diffuseColor);//esfera.difuse
             ShadowMapEffectPelota.Parameters["specularColor"].SetValue(esfera.pelota.specularColor);//esfera.specular
             ShadowMapEffectPelota.Parameters["shininess"].SetValue(esfera.pelota.shininess);//esfera.shinines
-            
+
             ShadowMapEffectPelota.Parameters["shadowMapSize"].SetValue(shadowMapSizeA);
             ShadowMapEffectPelota.Parameters["LightViewProjection"].SetValue(ligtViewProj);
 
@@ -182,9 +186,53 @@ namespace TGC.MonoGame.TP.MaterialesJuego {
             ShadowMapEffect.Parameters["shadowMapSize"].SetValue(shadowMapSizeA);
             ShadowMapEffect.Parameters["LightViewProjection"].SetValue(ligtViewProj);
 
+
+            //acá tendría que primer hacer el enviroment map, luego dibujar todo
+            //hay que chequear si la pelota tiene el enviroment map activado
+            #region Pass 1-6
+
+            graphicsDevice.DepthStencilState = DepthStencilState.Default;
+            // Draw to our cubemap from the robot position
+            for (var face = CubeMapFace.PositiveX; face <= CubeMapFace.NegativeZ; face++)
+            {
+                // Set the render target as our cubemap face, we are drawing the scene in this texture
+                graphicsDevice.SetRenderTarget(esfera.EnvironmentMapRenderTarget, face);
+                graphicsDevice.Clear(ClearOptions.Target | ClearOptions.DepthBuffer, Color.CornflowerBlue, 1f, 0);
+
+                esfera.SetCubemapCameraForOrientation(face);
+                esfera.CubeMapCamera.BuildView();
+
+                // Draw our scene. Do not draw our tank as it would be occluded by itself 
+                // (if it has backface culling on)
+                //Scene.Draw(Matrix.Identity, esfera.CubeMapCamera.View, esfera.CubeMapCamera.Projection);
+                esfera.Draw(gameTime, ShadowMapEffectPelota, view, projection, graphicsDevice,position);
+
+                //ShadowMapEffect.Parameters["useNormalMapping"].SetValue(true);
+                skybox.Draw(esfera.CubeMapCamera.View, esfera.CubeMapCamera.Projection, position);
+                _piedras.Draw(gameTime, ShadowMapEffect, esfera.CubeMapCamera.View, esfera.CubeMapCamera.Projection);
+                _carretillas.Draw(gameTime, ShadowMapEffect, esfera.CubeMapCamera.View, esfera.CubeMapCamera.Projection);
+                _pozos.Draw(gameTime, ShadowMapEffect, esfera.CubeMapCamera.View, esfera.CubeMapCamera.Projection);
+                _pistasCurvasDerechas.Draw(gameTime, ShadowMapEffect, esfera.CubeMapCamera.View, esfera.CubeMapCamera.Projection);
+                _pistasRectas.Draw(gameTime, ShadowMapEffect, esfera.CubeMapCamera.View, esfera.CubeMapCamera.Projection);
+                _pistasCurvasIzquierdas.Draw(gameTime, ShadowMapEffect, esfera.CubeMapCamera.View, esfera.CubeMapCamera.Projection);
+                _muros.Draw(gameTime, ShadowMapEffect, view, esfera.CubeMapCamera.Projection);
+                _checkPoints.Draw(gameTime, ShadowMapEffect, esfera.CubeMapCamera.View, esfera.CubeMapCamera.Projection);
+                _marcadoresCheckPoints.Draw(gameTime, ShadowMapEffect, esfera.CubeMapCamera.View, esfera.CubeMapCamera.Projection);
+                _checkPointFinal.Draw(gameTime, ShadowMapEffect, esfera.CubeMapCamera.View, esfera.CubeMapCamera.Projection);
+                _hamburguesas.Draw(gameTime, ShadowMapEffect, esfera.CubeMapCamera.View, esfera.CubeMapCamera.Projection);
+
+            }
+
+            #endregion
+            #region Pass 7
+
+            // Set the render target as null, we are drawing on the screen!
+            graphicsDevice.SetRenderTarget(null);
+            graphicsDevice.Clear(ClearOptions.Target | ClearOptions.DepthBuffer, Color.CornflowerBlue, 1f, 0);
+
             skybox.Draw(view, projection, position);
 
-            esfera.Draw(gameTime, ShadowMapEffectPelota, view, projection, graphicsDevice);
+            
 
             //ShadowMapEffect.Parameters["useNormalMapping"].SetValue(true);
             _piedras.Draw(gameTime, ShadowMapEffect, view, projection);
@@ -199,6 +247,12 @@ namespace TGC.MonoGame.TP.MaterialesJuego {
             _checkPointFinal.Draw(gameTime, ShadowMapEffect, view, projection);
             _hamburguesas.Draw(gameTime, ShadowMapEffect, view, projection);
 
+            #region Draw Sphere
+            esfera.Draw(gameTime, ShadowMapEffectPelota, view, projection, graphicsDevice,position);
+
+            #endregion
+            #endregion
+
             //ShadowMapEffect.Parameters["useNormalMapping"].SetValue(false);
 
             /*
@@ -212,7 +266,7 @@ namespace TGC.MonoGame.TP.MaterialesJuego {
             #endregion
 
 
-            
+
             _espadas.Draw(gameTime, view, projection, graphicsDevice);
 
             foreach (var boundingBoxPista in CollidersDibujo)
@@ -220,10 +274,11 @@ namespace TGC.MonoGame.TP.MaterialesJuego {
                 Gizmos.DrawCube((boundingBoxPista.Max + boundingBoxPista.Min) / 2f, boundingBoxPista.Max - boundingBoxPista.Min, Color.Green);
             }
             Gizmos.Draw(); // PARA DIBUJAR LOS CUBOS DE GIZMOS
-            
+
         }
 
-        public void ColliderEsfera(BoundingSphere boundingSphere){
+        public void ColliderEsfera(BoundingSphere boundingSphere)
+        {
             //Se le pasa el BoungingSphere de la esfera
             _hamburguesas._envolturaEsfera = boundingSphere;
             _espadas._envolturaEsfera = boundingSphere;
@@ -235,7 +290,8 @@ namespace TGC.MonoGame.TP.MaterialesJuego {
             _carretillas._envolturaEsfera = boundingSphere;
         }
 
-        internal void DarCollidersEsfera(Modelos.Sphere esfera){
+        internal void DarCollidersEsfera(Modelos.Sphere esfera)
+        {
             //a la esfera se agrega a la lista los colliders de todos los objetos
             List<BoundingBox> CollidersPistaRecta = _pistasRectas.Colliders;
             List<BoundingBox> CollidersPistaCurvaDerecha = _pistasCurvasDerechas.Colliders;

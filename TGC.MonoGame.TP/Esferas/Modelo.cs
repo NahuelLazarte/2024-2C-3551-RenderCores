@@ -24,8 +24,8 @@ namespace TGC.MonoGame.TP.Modelos
         public Effect Effect { get; set; } // mejorar
         protected Texture Texture { get; set; }
         protected Texture NormalTexture { get; set; }
-        private RenderTargetCube EnvironmentMapRenderTarget { get; set; }
-        private StaticCamera CubeMapCamera { get; set; }
+        public RenderTargetCube EnvironmentMapRenderTarget { get; set; }
+        public StaticCamera CubeMapCamera { get; set; }
         private const int EnvironmentmapSize = 2048;
 
         public void SetPosition(Vector3 newPosition) { Position = newPosition; }
@@ -75,13 +75,13 @@ namespace TGC.MonoGame.TP.Modelos
             World = Scale * Rotation * Matrix.CreateTranslation(Position);
         }
 
-        public virtual void Draw(GameTime gameTime, Effect ShadowMapEffect, Matrix view, Matrix projection, GraphicsDevice graphicsDevice)
+        public virtual void Draw(GameTime gameTime, Effect ShadowMapEffect, Matrix view, Matrix projection, GraphicsDevice graphicsDevice, Vector3 cameraPosition)
         {
             foreach (var mesh in Model3D.Meshes)
             {
                 foreach (var meshPart in mesh.MeshParts)
                 {
-                    meshPart.Effect = ShadowMapEffect;
+                    meshPart.Effect = Effect;//ShadowMapEffect;
                 }
             }
 
@@ -108,13 +108,27 @@ namespace TGC.MonoGame.TP.Modelos
             var viewProjection = view * projection;
 
             //ShadowMapEffect.Parameters["environmentMap"].SetValue(EnvironmentMapRenderTarget);
+
+
+            /*
             ShadowMapEffect.Parameters["World"].SetValue(World);
             ShadowMapEffect.Parameters["baseTexture"].SetValue(Texture);
             ShadowMapEffect.Parameters["WorldViewProjection"].SetValue(World * viewProjection);
             ShadowMapEffect.Parameters["InverseTransposeWorld"].SetValue(Matrix.Transpose(Matrix.Invert(World)));
-            ShadowMapEffect.Parameters["normalMap"].SetValue(NormalTexture);
+            ShadowMapEffect.Parameters["normalMap"].SetValue(NormalTexture);*/
 
 
+            Effect.CurrentTechnique = Effect.Techniques["EnvironmentMapSphere"];
+            Effect.Parameters["environmentMap"].SetValue(EnvironmentMapRenderTarget);
+            Effect.Parameters["eyePosition"].SetValue(cameraPosition);
+
+
+            // World is used to transform from model space to world space
+            Effect.Parameters["World"].SetValue(World);
+            // InverseTransposeWorld is used to rotate normals
+            Effect.Parameters["InverseTransposeWorld"]?.SetValue(Matrix.Transpose(Matrix.Invert(World)));
+            // WorldViewProjection is used to transform from model space to clip space
+            Effect.Parameters["WorldViewProjection"].SetValue(World * viewProjection);
 
 
             foreach (var mesh in Model3D.Meshes)
@@ -148,7 +162,7 @@ namespace TGC.MonoGame.TP.Modelos
                 }
         }
 
-        private void SetCubemapCameraForOrientation(CubeMapFace face)
+        public void SetCubemapCameraForOrientation(CubeMapFace face)
         {
             switch (face)
             {

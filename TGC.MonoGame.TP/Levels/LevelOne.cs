@@ -134,7 +134,7 @@ namespace TGC.MonoGame.TP
         private void SetLightPosition(Vector3 position)
         {
             LightBoxWorld = Matrix.CreateScale(3f) * Matrix.CreateTranslation(position);
-            esfera.Effect.Parameters["lightPosition"].SetValue(position);
+            esfera.Effect.Parameters["lightPosition"]?.SetValue(position);
             //_materiales._muros.Effect.Parameters["lightPosition"].SetValue(position);
         }
 
@@ -266,100 +266,7 @@ namespace TGC.MonoGame.TP
         }
 
 
-        private void SetCubemapCameraForOrientation(CubeMapFace face)
-        {
-            switch (face)
-            {
-                default:
-                case CubeMapFace.PositiveX:
-                    CubeMapCamera.FrontDirection = -Vector3.UnitX;
-                    CubeMapCamera.UpDirection = Vector3.Down;
-                    break;
 
-                case CubeMapFace.NegativeX:
-                    CubeMapCamera.FrontDirection = Vector3.UnitX;
-                    CubeMapCamera.UpDirection = Vector3.Down;
-                    break;
-
-                case CubeMapFace.PositiveY:
-                    CubeMapCamera.FrontDirection = Vector3.Down;
-                    CubeMapCamera.UpDirection = Vector3.UnitZ;
-                    break;
-
-                case CubeMapFace.NegativeY:
-                    CubeMapCamera.FrontDirection = Vector3.Up;
-                    CubeMapCamera.UpDirection = -Vector3.UnitZ;
-                    break;
-
-                case CubeMapFace.PositiveZ:
-                    CubeMapCamera.FrontDirection = -Vector3.UnitZ;
-                    CubeMapCamera.UpDirection = Vector3.Down;
-                    break;
-
-                case CubeMapFace.NegativeZ:
-                    CubeMapCamera.FrontDirection = Vector3.UnitZ;
-                    CubeMapCamera.UpDirection = Vector3.Down;
-                    break;
-            }
-        }
-
-        private void DrawEnvironmentMap(GameTime gameTime)
-        {
-            #region Pass 1-6
-
-            GraphicsDevice.DepthStencilState = DepthStencilState.Default;
-            // Draw to our cubemap from the robot position
-            for (var face = CubeMapFace.PositiveX; face <= CubeMapFace.NegativeZ; face++)
-            {
-                // Set the render target as our cubemap face, we are drawing the scene in this texture
-                GraphicsDevice.SetRenderTarget(EnvironmentMapRenderTarget, face);
-                GraphicsDevice.Clear(ClearOptions.Target | ClearOptions.DepthBuffer, Color.CornflowerBlue, 1f, 0);
-
-                SetCubemapCameraForOrientation(face);
-                CubeMapCamera.BuildView();
-
-                // Draw our scene. Do not draw our tank as it would be occluded by itself 
-                // (if it has backface culling on)
-                //Scene.Draw(Matrix.Identity, CubeMapCamera.View, CubeMapCamera.Projection);
-                ObjectsToDraw(gameTime);
-            }
-
-            #endregion
-
-            #region Pass 7
-
-            // Set the render target as null, we are drawing on the screen!
-            GraphicsDevice.SetRenderTarget(null);
-            GraphicsDevice.Clear(ClearOptions.Target | ClearOptions.DepthBuffer, Color.CornflowerBlue, 1f, 0);
-
-
-            // Draw our scene with the default effect and default camera
-            //Scene.Draw(Matrix.Identity, Camera.View, Camera.Projection);
-            ObjectsToDraw(gameTime);
-
-            // Draw our sphere
-
-            #region Draw Sphere
-
-            Effect.CurrentTechnique = Effect.Techniques["EnvironmentMapSphere"];
-            Effect.Parameters["environmentMap"].SetValue(EnvironmentMapRenderTarget);
-            Effect.Parameters["eyePosition"].SetValue(FrustrumCamera.position);
-
-            var sphereWorld = Matrix.CreateTranslation(esfera.GetPosition());
-
-            // World is used to transform from model space to world space
-            Effect.Parameters["World"].SetValue(sphereWorld);
-            // InverseTransposeWorld is used to rotate normals
-            Effect.Parameters["InverseTransposeWorld"]?.SetValue(Matrix.Transpose(Matrix.Invert(sphereWorld)));
-            // WorldViewProjection is used to transform from model space to clip space
-            Effect.Parameters["WorldViewProjection"].SetValue(sphereWorld * FrustrumCamera.ViewMatrix * FrustrumCamera.ProjectionMatrix);
-
-            //Sphere.Draw(Effect);
-
-            #endregion
-            #endregion
-
-        }
 
     }
 }

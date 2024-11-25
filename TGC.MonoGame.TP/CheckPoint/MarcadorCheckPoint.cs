@@ -20,6 +20,8 @@ namespace TGC.MonoGame.TP.MarcadorCheckPoint{
         public const string ContentFolderEffects = "Effects/";
         public Effect Effect { get; set; }
         public Texture2D Textura { get; set; }
+        public Texture2D normalTexture { get; set; }
+
         public Matrix scale = Matrix.CreateScale(1f);
         public Model ModeloMarcadorCheckPoint { get; set; }
         public List<BoundingBox> Colliders { get; set; }
@@ -42,7 +44,9 @@ namespace TGC.MonoGame.TP.MarcadorCheckPoint{
         public void LoadContent(ContentManager Content){
             ModeloMarcadorCheckPoint = Content.Load<Model>("Models/" + "CheckPoint/checkpointArrowWithTextures"); 
             Effect = Content.Load<Effect>("Effects/" + "BasicShader2");
-            Textura = Content.Load<Texture2D>("Textures/" + "texturaMadera"); 
+            Textura = Content.Load<Texture2D>("Textures/" + "texturaOro");
+            normalTexture = Content.Load<Texture2D>("Textures/" + "NormalMapOro");
+
 
             foreach (var mesh in ModeloMarcadorCheckPoint.Meshes){
                 Console.WriteLine($"Meshname marcadorCheck {mesh.Name}");
@@ -88,13 +92,18 @@ namespace TGC.MonoGame.TP.MarcadorCheckPoint{
                         var meshWorld = mesh.ParentBone.Transform * worldMatrix;
                         var boundingBox = BoundingVolumesExtensions.FromMatrix(meshWorld);
 
-                        if (_frustum.Intersects(boundingBox) && checkpointActualAux == i){   
+                        if (_frustum.Intersects(boundingBox) && checkpointActualAux == i){
+                            ShadowMapEffect.Parameters["ambientColor"].SetValue(new Vector3(0.5f, 0.5f, 0.5f));
+                            ShadowMapEffect.Parameters["diffuseColor"].SetValue(new Vector3(0.7f, 0.7f, 0.7f));
+                            ShadowMapEffect.Parameters["specularColor"].SetValue(new Vector3(1f, 1f, 1f));
+                            ShadowMapEffect.Parameters["shininess"].SetValue(64f);
                             ShadowMapEffect.Parameters["World"].SetValue(meshWorld);
                             ShadowMapEffect.Parameters["baseTexture"]?.SetValue(Textura);
                             ShadowMapEffect.Parameters["WorldViewProjection"].SetValue(meshWorld * viewProjection);
                             ShadowMapEffect.Parameters["InverseTransposeWorld"].SetValue(Matrix.Transpose(Matrix.Invert(meshWorld)));
+                            ShadowMapEffect.Parameters["normalMap"].SetValue(normalTexture);
 
-                            mesh.Draw();
+                        mesh.Draw();
                         }
                     }
             }

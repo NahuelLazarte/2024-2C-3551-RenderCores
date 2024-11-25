@@ -183,7 +183,7 @@ namespace TGC.MonoGame.TP.MaterialesJuego {
             ShadowMapEffect.Parameters["LightViewProjection"].SetValue(ligtViewProj);
             
             
-            esfera.Draw(gameTime, ShadowMapEffectPelota, view, projection);
+            esfera.Draw(gameTime, ShadowMapEffectPelota, view, projection, graphicsDevice);
 
             //ShadowMapEffect.Parameters["useNormalMapping"].SetValue(true);
             _piedras.Draw(gameTime, ShadowMapEffect, view, projection);

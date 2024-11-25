@@ -42,23 +42,18 @@ namespace TGC.MonoGame.TP.Constructor{
 
         public void CargarElementos(Materiales _materiales) {
 
-
+            
+            AgregarPistaRecta(_materiales._pistasRectas, _materiales);
+            
+            AgregarPistaRecta(_materiales._pistasRectas, _materiales);
             AgregarPistaRecta(_materiales._pistasRectas, _materiales);
 
             AgregarPistaRecta(_materiales._pistasRectas, _materiales);
-            AgregarPistaRecta(_materiales._pistasRectas, _materiales);
-
-            AgregarPistaRecta(_materiales._pistasRectas, _materiales);
+            
             AgregarPistaCurvaDerecha(_materiales._pistasCurvasDerechas, _materiales);
-            /*
-            AgregarObstaculoPiedra(_materiales._piedras);
-            AgregarObstaculoPiedra(_materiales._piedras);
-            AgregarObstaculoPiedra(_materiales._piedras);
-            AgregarObstaculoPiedra(_materiales._piedras);
-            AgregarObstaculoPiedra(_materiales._piedras);
-            AgregarObstaculoPiedra(_materiales._piedras);
-            AgregarObstaculoPiedra(_materiales._piedras);
-            */
+            
+            
+            
             AgregarObstaculoPiedra(_materiales._piedras);
 
             AgregarPistaRecta(_materiales._pistasRectas, _materiales);
@@ -134,12 +129,16 @@ namespace TGC.MonoGame.TP.Constructor{
             //AgregarObstaculoCarretilla(_materiales._carretillas);
             AgregarObstaculoCarretilla(_materiales._carretillas);
             AgregarPistaRecta(_materiales._pistasRectas, _materiales);
+            
+
             AgregarPistaCurvaIzquierda(_materiales._pistasCurvasIzquierdas, _materiales);
             AgregarFinal(_materiales._checkPointFinal, _materiales);
+            AgregarPistaRecta(_materiales._pistasRectas, _materiales);
+            AgregarPistaRecta(_materiales._pistasRectas, _materiales);
 
         }
 
-        void AgregarPistaRecta(PistasRectas unaPista, Materiales _materialesAux)
+        public void AgregarPistaRecta(PistasRectas unaPista, Materiales _materialesAux)
         {
             Vector3 desplazamiento = unaPista.Desplazamiento();
             float rotacion = unaPista.Rotacion();
@@ -233,11 +232,12 @@ namespace TGC.MonoGame.TP.Constructor{
         void AgregarFinal(CheckPointFinal unCheckPointFinal, Materiales _materialesAux)
         {
             AgregarCheckPoint(_materialesAux._checkPoints, _materialesAux._marcadoresCheckPoints);
-            Vector3 desplazamiento = unCheckPointFinal.Desplazamiento();
-            float rotacion = unCheckPointFinal.Rotacion();
-            unCheckPointFinal.AgregarCheckPointFinal(rotacionActual, posicionActual, _materialesAux);
-            rotacionActual += rotacion;
-            posicionActual += Vector3.Transform(desplazamiento, Matrix.CreateRotationY(rotacionActual));
+            unCheckPointFinal.Final(rotacionActual, posicionActual, _materialesAux);
+            //Vector3 desplazamiento = unCheckPointFinal.Desplazamiento();
+            //float rotacion = unCheckPointFinal.Rotacion();
+            //unCheckPointFinal.AgregarCheckPointFinal(rotacionActual, posicionActual, _materialesAux);
+            //rotacionActual += rotacion;
+            //posicionActual += Vector3.Transform(desplazamiento, Matrix.CreateRotationY(rotacionActual));
             //Esferas.Add(posicionActual);
         }
         

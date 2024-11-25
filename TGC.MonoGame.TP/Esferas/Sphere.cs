@@ -101,11 +101,11 @@ namespace TGC.MonoGame.TP.Modelos
             // FALTA CARGAR AUDIOS
             pelota.soundEffectMovimientoMadera = content.Load<SoundEffect>("Audio/movimientoMadera");
             pelota.soundEffectCaidaMadera = content.Load<SoundEffect>("Audio/caidaMadera");
-            pelota.soundEffectMovimientoMetal = content.Load<SoundEffect>("Audio/movimientoPiedra");
+            pelota.soundEffectMovimientoMetal = content.Load<SoundEffect>("Audio/movimientoMetal");
             pelota.soundEffectCaidaMetal = content.Load<SoundEffect>("Audio/caidaMetal");
-            pelota.soundEffectMovimientoPlastico = content.Load<SoundEffect>("Audio/movimientoPiedra");
+            pelota.soundEffectMovimientoPlastico = content.Load<SoundEffect>("Audio/movimientoMetal");
             pelota.soundEffectCaidaPlastico = content.Load<SoundEffect>("Audio/caidaPlastico");
-            pelota.soundEffectMovimientoGolf = content.Load<SoundEffect>("Audio/movimientoPiedra");
+            pelota.soundEffectMovimientoGolf = content.Load<SoundEffect>("Audio/movimientoMetal");
             pelota.soundEffectCaidaGolf = content.Load<SoundEffect>("Audio/caidaGolf");
             // FALTA CARGAR AUDIOS
 
@@ -155,7 +155,7 @@ namespace TGC.MonoGame.TP.Modelos
                     ApplyRotation(elapsedTime, direction);
                     if (!isMoving)
                     {
-                        pelota.soundEffectMovimiento.Play();
+                        //pelota.soundEffectMovimiento.Play();
                         isMoving = true;
                     }
                 }
@@ -174,7 +174,7 @@ namespace TGC.MonoGame.TP.Modelos
                     ApplyRotation(elapsedTime, -direction);
                     if (!isMoving)
                     {
-                        pelota.soundEffectMovimiento.Play();
+                        //pelota.soundEffectMovimiento.Play();
                         isMoving = true;
                     }
                 }
@@ -200,7 +200,7 @@ namespace TGC.MonoGame.TP.Modelos
                     ApplyRotation(elapsedTime, rightDirection);
                     if (!isMoving2)
                     {
-                        pelota.soundEffectMovimiento.Play();
+                        //pelota.soundEffectMovimiento.Play();
                         isMoving2 = true;
                     }
                 }
@@ -219,7 +219,7 @@ namespace TGC.MonoGame.TP.Modelos
                     ApplyRotation(elapsedTime, leftDirection);
                     if (!isMoving2)
                     {
-                        pelota.soundEffectMovimiento.Play();
+                        //pelota.soundEffectMovimiento.Play();
                         isMoving2 = true;
                     }
                 }

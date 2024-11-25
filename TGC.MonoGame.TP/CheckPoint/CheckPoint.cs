@@ -104,8 +104,11 @@ namespace TGC.MonoGame.TP.CheckPoint{
                     if (_checkPoints.Count == 0){
                         touchedLastCheckpoint = true;
                         Game.nuevoCheckPoint(new Vector3(0f,0f,0f));
+                    }else
+                    {
+                        Game.nuevoCheckPoint(originalPosition);
                     }
-                    Game.nuevoCheckPoint(originalPosition);
+                    
                 }
             }
             _frustum = new BoundingFrustum(view * projection);

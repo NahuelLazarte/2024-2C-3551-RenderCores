@@ -123,7 +123,7 @@ namespace TGC.MonoGame.TP.MaterialesJuego
             _espadas.Update(gameTime, Game, view, projection);
             _hamburguesas.Update(gameTime, Game, view, projection);
             _checkPoints.Update(gameTime, Game, view, projection);
-            _checkPointFinal.Update(gameTime, view, projection);
+            _checkPointFinal.Update(gameTime,Game, view, projection);
             _marcadoresCheckPoints.Update(gameTime, Game, view, projection, _checkPoints.getCheckPointActual());
             _piedras.Update(gameTime, Game, view, projection);
             _pozos.Update(gameTime, Game, view, projection);
@@ -291,7 +291,7 @@ namespace TGC.MonoGame.TP.MaterialesJuego
             _pozos._envolturaEsfera = boundingSphere;
             _muros._envolturaEsfera = boundingSphere;
             _checkPoints._envolturaEsfera = boundingSphere;
-            //_checkPointFinal._envolturaEsfera = boundingSphere;
+            _checkPointFinal._envolturaEsfera = boundingSphere;
             _carretillas._envolturaEsfera = boundingSphere;
         }
 

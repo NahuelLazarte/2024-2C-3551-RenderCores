@@ -26,7 +26,7 @@ namespace TGC.MonoGame.TP.Modelos
         protected Texture NormalTexture { get; set; }
         public RenderTargetCube EnvironmentMapRenderTarget { get; set; }
         public StaticCamera CubeMapCamera { get; set; }
-        private const int EnvironmentmapSize = 2048;
+        private const int EnvironmentmapSize = 512;
 
         public void SetPosition(Vector3 newPosition) { Position = newPosition; }
         public void SetRotation(Matrix newRotation) { Rotation = newRotation; }
@@ -40,6 +40,7 @@ namespace TGC.MonoGame.TP.Modelos
         public Matrix GetRotation() { return Rotation; }
         public Matrix GetScale() { return Scale; }
         public Vector3 GetColor() { return ColorA; }
+        public bool isEnvironmentMapActive = false;
 
         public virtual void LoadContent(ContentManager content, GraphicsDevice graphicsDevice)
         {
@@ -50,7 +51,7 @@ namespace TGC.MonoGame.TP.Modelos
                 SurfaceFormat.Color, DepthFormat.Depth24, 0, RenderTargetUsage.DiscardContents);
             graphicsDevice.BlendState = BlendState.Opaque;
 
-            
+
 
             foreach (var mesh in Model3D.Meshes)
             {
@@ -81,55 +82,43 @@ namespace TGC.MonoGame.TP.Modelos
             {
                 foreach (var meshPart in mesh.MeshParts)
                 {
-                    meshPart.Effect = Effect;//ShadowMapEffect;
+
+                    if (isEnvironmentMapActive)
+                    {
+                        meshPart.Effect = Effect;
+                    }
+                    else
+                    {
+                        meshPart.Effect = ShadowMapEffect;
+                    }
                 }
             }
-
-            /*
-            graphicsDevice.DepthStencilState = DepthStencilState.Default;
-
-
-            for (var face = CubeMapFace.PositiveX; face <= CubeMapFace.NegativeZ; face++)
-            {
-                // Set the render target as our cubemap face, we are drawing the scene in this texture
-                graphicsDevice.SetRenderTarget(EnvironmentMapRenderTarget, face);
-                graphicsDevice.Clear(ClearOptions.Target | ClearOptions.DepthBuffer, Color.CornflowerBlue, 1f, 0);
-
-                SetCubemapCameraForOrientation(face);
-                CubeMapCamera.BuildView();
-
-            }
-
-            graphicsDevice.SetRenderTarget(null);
-            graphicsDevice.Clear(ClearOptions.Target | ClearOptions.DepthBuffer, Color.CornflowerBlue, 1f, 0);
-            */
-
-
             var viewProjection = view * projection;
 
             //ShadowMapEffect.Parameters["environmentMap"].SetValue(EnvironmentMapRenderTarget);
 
-
-            /*
-            ShadowMapEffect.Parameters["World"].SetValue(World);
-            ShadowMapEffect.Parameters["baseTexture"].SetValue(Texture);
-            ShadowMapEffect.Parameters["WorldViewProjection"].SetValue(World * viewProjection);
-            ShadowMapEffect.Parameters["InverseTransposeWorld"].SetValue(Matrix.Transpose(Matrix.Invert(World)));
-            ShadowMapEffect.Parameters["normalMap"].SetValue(NormalTexture);*/
+            if (isEnvironmentMapActive)
+            {
+                Effect.CurrentTechnique = Effect.Techniques["EnvironmentMapSphere"];
+                Effect.Parameters["environmentMap"].SetValue(EnvironmentMapRenderTarget);
+                Effect.Parameters["eyePosition"].SetValue(cameraPosition);
 
 
-            Effect.CurrentTechnique = Effect.Techniques["EnvironmentMapSphere"];
-            Effect.Parameters["environmentMap"].SetValue(EnvironmentMapRenderTarget);
-            Effect.Parameters["eyePosition"].SetValue(cameraPosition);
-
-
-            // World is used to transform from model space to world space
-            Effect.Parameters["World"].SetValue(World);
-            // InverseTransposeWorld is used to rotate normals
-            Effect.Parameters["InverseTransposeWorld"]?.SetValue(Matrix.Transpose(Matrix.Invert(World)));
-            // WorldViewProjection is used to transform from model space to clip space
-            Effect.Parameters["WorldViewProjection"].SetValue(World * viewProjection);
-
+                // World is used to transform from model space to world space
+                Effect.Parameters["World"].SetValue(World);
+                // InverseTransposeWorld is used to rotate normals
+                Effect.Parameters["InverseTransposeWorld"]?.SetValue(Matrix.Transpose(Matrix.Invert(World)));
+                // WorldViewProjection is used to transform from model space to clip space
+                Effect.Parameters["WorldViewProjection"].SetValue(World * viewProjection);
+            }
+            else
+            {
+                ShadowMapEffect.Parameters["World"].SetValue(World);
+                ShadowMapEffect.Parameters["baseTexture"].SetValue(Texture);
+                ShadowMapEffect.Parameters["WorldViewProjection"].SetValue(World * viewProjection);
+                ShadowMapEffect.Parameters["InverseTransposeWorld"].SetValue(Matrix.Transpose(Matrix.Invert(World)));
+                ShadowMapEffect.Parameters["normalMap"].SetValue(NormalTexture);
+            }
 
             foreach (var mesh in Model3D.Meshes)
             {
@@ -137,29 +126,29 @@ namespace TGC.MonoGame.TP.Modelos
             }
         }
 
-        
+
 
 
         public void ShadowMapRender(Effect ShadowMapEffect, Matrix LightView, Matrix Projection)
         {
 
-            
+
             foreach (var modelMesh in Model3D.Meshes)
+            {
+                var modelMeshesBaseTransforms = new Matrix[Model3D.Bones.Count];
+                Model3D.CopyAbsoluteBoneTransformsTo(modelMeshesBaseTransforms);
+
+                // Combina las transformaciones locales y globales.
+                var meshWorld = modelMeshesBaseTransforms[modelMesh.ParentBone.Index] * World;
+                ShadowMapEffect.Parameters["WorldViewProjection"].SetValue(World * LightView * Projection);
+
+                foreach (var part in modelMesh.MeshParts)
                 {
-                    var modelMeshesBaseTransforms = new Matrix[Model3D.Bones.Count];
-                    Model3D.CopyAbsoluteBoneTransformsTo(modelMeshesBaseTransforms);
-
-                    // Combina las transformaciones locales y globales.
-                    var meshWorld = modelMeshesBaseTransforms[modelMesh.ParentBone.Index] * World ;
-                    ShadowMapEffect.Parameters["WorldViewProjection"].SetValue(World * LightView * Projection);
-
-                    foreach (var part in modelMesh.MeshParts)
-                    {
-                        part.Effect = ShadowMapEffect; // Aplica el shader de sombras
-                    }
-
-                    modelMesh.Draw(); // Dibuja el mesh en el mapa de sombras
+                    part.Effect = ShadowMapEffect; // Aplica el shader de sombras
                 }
+
+                modelMesh.Draw(); // Dibuja el mesh en el mapa de sombras
+            }
         }
 
         public void SetCubemapCameraForOrientation(CubeMapFace face)

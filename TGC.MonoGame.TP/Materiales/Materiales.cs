@@ -23,6 +23,7 @@ using TGC.MonoGame.TP.Levels;
 using TGC.MonoGame.TP.Camera;
 using TGC.MonoGame.TP.Geometries;
 using TGC.MonoGame.TP.Fondo;
+using TGC.MonoGame.TP.Pelotas;
 
 
 namespace TGC.MonoGame.TP.MaterialesJuego
@@ -189,7 +190,9 @@ namespace TGC.MonoGame.TP.MaterialesJuego
 
             //acá tendría que primer hacer el enviroment map, luego dibujar todo
             //hay que chequear si la pelota tiene el enviroment map activado
-            #region Pass 1-6
+            if(esfera.isEnvironmentMapActive)
+            {
+                #region Pass 1-6
 
             graphicsDevice.DepthStencilState = DepthStencilState.Default;
             // Draw to our cubemap from the robot position
@@ -224,6 +227,8 @@ namespace TGC.MonoGame.TP.MaterialesJuego
             }
 
             #endregion
+            }
+            
             #region Pass 7
 
             // Set the render target as null, we are drawing on the screen!

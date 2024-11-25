@@ -44,7 +44,7 @@ namespace TGC.MonoGame.TP.Pelotas
 
             if (keyboardState.IsKeyDown(Keys.D1)) // Metal
             {
-                primera = false;
+                primera = true;
                 esfera.SetTexture(Texture2);
                 esfera.SetNormalTexture(NormalTexture2);
                 esfera.SetColor(new Vector3(0.75f, 0.75f, 0.75f));
@@ -56,18 +56,28 @@ namespace TGC.MonoGame.TP.Pelotas
                 shininess = 32;
                 soundEffectMovimiento = soundEffectMovimientoMetal.CreateInstance();
                 soundEffectCaida = soundEffectCaidaMetal.CreateInstance();
+                esfera.isEnvironmentMapActive = false;
             }
-            if (keyboardState.IsKeyDown(Keys.D2)) // Madera
+            if (keyboardState.IsKeyDown(Keys.D2)) // vidrio
+            {
+                primera = false;
+                LinearSpeed = 15f;
+                RotationSpeed = 50f;
+                soundEffectMovimiento = soundEffectMovimientoMetal.CreateInstance();
+                soundEffectCaida = soundEffectCaidaMetal.CreateInstance();
+                esfera.isEnvironmentMapActive = true;
+            }
+            if (keyboardState.IsKeyDown(Keys.D3)) // Madera
             {
                 primera = false;
                 esfera.SetTexture(Texture3);
                 esfera.SetNormalTexture(NormalTexture3);
 
                 esfera.SetColor(new Vector3(0.54f, 0.27f, 0.07f));
-                LinearSpeed = 30f;
-                RotationSpeed = 20f;
+                LinearSpeed = 50f;
+                RotationSpeed = 50f;
                 rebota = true;
-                coeficienteRebote = 0.5f;
+                coeficienteRebote = 0.6f;
                 umbralVelocidadRebote = 3f;
                 ambientColor = new Vector3(0.5f, 0.5f, 0.5f);
                 diffuseColor = new Vector3(0.5f, 0.5f, 0.5f);
@@ -75,9 +85,10 @@ namespace TGC.MonoGame.TP.Pelotas
                 shininess = 32;
                 soundEffectMovimiento = soundEffectMovimientoMadera.CreateInstance();
                 soundEffectCaida = soundEffectCaidaMadera.CreateInstance();
+                esfera.isEnvironmentMapActive = false;
             }
 
-            if (keyboardState.IsKeyDown(Keys.D3)) // Plastico
+            if (keyboardState.IsKeyDown(Keys.D4)) // Plastico
             {
                 primera = false;
                 esfera.SetTexture(Texture4);
@@ -94,9 +105,10 @@ namespace TGC.MonoGame.TP.Pelotas
                 shininess =32;
                 soundEffectMovimiento = soundEffectMovimientoPlastico.CreateInstance();
                 soundEffectCaida = soundEffectCaidaPlastico.CreateInstance();
+                esfera.isEnvironmentMapActive = false;
             }
 
-            if (keyboardState.IsKeyDown(Keys.D4) && !primera)
+            if (keyboardState.IsKeyDown(Keys.D5) && !primera)
             {
                 esfera.SetTexture(Texture1);
                 esfera.SetNormalTexture(NormalTexture1);
@@ -115,6 +127,7 @@ namespace TGC.MonoGame.TP.Pelotas
                 soundEffectCaida = soundEffectCaidaGolf.CreateInstance();
                 soundEffectCaida.Volume = 0.1f;
                 soundEffectMovimiento.Volume = 0.1f;
+                esfera.isEnvironmentMapActive = false;
             }
         }
 

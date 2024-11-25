@@ -210,7 +210,7 @@ namespace TGC.MonoGame.TP.MurosExtra{
 
             foreach (var worldMatrix in _pasto)
             {
-                foreach (var mesh in ModeloMuroPared.Meshes)
+                foreach (var mesh in ModeloMuro.Meshes)
                 {
                     var meshWorld = mesh.ParentBone.Transform * worldMatrix;
                     var boundingBox = BoundingVolumesExtensions.FromMatrix(meshWorld);
@@ -290,6 +290,26 @@ namespace TGC.MonoGame.TP.MurosExtra{
                     modelMesh.Draw(); // Dibuja el mesh en el mapa de sombras
                 }
             }
+
+            foreach (var worldMatrix in _pasto)
+            {
+                foreach (var modelMesh in ModeloMuro.Meshes)
+                {
+                    var modelMeshesBaseTransforms = new Matrix[ModeloMuro.Bones.Count];
+                    ModeloMuro.CopyAbsoluteBoneTransformsTo(modelMeshesBaseTransforms);
+
+                    // Combina las transformaciones locales y globales.
+                    var meshWorld = modelMeshesBaseTransforms[modelMesh.ParentBone.Index] * worldMatrix;
+                    ShadowMapEffect.Parameters["WorldViewProjection"].SetValue(meshWorld * LightView * Projection);
+
+                    foreach (var part in modelMesh.MeshParts)
+                    {
+                        part.Effect = ShadowMapEffect; // Aplica el shader de sombras
+                    }
+
+                    modelMesh.Draw(); // Dibuja el mesh en el mapa de sombras
+                }
+            }
         }
 
         public void AgregarMurosPistaRecta(float Rotacion, Vector3 Posicion) {
@@ -297,30 +317,36 @@ namespace TGC.MonoGame.TP.MurosExtra{
             var posicionMuros = new Vector3(Posicion.X, Posicion.Y, Posicion.Z);
 
             //var desplazamientoDerecha = new Vector3(25.22f, -12f, 9f);
-            var desplazamientoDerecha = new Vector3(0f, -11.63f * 100, -10f * 100) ;
+            var desplazamientoDerecha = new Vector3(0f, -11.63f * 100, -10f * 100);
             //var desplazamientoIzquierda = new Vector3(-25.22f, -12f, -9f);
             var desplazamientoIzquierda = new Vector3(-0f, -11.63f * 100, 10f * 100);
             var desplazamientoAbajo = new Vector3(-0f, -5.95f * 100, 0f);
-            var desplazamientoAbajoPasto = new Vector3(-0f, -20f * 1000, 0f);
+            var desplazamientoAbajoPastoIzquierda = new Vector3(0f, -11.63f * 100*20, -10f * 100 *2);
+            var desplazamientoAbajoPastoDerecha = new Vector3(0f, -11.63f * 100* 20, 10f * 100 * 2);
 
 
             // Calcular las posiciones de los muros aplicando la rotación
             var posicionDerecha = posicionMuros + Vector3.Transform(desplazamientoDerecha, Matrix.CreateRotationY(Rotacion));
             var posicionIzquierda = posicionMuros + Vector3.Transform(desplazamientoIzquierda, Matrix.CreateRotationY(Rotacion));
             var posicionAbajo = posicionMuros + Vector3.Transform(desplazamientoAbajo, Matrix.CreateRotationY(Rotacion));
-            var posicionAbajoPasto = posicionMuros + Vector3.Transform(desplazamientoAbajoPasto, Matrix.CreateRotationY(Rotacion));
+            var posicionAbajoPastoIzquierda = posicionMuros + Vector3.Transform(desplazamientoAbajoPastoIzquierda, Matrix.CreateRotationY(Rotacion));
+            var posicionAbajoPastoDerecha = posicionMuros + Vector3.Transform(desplazamientoAbajoPastoDerecha, Matrix.CreateRotationY(Rotacion));
 
             // Crear las matrices de transformación para los muros
             Matrix muroDerecha = Matrix.CreateRotationY(Rotacion + MathHelper.ToRadians(-90)) * Matrix.CreateTranslation(posicionDerecha) * Matrix.CreateScale(escalaMuros);
             Matrix muroIzquierda = Matrix.CreateRotationY(Rotacion + MathHelper.ToRadians(90)) * Matrix.CreateTranslation(posicionIzquierda) * Matrix.CreateScale(escalaMuros);
             Matrix muroAbajo = Matrix.CreateRotationY(Rotacion + MathHelper.ToRadians(90)) * Matrix.CreateTranslation(posicionAbajo) * Matrix.CreateScale(escalaMurosPared);
-            Matrix pastoAbajo = Matrix.CreateRotationY(Rotacion + MathHelper.ToRadians(90)) * Matrix.CreateTranslation(posicionAbajoPasto) * Matrix.CreateScale(new Vector3(escalaMurosPared, escalaMurosPared/20f , escalaMurosPared *10));
+
+            Matrix pastoAbajoIzquierda = Matrix.CreateRotationY(Rotacion + MathHelper.ToRadians(90)) * Matrix.CreateTranslation(posicionAbajoPastoIzquierda) * Matrix.CreateScale(new Vector3(escalaMuros, escalaMuros/20, escalaMuros));
+            Matrix pastoAbajoDerecha = Matrix.CreateRotationY(Rotacion + MathHelper.ToRadians(90)) * Matrix.CreateTranslation(posicionAbajoPastoDerecha) * Matrix.CreateScale(new Vector3(escalaMuros, escalaMuros / 20, escalaMuros));
 
 
             _muros.Add(muroDerecha);
             _muros.Add(muroIzquierda);
             _murosPared.Add(muroAbajo);
-            _pasto.Add(pastoAbajo);
+
+            _pasto.Add(pastoAbajoIzquierda);
+            _pasto.Add(pastoAbajoDerecha);
 
             // Crear y agregar los BoundingBox
             BoundingBox boxDerecha = CreateTransformedBoundingBox(muroDerecha, MuroSize, 5.0f);
@@ -332,6 +358,7 @@ namespace TGC.MonoGame.TP.MurosExtra{
             BoundingBox boxAbajo = CreateTransformedBoundingBox(muroAbajo, MuroParedSize, 1f);
             Colliders.Add(boxAbajo);
         }
+
         public void AgregarMurosPistaCurvaDerecha(float Rotacion, Vector3 Posicion) {
             float a = 3f;
             var posicionMuros = new Vector3(Posicion.X / a, Posicion.Y, Posicion.Z / a);

@@ -222,7 +222,7 @@ namespace TGC.MonoGame.TP.MaterialesJuego
                 _checkPoints.Draw(gameTime, ShadowMapEffect, esfera.CubeMapCamera.View, esfera.CubeMapCamera.Projection);
                 _marcadoresCheckPoints.Draw(gameTime, ShadowMapEffect, esfera.CubeMapCamera.View, esfera.CubeMapCamera.Projection);
                 _checkPointFinal.Draw(gameTime, ShadowMapEffect, esfera.CubeMapCamera.View, esfera.CubeMapCamera.Projection);
-                _hamburguesas.Draw(gameTime, ShadowMapEffect, esfera.CubeMapCamera.View, esfera.CubeMapCamera.Projection);
+                _hamburguesas.Draw(gameTime, ShadowMapEffect, esfera.CubeMapCamera.View, esfera.CubeMapCamera.Projection, graphicsDevice);
 
             }
 
@@ -250,7 +250,7 @@ namespace TGC.MonoGame.TP.MaterialesJuego
             _checkPoints.Draw(gameTime, ShadowMapEffect, view, projection);
             _marcadoresCheckPoints.Draw(gameTime, ShadowMapEffect, view, projection);
             _checkPointFinal.Draw(gameTime, ShadowMapEffect, view, projection);
-            _hamburguesas.Draw(gameTime, ShadowMapEffect, view, projection);
+            _hamburguesas.Draw(gameTime, ShadowMapEffect, view, projection, graphicsDevice);
 
             #region Draw Sphere
             esfera.Draw(gameTime, ShadowMapEffectPelota, view, projection, graphicsDevice,position);

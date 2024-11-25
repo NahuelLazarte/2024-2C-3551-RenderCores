@@ -71,8 +71,8 @@ namespace TGC.MonoGame.TP.PowerUpHamburguesa
             TexturaQueso = Content.Load<Texture2D>("Textures/queso");
             TexturaTomate = Content.Load<Texture2D>("Textures/tomate");
             
-            /*spriteBatch = new SpriteBatch(graphicsDevice); // Inicializa SpriteBatch
-            spriteFont = Content.Load<SpriteFont>("SpriteFonts/" + "CascadiaCodePl");*/
+            spriteBatch = new SpriteBatch(graphicsDevice); // Inicializa SpriteBatch
+            spriteFont = Content.Load<SpriteFont>("SpriteFonts/" + "CascadiaCodePl");
 
             foreach (var mesh in ModeloHamburguesa.Meshes){
                 foreach (var meshPart in mesh.MeshParts){
@@ -175,7 +175,7 @@ namespace TGC.MonoGame.TP.PowerUpHamburguesa
             graphicsDevice.SamplerStates[0] = originalSamplerState; // Restaura el sampler state
         }*/
 
-        public void Draw(GameTime gameTime, Effect ShadowMapEffect, Matrix view, Matrix projection)
+        public void Draw(GameTime gameTime, Effect ShadowMapEffect, Matrix view, Matrix projection, GraphicsDevice graphicsDevice)
         {
             var viewProjection = view * projection;
 
@@ -224,6 +224,22 @@ namespace TGC.MonoGame.TP.PowerUpHamburguesa
                     }
                 }
             }
+
+            var originalRasterizerState = graphicsDevice.RasterizerState;
+            var originalBlendState = graphicsDevice.BlendState;
+            var originalDepthStencilState = graphicsDevice.DepthStencilState;
+            var originalSamplerState = graphicsDevice.SamplerStates[0]; // Guarda el primer sampler state
+
+            // Modifica aquí el estado de renderizado según sea necesario
+            spriteBatch.Begin();
+            spriteBatch.DrawString(spriteFont, $"Hamburguesas: {hamburguesasCount}", new Vector2(10, 10), Color.White);
+            spriteBatch.End();
+
+            // Restaura los estados originales
+            graphicsDevice.RasterizerState = originalRasterizerState;
+            graphicsDevice.BlendState = originalBlendState;
+            graphicsDevice.DepthStencilState = originalDepthStencilState;
+            graphicsDevice.SamplerStates[0] = originalSamplerState; // Restaura el sampler state
         }
         
 

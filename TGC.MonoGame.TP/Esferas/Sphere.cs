@@ -25,7 +25,6 @@ namespace TGC.MonoGame.TP.Modelos
         float rotationAngle;
         float rotationSpeed;
         float velocidadLineal;
-
         BoundingSphere boundingSphere;
 
         public List<BoundingBox> Colliders { get; set; }
@@ -67,12 +66,12 @@ namespace TGC.MonoGame.TP.Modelos
             Effect = content.Load<Effect>("Effects/" + "SphereShader");
 
             pelota.Texture1 = content.Load<Texture2D>("Textures/texturaGolf");
-            pelota.Texture2 = content.Load<Texture2D>("Textures/texturaMetal2");
+            pelota.Texture2 = content.Load<Texture2D>("Textures/texturaOro");
             pelota.Texture3 = content.Load<Texture2D>("Textures/texturaMaderaPelota");
             pelota.Texture4 = content.Load<Texture2D>("Textures/texturaPlastico");
 
             pelota.NormalTexture1 = content.Load<Texture2D>("Textures/NormalMapGolf");
-            pelota.NormalTexture2 = content.Load<Texture2D>("Textures/NormalMapMetal2");
+            pelota.NormalTexture2 = content.Load<Texture2D>("Textures/NormalMapOro");
             pelota.NormalTexture3 = content.Load<Texture2D>("Textures/NormalMapMaderaPelota");
             pelota.NormalTexture4 = content.Load<Texture2D>("Textures/NormalMapPlastico");
 
@@ -385,7 +384,7 @@ namespace TGC.MonoGame.TP.Modelos
         private void ApplyRotation(float elapsedTime, Vector3 direction)
         {   
             velocidadLineal = _velocity.Length() * 0.06f;
-            rotationSpeed = velocidadLineal * boundingSphere.Radius;
+            rotationSpeed = velocidadLineal * boundingSphere.Radius * pelota.velocidadRotacion;
             //rotationSpeed = pelota.RotationSpeed; //para calcular la velocidad de rotacion se nenesitaria el radio y la velocidad angular
             rotationAngle = rotationSpeed * elapsedTime;
             Matrix rotationMatrix = Matrix.CreateFromAxisAngle(Vector3.Cross(Vector3.Up, direction), rotationAngle);

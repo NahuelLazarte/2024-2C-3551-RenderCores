@@ -63,17 +63,6 @@ sampler2D normalSampler = sampler_state
     AddressV = Clamp;
 };
 
-// Declaración de la textura y el sampler para el environment map (mapa de entorno)
-texture environmentMap;
-samplerCUBE environmentMapSampler = sampler_state
-{
-    Texture = (environmentMap);
-    MagFilter = Linear;
-    MinFilter = Linear;
-    AddressU = Clamp;
-    AddressV = Clamp;
-};
-
 // Estructuras para datos entre shaders
 struct DepthPassVertexShaderInput
 {
@@ -91,7 +80,7 @@ struct ShadowedVertexShaderInput
     float4 Position : POSITION0;
     float3 Normal : NORMAL;
     float2 TextureCoordinates : TEXCOORD0;
-};
+}; 
 
 struct ShadowedVertexShaderOutput
 {
@@ -147,7 +136,7 @@ ShadowedVertexShaderOutput MainVS(ShadowedVertexShaderInput input)
     return output;
 }
 
-// Sombreador de píxeles con Blinn-Phong, PCF y Environment Mapping (reflección)
+// Sombreador de píxeles con Blinn-Phong y PCF
 float4 ShadowedPCFPS(ShadowedVertexShaderOutput input) : COLOR
 {
     // Transformación al espacio de luz y coordenadas del mapa de sombras
@@ -189,29 +178,18 @@ float4 ShadowedPCFPS(ShadowedVertexShaderOutput input) : COLOR
     // Componente ambiental
     float3 ambient = ambientColor;
 
-    // Combinación de las componentes de iluminación
-    float3 lighting = ambient + 
+    // Combinación de las componentes
+    float3 lighting = ambient +
                       notInShadow * (diffuseColor * diffuseFactor + specularColor * specularFactor);
 
     // Color base con textura
     float4 baseColor = tex2D(textureSampler, input.TextureCoordinates);
     baseColor.rgb *= lighting;
 
-    // Calcular la reflexión
-    float3 viewDir = normalize(cameraPosition - input.WorldSpacePosition.xyz);
-    float3 reflectionDir = reflect(viewDir, normal);
-
-    // Obtener el color del mapa del entorno (reflexión)
-    float3 reflectionColor = texCUBE(environmentMapSampler, reflectionDir).rgb;
-
-    // Usar Fresnel para suavizar la transición entre base color y reflejo
-    float fresnel = saturate(1.0 - dot(normal, viewDir)); // Usamos el dot product para el ángulo de incidencia
-
-    // Mezcla entre color base y reflexión utilizando el Fresnel
-    baseColor.rgb = lerp(baseColor.rgb, reflectionColor, fresnel);
-
     return baseColor;
 }
+
+
 
 // Técnicas
 technique DepthPass
@@ -231,3 +209,4 @@ technique DrawShadowedPCF
         PixelShader = compile PS_SHADERMODEL ShadowedPCFPS();
     }
 };
+

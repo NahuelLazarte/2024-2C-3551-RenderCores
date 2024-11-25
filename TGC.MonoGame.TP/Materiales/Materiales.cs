@@ -194,6 +194,7 @@ namespace TGC.MonoGame.TP.MaterialesJuego {
             _pistasCurvasIzquierdas.Draw(gameTime, ShadowMapEffect, view, projection);
             _muros.Draw(gameTime, ShadowMapEffect, view, projection);
             _checkPoints.Draw(gameTime, ShadowMapEffect, view, projection);
+            _hamburguesas.Draw(gameTime, ShadowMapEffect, view, projection);
 
             //ShadowMapEffect.Parameters["useNormalMapping"].SetValue(false);
 
@@ -208,7 +209,7 @@ namespace TGC.MonoGame.TP.MaterialesJuego {
             #endregion
 
 
-            _hamburguesas.Draw(gameTime, ShadowMapEffect, view, projection);
+            
             _marcadoresCheckPoints.Draw(gameTime, view, projection);
             _espadas.Draw(gameTime, view, projection, graphicsDevice);
 

@@ -85,6 +85,7 @@ namespace TGC.MonoGame.TP.Modelos
                 }
             }
 
+            /*
             graphicsDevice.DepthStencilState = DepthStencilState.Default;
 
 
@@ -101,12 +102,12 @@ namespace TGC.MonoGame.TP.Modelos
 
             graphicsDevice.SetRenderTarget(null);
             graphicsDevice.Clear(ClearOptions.Target | ClearOptions.DepthBuffer, Color.CornflowerBlue, 1f, 0);
-
+            */
 
 
             var viewProjection = view * projection;
 
-            ShadowMapEffect.Parameters["environmentMap"].SetValue(EnvironmentMapRenderTarget);
+            //ShadowMapEffect.Parameters["environmentMap"].SetValue(EnvironmentMapRenderTarget);
             ShadowMapEffect.Parameters["World"].SetValue(World);
             ShadowMapEffect.Parameters["baseTexture"].SetValue(Texture);
             ShadowMapEffect.Parameters["WorldViewProjection"].SetValue(World * viewProjection);

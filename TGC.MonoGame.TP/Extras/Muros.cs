@@ -337,8 +337,8 @@ namespace TGC.MonoGame.TP.MurosExtra{
             Matrix muroIzquierda = Matrix.CreateRotationY(Rotacion + MathHelper.ToRadians(90)) * Matrix.CreateTranslation(posicionIzquierda) * Matrix.CreateScale(escalaMuros);
             Matrix muroAbajo = Matrix.CreateRotationY(Rotacion + MathHelper.ToRadians(90)) * Matrix.CreateTranslation(posicionAbajo) * Matrix.CreateScale(escalaMurosPared);
 
-            Matrix pastoAbajoIzquierda = Matrix.CreateRotationY(Rotacion + MathHelper.ToRadians(90)) * Matrix.CreateTranslation(posicionAbajoPastoIzquierda) * Matrix.CreateScale(new Vector3(escalaMuros, escalaMuros/20, escalaMuros));
-            Matrix pastoAbajoDerecha = Matrix.CreateRotationY(Rotacion + MathHelper.ToRadians(90)) * Matrix.CreateTranslation(posicionAbajoPastoDerecha) * Matrix.CreateScale(new Vector3(escalaMuros, escalaMuros / 20, escalaMuros));
+            Matrix pastoAbajoIzquierda = Matrix.CreateRotationY(Rotacion + MathHelper.ToRadians(90)) * Matrix.CreateTranslation(posicionAbajoPastoIzquierda) * Matrix.CreateScale(new Vector3(escalaMuros, escalaMuros/20, escalaMuros*20));
+            Matrix pastoAbajoDerecha = Matrix.CreateRotationY(Rotacion + MathHelper.ToRadians(90)) * Matrix.CreateTranslation(posicionAbajoPastoDerecha) * Matrix.CreateScale(new Vector3(escalaMuros, escalaMuros / 20, escalaMuros*20));
 
 
             _muros.Add(muroDerecha);

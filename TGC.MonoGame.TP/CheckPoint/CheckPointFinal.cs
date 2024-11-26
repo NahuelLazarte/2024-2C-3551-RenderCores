@@ -206,13 +206,53 @@ namespace TGC.MonoGame.TP.CheckPoint{
             _muro.Add(worldMuro);
             _escalera.Add(worldEscalera);
 
-            BoundingBox box = new BoundingBox(puertaSize.Min * escala + posicionMuroFinal * escala , puertaSize.Max * escala + posicionMuroFinal * escala);
+            BoundingBox box = CreateTransformedBoundingBox(worldMuro, puertaSize,0f, 10f);
 
             Colliders.Add(box);
 
             _materiales._pistasRectas.agregarNuevaPista(Rotacion, Posicion, _materiales);
 
         }
+
+        private BoundingBox CreateTransformedBoundingBox(Matrix transform, BoundingBox size, float yDecrement, float xDecrement)
+        {
+            // Crear un arreglo de las esquinas del BoundingBox original
+            Vector3[] corners = new Vector3[8];
+            Vector3 min = size.Min;
+            Vector3 max = size.Max;
+
+            corners[0] = new Vector3(min.X, min.Y, min.Z);
+            corners[1] = new Vector3(max.X, min.Y, min.Z);
+            corners[2] = new Vector3(min.X, max.Y, min.Z);
+            corners[3] = new Vector3(max.X, max.Y, min.Z);
+            corners[4] = new Vector3(min.X, min.Y, max.Z);
+            corners[5] = new Vector3(max.X, min.Y, max.Z);
+            corners[6] = new Vector3(min.X, max.Y, max.Z);
+            corners[7] = new Vector3(max.X, max.Y, max.Z);
+
+            // Transformar las esquinas aplicando la matriz de transformación
+            for (int i = 0; i < corners.Length; i++)
+            {
+                corners[i] = Vector3.Transform(corners[i], transform);
+            }
+
+            // Inicializar los valores para calcular los nuevos mínimos y máximos
+            Vector3 newMin = new Vector3(float.MaxValue);
+            Vector3 newMax = new Vector3(float.MinValue);
+
+            foreach (var corner in corners)
+            {
+                newMin = Vector3.Min(newMin, corner);
+                newMax = Vector3.Max(newMax, corner);
+            }
+
+            // Reducir el tamaño del BoundingBox en los ejes especificados
+            newMax.Y -= yDecrement; // Decrementar en el eje Y
+            newMax.X -= xDecrement; // Decrementar en el eje X
+
+            return new BoundingBox(newMin, newMax);
+        }
+
 
     }
 }

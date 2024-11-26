@@ -105,7 +105,7 @@ namespace TGC.MonoGame.TP.MurosExtra{
                 }
             }
 
-            ModeloMuroPared = Content.Load<Model>("Models/" + "Muros/towerSquareBase");
+            ModeloMuroPared = Content.Load<Model>("Models/" + "Muros/towerSquareBaseWithTexture");
             foreach (var mesh in ModeloMuroPared.Meshes)
             {
                 foreach (var meshPart in mesh.MeshParts)
@@ -367,7 +367,7 @@ namespace TGC.MonoGame.TP.MurosExtra{
 
             float b = 175f;
             var desplazamientoIzquierda = new Vector3(b, -12f * 100, b);
-            var desplazamientoAbajoPasto = new Vector3(44f, -35f, 44f);
+            var desplazamientoAbajoPasto = new Vector3(84.5f, -35f, 85.5f);
 
             // Calcular las posiciones de los muros aplicando la rotación
             var posicionIzquierda = posicionMuros + Vector3.Transform(desplazamientoIzquierda, Matrix.CreateRotationY(Rotacion));
@@ -375,7 +375,8 @@ namespace TGC.MonoGame.TP.MurosExtra{
 
             // Crear las matrices de transformación para los muros
             Matrix muroIzquierda = Matrix.CreateRotationY(Rotacion + MathHelper.ToRadians(-270)) * Matrix.CreateTranslation(posicionIzquierda) * Matrix.CreateScale(escalaMurosEsquina);
-            Matrix pastoAbajo = Matrix.CreateScale(new Vector3(escalaMuros * 5, escalaMuros / 20, escalaMuros * 5)) * Matrix.CreateRotationY(Rotacion) * Matrix.CreateTranslation(posicionAbajoPasto);
+            Matrix pastoAbajo = Matrix.CreateScale(new Vector3(escalaMuros * 8, escalaMuros / 20, escalaMuros * 8)) * Matrix.CreateRotationY(Rotacion) * Matrix.CreateTranslation(posicionAbajoPasto);
+
 
             _murosEsquina.Add(muroIzquierda);
             _pasto.Add(pastoAbajo);
@@ -392,7 +393,7 @@ namespace TGC.MonoGame.TP.MurosExtra{
 
             float b = 175f;
             var desplazamientoDerecha = new Vector3(b, -12f * 100, -b);
-            var desplazamientoAbajoPasto = new Vector3(44.5f, -35f, -44.5f);
+            var desplazamientoAbajoPasto = new Vector3(84.5f, -35f, -85.5f);
 
             // Calcular las posiciones de los muros aplicando la rotación
             var posicionDerecha = posicionMuros + Vector3.Transform(desplazamientoDerecha, Matrix.CreateRotationY(Rotacion));

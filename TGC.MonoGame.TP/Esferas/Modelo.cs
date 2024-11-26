@@ -69,6 +69,10 @@ namespace TGC.MonoGame.TP.Modelos
             Rotation = _rotation;
         }
 
+        public void cambiarPosicionModelo(){
+            World = Scale * Rotation * Matrix.CreateTranslation(Position);
+        }
+
         public virtual void Update(GameTime gameTime, ContentManager content)
         {
             CubeMapCamera.Position = Position;

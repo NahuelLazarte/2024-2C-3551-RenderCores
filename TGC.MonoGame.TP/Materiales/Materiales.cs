@@ -307,7 +307,7 @@ namespace TGC.MonoGame.TP.MaterialesJuego
 
             List<BoundingBox> CollidersCheckpoints = _checkPoints.Colliders;
             List<BoundingBox> CollidersMarcadoresCheckpoints = _marcadoresCheckPoints.Colliders;
-            CollidersDibujo = CollidersMuros;
+            CollidersDibujo = _checkPointFinal.Colliders;
 
             esfera.Colliders.AddRange(CollidersPistaRecta);
             esfera.Colliders.AddRange(CollidersPistaCurvaDerecha);

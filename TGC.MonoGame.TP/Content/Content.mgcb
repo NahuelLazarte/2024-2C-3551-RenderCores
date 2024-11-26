@@ -487,6 +487,25 @@
 /processorParam:TextureFormat=Compressed
 /build:Models/Muros/towerSquareBase.fbx
 
+#begin Models/Muros/towerSquareBaseWithTexture.fbx
+/importer:FbxImporter
+/processor:ModelProcessor
+/processorParam:ColorKeyColor=0,0,0,0
+/processorParam:ColorKeyEnabled=True
+/processorParam:DefaultEffect=BasicEffect
+/processorParam:GenerateMipmaps=True
+/processorParam:GenerateTangentFrames=False
+/processorParam:PremultiplyTextureAlpha=True
+/processorParam:PremultiplyVertexColors=True
+/processorParam:ResizeTexturesToPowerOfTwo=False
+/processorParam:RotationX=0
+/processorParam:RotationY=0
+/processorParam:RotationZ=0
+/processorParam:Scale=1
+/processorParam:SwapWindingOrder=False
+/processorParam:TextureFormat=Compressed
+/build:Models/Muros/towerSquareBaseWithTexture.fbx
+
 #begin Models/Muros/wallCornerCentered.fbx
 /importer:FbxImporter
 /processor:ModelProcessor
@@ -601,25 +620,6 @@
 /processorParam:TextureFormat=Compressed
 /build:Models/Muros/wallDoorWithTexture.fbx
 
-#begin Models/Muros/wallDoorWithTexture.fbx
-/importer:FbxImporter
-/processor:ModelProcessor
-/processorParam:ColorKeyColor=0,0,0,0
-/processorParam:ColorKeyEnabled=True
-/processorParam:DefaultEffect=BasicEffect
-/processorParam:GenerateMipmaps=True
-/processorParam:GenerateTangentFrames=False
-/processorParam:PremultiplyTextureAlpha=True
-/processorParam:PremultiplyVertexColors=True
-/processorParam:ResizeTexturesToPowerOfTwo=False
-/processorParam:RotationX=0
-/processorParam:RotationY=0
-/processorParam:RotationZ=0
-/processorParam:Scale=1
-/processorParam:SwapWindingOrder=False
-/processorParam:TextureFormat=Compressed
-/build:Models/Muros/wallDoorWithTexture.fbx
-
 #begin Models/Muros/wallHalf.fbx
 /importer:FbxImporter
 /processor:ModelProcessor
@@ -676,25 +676,6 @@
 /processorParam:SwapWindingOrder=False
 /processorParam:TextureFormat=Compressed
 /build:Models/Muros/wallNarrowStairsFence.fbx
-
-#begin Models/Muros/wallNarrowStairsFenceWithTexture.fbx
-/importer:FbxImporter
-/processor:ModelProcessor
-/processorParam:ColorKeyColor=0,0,0,0
-/processorParam:ColorKeyEnabled=True
-/processorParam:DefaultEffect=BasicEffect
-/processorParam:GenerateMipmaps=True
-/processorParam:GenerateTangentFrames=False
-/processorParam:PremultiplyTextureAlpha=True
-/processorParam:PremultiplyVertexColors=True
-/processorParam:ResizeTexturesToPowerOfTwo=False
-/processorParam:RotationX=0
-/processorParam:RotationY=0
-/processorParam:RotationZ=0
-/processorParam:Scale=1
-/processorParam:SwapWindingOrder=False
-/processorParam:TextureFormat=Compressed
-/build:Models/Muros/wallNarrowStairsFenceWithTexture.fbx
 
 #begin Models/Muros/wallNarrowStairsFenceWithTexture.fbx
 /importer:FbxImporter

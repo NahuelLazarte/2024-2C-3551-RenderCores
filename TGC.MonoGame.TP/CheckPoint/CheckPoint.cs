@@ -102,10 +102,9 @@ namespace TGC.MonoGame.TP.CheckPoint{
                     checkpointActual++;
                     Console.WriteLine($"Intercciono con CheckPoint {checkpointActual}!");
                     if (_checkPoints.Count == 0){
-                        touchedLastCheckpoint = true;
                         Game.nuevoCheckPoint(new Vector3(0f,0f,0f));
-                    }else
-                    {
+                        touchedLastCheckpoint = true;
+                    } else {
                         Game.nuevoCheckPoint(originalPosition);
                     }
                     

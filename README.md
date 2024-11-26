@@ -36,4 +36,4 @@ Los recursos usados se almacenan utilizando [Git LFS](https://git-lfs.github.com
 
 ## Game Play
 
-[![Watch the video](https://img.youtube.com/vi/pgEwUC0jvH4/0.jpg)](https://www.youtube.com/playlist?list=PLRM4L32DjvnazuMl8wZlbpEYL5Qh63ulG)
+[![Watch the video](https://github.com/NahuelLazarte/2024-2C-3551-RenderCores/blob/master/TGC.MonoGame.TP/Content/Screenshots/foto1.png)](https://youtu.be/oj6rhtAv6NY)

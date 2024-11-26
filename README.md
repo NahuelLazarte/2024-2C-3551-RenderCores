@@ -28,10 +28,11 @@ Los recursos usados se almacenan utilizando [Git LFS](https://git-lfs.github.com
 ## Capturas
 
 ![screenshot1](https://github.com/NahuelLazarte/2024-2C-3551-RenderCores/blob/master/TGC.MonoGame.TP/Content/Screenshots/foto1.png)
-![screenshot2](https://github.com/tgc-utn/tgc-monogame-tp/blob/master/TGC.MonoGame.TP/Icon.bmp)
-![screenshot3](https://github.com/tgc-utn/tgc-monogame-tp/blob/master/TGC.MonoGame.TP/Icon.bmp)
-![screenshot4](https://github.com/tgc-utn/tgc-monogame-tp/blob/master/TGC.MonoGame.TP/Icon.bmp)
-![screenshot5](https://github.com/tgc-utn/tgc-monogame-tp/blob/master/TGC.MonoGame.TP/Icon.bmp)
+![screenshot2](https://github.com/NahuelLazarte/2024-2C-3551-RenderCores/blob/master/TGC.MonoGame.TP/Content/Screenshots/foto2.png)
+![screenshot3](https://github.com/NahuelLazarte/2024-2C-3551-RenderCores/blob/master/TGC.MonoGame.TP/Content/Screenshots/foto3.png)
+![screenshot4](https://github.com/NahuelLazarte/2024-2C-3551-RenderCores/blob/master/TGC.MonoGame.TP/Content/Screenshots/foto4.png)
+![screenshot5](https://github.com/NahuelLazarte/2024-2C-3551-RenderCores/blob/master/TGC.MonoGame.TP/Content/Screenshots/foto5.png)
+![screenshot6](https://github.com/NahuelLazarte/2024-2C-3551-RenderCores/blob/master/TGC.MonoGame.TP/Content/Screenshots/foto6.png)
 
 ## Game Play
 

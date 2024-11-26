@@ -69,6 +69,7 @@ namespace TGC.MonoGame.TP.Constructor{
             AgregarPistaRecta(_materiales._pistasRectas, _materiales);
             AgregarObstaculoCarretilla(_materiales._carretillas);
             AgregarPistaRecta(_materiales._pistasRectas, _materiales);
+            AgregarCheckPoint(_materiales._checkPoints, _materiales._marcadoresCheckPoints);
             AgregarPistaRecta(_materiales._pistasRectas, _materiales);
             //AgregarObstaculoPozo(_materiales._pozos, _materiales);
 

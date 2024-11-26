@@ -140,6 +140,8 @@ namespace TGC.MonoGame.TP
 
         public override bool reachedLastCheckpoint(){
             if (_materiales._checkPoints.Colliders.Count == 0){
+                esfera.RespawnAt(new Vector3(0f,5f,0f));
+                esfera.cambiarPosicionModelo();
                 return true;
             } else {
                 return false;
@@ -176,14 +178,13 @@ namespace TGC.MonoGame.TP
             //esfera.isGodModeActive = isGodModeActive;
             if(leveIsActive){
                 FrustrumCamera.Update(esfera.GetPosition());
+                esfera.Update(gameTime, Content);
+                esfera.setDirection(FrustrumCamera.GetDirection());
             }
             
 
             _frustum.Matrix = FrustrumCamera.ViewMatrix * FrustrumCamera.ProjectionMatrix;
             _materiales.Update(gameTime, this, FrustrumCamera.ViewMatrix, FrustrumCamera.ProjectionMatrix, _frustum);
-            esfera.Update(gameTime, Content);
-            esfera.setDirection(FrustrumCamera.GetDirection());
-
             //Gizmos.UpdateViewProjection(Camera.ViewMatrix, Camera.ProjectionMatrix);
             Gizmos.UpdateViewProjection(TestCamera.ViewMatrix, TestCamera.ProjectionMatrix);
 

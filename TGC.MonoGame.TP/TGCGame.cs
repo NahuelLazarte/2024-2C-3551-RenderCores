@@ -105,6 +105,13 @@ namespace TGC.MonoGame.TP
         {
             // Esperar hasta que SeleccionarNivel se complete
             nivelSeleccionadoEvent.WaitOne();
+            float elapsedTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
+
+            if (previousKeyboardState.IsKeyUp(Keys.Escape)){
+                timer = 0f;
+            }
+
+            timer += elapsedTime;
 
             var keyboardState = Keyboard.GetState();
 
@@ -153,6 +160,7 @@ namespace TGC.MonoGame.TP
                     nivelActual.Update(gameTime);
                 }
             }
+            previousKeyboardState = keyboardState;
 
             base.Update(gameTime);
         }

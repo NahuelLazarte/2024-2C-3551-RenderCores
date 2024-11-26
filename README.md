@@ -20,13 +20,14 @@ Los recursos usados se almacenan utilizando [Git LFS](https://git-lfs.github.com
 
 ## Integrantes
 
-TGC, Tgcito  |  Apellido, Nombre
------------- | -------------
-| <img src="https://github.com/tgc-utn/tgc-utn.github.io/blob/master/images/robotgc.png" height="500"> | <img src="https://github.com/tgc-utn/tgc-utn.github.io/blob/master/images/trofeotp.png" height="500"> |
+| Kremer, Luciano Ariel | Lazarte, Carlos Nahuel | Fernandez Fiel, Lucas Ezequiel |
+| ------------------- | ---------------- | ---------------- |
+| <img src="https://github.com/NahuelLazarte/2024-2C-3551-RenderCores/blob/master/TGC.MonoGame.TP/Content/FotosIntegrantes/luciano.jpeg" width="200" height="200"> | <img src="https://github.com/NahuelLazarte/2024-2C-3551-RenderCores/blob/master/TGC.MonoGame.TP/Content/FotosIntegrantes/nahuel.jpg" width ="200" height="200"> | <img src="https://github.com/NahuelLazarte/2024-2C-3551-RenderCores/blob/master/TGC.MonoGame.TP/Content/FotosIntegrantes/lucas.jpg" width ="200" height="200">
+ | 
 
 ## Capturas
 
-![screenshot1](https://github.com/tgc-utn/tgc-monogame-tp/blob/master/TGC.MonoGame.TP/Icon.bmp)
+![screenshot1](https://github.com/NahuelLazarte/2024-2C-3551-RenderCores/blob/master/TGC.MonoGame.TP/Content/Screenshots/foto1.png)
 ![screenshot2](https://github.com/tgc-utn/tgc-monogame-tp/blob/master/TGC.MonoGame.TP/Icon.bmp)
 ![screenshot3](https://github.com/tgc-utn/tgc-monogame-tp/blob/master/TGC.MonoGame.TP/Icon.bmp)
 ![screenshot4](https://github.com/tgc-utn/tgc-monogame-tp/blob/master/TGC.MonoGame.TP/Icon.bmp)

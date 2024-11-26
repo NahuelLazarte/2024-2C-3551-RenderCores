@@ -270,7 +270,7 @@ namespace TGC.MonoGame.TP.MaterialesJuego
             // _pistasCurvasIzquierdas.Draw(gameTime, view, projection);
             //_pistasRectas.Draw(gameTime, view, projection);
 
-            LightBox.Draw(Matrix.CreateTranslation(LightPosition), TargetLightCamera.View, TargetLightCamera.Projection);
+            //LightBox.Draw(Matrix.CreateTranslation(LightPosition), TargetLightCamera.View, TargetLightCamera.Projection);
 
             #endregion
 

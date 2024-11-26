@@ -22,7 +22,7 @@ namespace TGC.MonoGame.MenuPrincipal
 
         public Menu()
         {
-            options = new Option[] { new Play(), new SelectLevel(), new GodMode(), new Music() ,new Exit() };
+            options = new Option[] { new Play(), new GodMode(), new Music() ,new Exit() };
         }
         public void Update(TGCGame Game, GameTime gameTime, Sphere esfera)
         {

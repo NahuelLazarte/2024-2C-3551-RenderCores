@@ -76,7 +76,7 @@ namespace TGC.MonoGame.MenuPrincipal
         }
     }
 
-    public class SelectLevel : Option
+    /*public class SelectLevel : Option
     {
         public override void LogicExecute(TGCGame Game)
         {
@@ -87,5 +87,5 @@ namespace TGC.MonoGame.MenuPrincipal
         {
             name = "Level 2";
         }
-    }
+    }*/
 }

@@ -196,8 +196,8 @@ namespace TGC.MonoGame.TP.Pelotas
             RotationSpeed = 20f;
             ambientColor = new Vector3(0.8f, 0.7f, 0.2f);
             diffuseColor = new Vector3(0.9f, 0.85f, 0.4f);
-            specularColor = new Vector3(1.0f, 0.95f, 0.7f);
-            shininess = 64;
+            specularColor = new Vector3(8f, 0.65f, 0.5f);
+            shininess = 16;
             soundEffectMovimiento = soundEffectMovimientoMetal.CreateInstance();
             soundEffectCaida = soundEffectCaidaMetal.CreateInstance();
             esfera.isEnvironmentMapActive = true;

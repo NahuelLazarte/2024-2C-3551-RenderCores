@@ -77,7 +77,7 @@ namespace TGC.MonoGame.TP.ObstaculoCarretilla {
             CollisionSound = Content.Load<SoundEffect>("Audio/ColisionPez"); 
         }
 
-        public void Update(GameTime gameTime, Level Game, Matrix view, Matrix projection) {
+        public void Update(GameTime gameTime, Level Game, Matrix view, Matrix projection, Sphere esfera) {
             for (int i = 0; i < _obstaculosCarretilla.Count; i++) {
                 var carretilla = _obstaculosCarretilla[i];
 
@@ -116,7 +116,16 @@ namespace TGC.MonoGame.TP.ObstaculoCarretilla {
                 // Colisión
                 if (_envolturaEsfera.Intersects(Colliders[i])) {
                     CollisionSound.Play();
-                    Game.Respawn();
+                    if (esfera.rompeObjetos == true)
+                    {
+                        Colliders.RemoveAt(i);
+
+                        _obstaculosCarretilla.RemoveAt(i);
+                    }
+                    else
+                    {
+                        Game.Respawn();
+                    }
                 }
             }
             _frustum = new BoundingFrustum(view * projection);

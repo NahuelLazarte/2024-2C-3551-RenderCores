@@ -135,6 +135,8 @@ namespace TGC.MonoGame.TP.MarcadorCheckPoint{
 
 
         public void AgregarNuevoMarcadorCheckPoint(float Rotacion, Vector3 Posicion) {
+            Posicion += Vector3.Transform(new Vector3(0, 0, -0.8f), Matrix.CreateRotationY(Rotacion));
+
             var transform = Matrix.CreateRotationY(Rotacion + MathHelper.ToRadians(-90)) * Matrix.CreateTranslation(Posicion.X, Posicion.Y + 5f, Posicion.Z) * Matrix.CreateScale(5f); 
             _marcadoresCheckPoints.Add(transform);
             Vector3 transformedMin = Vector3.Transform(size.Min, transform);

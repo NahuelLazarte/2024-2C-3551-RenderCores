@@ -44,21 +44,39 @@ namespace TGC.MonoGame.TP.Constructor{
 
             
             AgregarPistaRecta(_materiales._pistasRectas, _materiales);
-            
+
             AgregarPistaRecta(_materiales._pistasRectas, _materiales);
             AgregarPistaRecta(_materiales._pistasRectas, _materiales);
 
-            AgregarPistaRecta(_materiales._pistasRectas, _materiales);
-            
-            AgregarPistaCurvaDerecha(_materiales._pistasCurvasDerechas, _materiales);
-            
-            
-            
+            AgregarObstaculoPiedra(_materiales._piedras);
+            AgregarObstaculoPiedra(_materiales._piedras);
+            AgregarObstaculoPiedra(_materiales._piedras);
+            AgregarObstaculoPiedra(_materiales._piedras);
+            AgregarObstaculoPiedra(_materiales._piedras);
+            AgregarObstaculoPiedra(_materiales._piedras);
+            AgregarObstaculoPiedra(_materiales._piedras);
             AgregarObstaculoPiedra(_materiales._piedras);
 
             AgregarPistaRecta(_materiales._pistasRectas, _materiales);
+            //AgregarPowerUpEspada(_materiales._espadas);
             AgregarPistaRecta(_materiales._pistasRectas, _materiales);
+
+            AgregarPistaCurvaDerecha(_materiales._pistasCurvasDerechas, _materiales);
+            //AgregarPowerUpEspada(_materiales._espadas);
+
+
+
+            AgregarObstaculoPiedra(_materiales._piedras);
+
             AgregarPistaRecta(_materiales._pistasRectas, _materiales);
+            AgregarPowerUpHamburguesa(_materiales._hamburguesas);
+
+            AgregarPistaRecta(_materiales._pistasRectas, _materiales);
+            AgregarPowerUpHamburguesa(_materiales._hamburguesas);
+
+            AgregarPistaRecta(_materiales._pistasRectas, _materiales);
+            AgregarPowerUpEspada(_materiales._espadas);
+
             AgregarPistaRecta(_materiales._pistasRectas, _materiales);
             AgregarObstaculoPozo(_materiales._pozos, _materiales);
             //AgregarObstaculoPozo(_materiales._pozos, _materiales);
@@ -66,7 +84,10 @@ namespace TGC.MonoGame.TP.Constructor{
             AgregarObstaculoCarretilla(_materiales._carretillas);
             
             AgregarPistaRecta(_materiales._pistasRectas, _materiales);
+            AgregarPowerUpHamburguesa(_materiales._hamburguesas);
+
             AgregarPistaRecta(_materiales._pistasRectas, _materiales);
+            
             AgregarObstaculoCarretilla(_materiales._carretillas);
             AgregarPistaRecta(_materiales._pistasRectas, _materiales);
             AgregarCheckPoint(_materiales._checkPoints, _materiales._marcadoresCheckPoints);
@@ -76,7 +97,9 @@ namespace TGC.MonoGame.TP.Constructor{
             //AgregarObstaculoPozo(_materiales._pozos, _materiales);
             AgregarPistaRecta(_materiales._pistasRectas, _materiales);
             AgregarPowerUpHamburguesa(_materiales._hamburguesas);
-            AgregarPistaRecta(_materiales._pistasRectas, _materiales); 
+            AgregarPistaRecta(_materiales._pistasRectas, _materiales);
+            AgregarPowerUpHamburguesa(_materiales._hamburguesas);
+
             AgregarPistaRecta(_materiales._pistasRectas, _materiales);
             AgregarPowerUpHamburguesa(_materiales._hamburguesas);
             AgregarPistaCurvaDerecha(_materiales._pistasCurvasDerechas, _materiales);
@@ -102,15 +125,29 @@ namespace TGC.MonoGame.TP.Constructor{
             AgregarPowerUpHamburguesa(_materiales._hamburguesas);
             AgregarPistaRecta(_materiales._pistasRectas, _materiales);
             AgregarPistaRecta(_materiales._pistasRectas, _materiales);
+            AgregarObstaculoCarretilla(_materiales._carretillas);
+
             AgregarPistaRecta(_materiales._pistasRectas, _materiales);
             
             AgregarCheckPoint(_materiales._checkPoints, _materiales._marcadoresCheckPoints);
             AgregarPistaRecta(_materiales._pistasRectas, _materiales);
+            AgregarObstaculoPiedra(_materiales._piedras);
+            AgregarObstaculoPiedra(_materiales._piedras);
+            AgregarObstaculoPiedra(_materiales._piedras);
+            AgregarObstaculoPiedra(_materiales._piedras);
+            AgregarObstaculoPiedra(_materiales._piedras);
+            AgregarObstaculoPiedra(_materiales._piedras);
+            AgregarObstaculoPiedra(_materiales._piedras);
+            AgregarObstaculoPiedra(_materiales._piedras);
             AgregarPistaRecta(_materiales._pistasRectas, _materiales);
+            AgregarObstaculoCarretilla(_materiales._carretillas);
+
             AgregarPistaRecta(_materiales._pistasRectas, _materiales);
             
             AgregarPistaCurvaDerecha(_materiales._pistasCurvasDerechas, _materiales);
             AgregarPistaRecta(_materiales._pistasRectas, _materiales);
+            AgregarPowerUpEspada(_materiales._espadas);
+
             AgregarPistaRecta(_materiales._pistasRectas, _materiales);
             AgregarPowerUpHamburguesa(_materiales._hamburguesas);
             AgregarPistaRecta(_materiales._pistasRectas, _materiales);
@@ -121,8 +158,12 @@ namespace TGC.MonoGame.TP.Constructor{
             AgregarPistaRecta(_materiales._pistasRectas, _materiales);
             AgregarPistaRecta(_materiales._pistasRectas, _materiales);
             AgregarPistaCurvaDerecha(_materiales._pistasCurvasDerechas, _materiales);
+            AgregarObstaculoPiedra(_materiales._piedras);
+
             AgregarPistaRecta(_materiales._pistasRectas, _materiales);
             AgregarPistaRecta(_materiales._pistasRectas, _materiales);
+            AgregarObstaculoPiedra(_materiales._piedras);
+
             AgregarPistaRecta(_materiales._pistasRectas, _materiales);
             AgregarPistaRecta(_materiales._pistasRectas, _materiales);
             AgregarPowerUpHamburguesa(_materiales._hamburguesas);

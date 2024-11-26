@@ -55,10 +55,17 @@ namespace TGC.MonoGame.TP.Levels
         {
             esfera.aumentarVelocidad(1.5f);
         }
+
         public void recibirPowerUpEspada()
         {
             // por ahora nada, luego rompera obstaculos
-            //esfera.aumentarVelocidad(1.5f);
+            esfera.romperObjetos();
+        }
+
+        public void finalizarPowerUpEspada()
+        {
+            // por ahora nada, luego rompera obstaculos
+            esfera.noRomperObjetos();
         }
 
         public void Respawn() {

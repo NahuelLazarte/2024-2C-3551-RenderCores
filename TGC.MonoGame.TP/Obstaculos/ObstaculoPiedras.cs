@@ -145,34 +145,90 @@ namespace TGC.MonoGame.TP.ObstaculoPiedras{
         }*/
 
 
-        public void AgregarNuevoObstaculo(float Rotacion, Vector3 Posicion) {
+        
+    
+
+    public void Update(GameTime gameTime, Level Game, Matrix view, Matrix projection, Sphere esfera) {
+          
+            for (int i = 0; i < _obstaculosPiedras.Count; i++) {
+
+                if (_envolturaEsfera.Intersects(Colliders[i])) {
+                    
+                    CollisionSound.Play();
+                    if (esfera.rompeObjetos == true)
+                    {
+                        _obstaculosPiedras.RemoveAt(i);
+                        Colliders.RemoveAt(i);
+                    }
+                    else
+                    {
+                        Game.Respawn();
+                    }
+                    // Acción al tocar el modelo
+                    
+                    //
+                    
+                }
+            }
+            _frustum = new BoundingFrustum(view * projection * scale);
+        }
+
+        public void AgregarNuevoObstaculo(float Rotacion, Vector3 Posicion)
+        {
             int randomInt = random.Next(-10, 10);
-            Posicion += Vector3.Transform(new Vector3(0, 0, randomInt), Matrix.CreateRotationY(Rotacion)); 
-            var transform = Matrix.CreateRotationY(Rotacion) * Matrix.CreateTranslation(Posicion) * scale ; 
+            Posicion += Vector3.Transform(new Vector3(0, 0, randomInt), Matrix.CreateRotationY(Rotacion));
+            var transform = Matrix.CreateRotationY(Rotacion) * Matrix.CreateTranslation(Posicion) * scale;
             _obstaculosPiedras.Add(transform);
 
             Vector3 transformedMin = Vector3.Transform(size.Min, transform);
             Vector3 transformedMax = Vector3.Transform(size.Max, transform);
 
-            BoundingBox box = new BoundingBox(size.Min  + Posicion , size.Max + Posicion );
+            //BoundingBox box = new BoundingBox(size.Min + Posicion, size.Max + Posicion);
+            BoundingBox box = CreateTransformedBoundingBox(transform, size, 0, 7f);
+
 
             Colliders.Add(box);
-            
+
         }
 
-    
 
-    public void Update(GameTime gameTime, Level Game, Matrix view, Matrix projection) {
-          
-            for (int i = 0; i < _obstaculosPiedras.Count; i++) {
-                if (_envolturaEsfera.Intersects(Colliders[i])) {
-                    // Acción al tocar el modelo
-                    CollisionSound.Play();
-                    //_obstaculosPiedras.RemoveAt(i);
-                    Game.Respawn();
-                }
+        private BoundingBox CreateTransformedBoundingBox(Matrix transform, BoundingBox size, float yDecrement, float xDecrement)
+        {
+            // Crear un arreglo de las esquinas del BoundingBox original
+            Vector3[] corners = new Vector3[8];
+            Vector3 min = size.Min;
+            Vector3 max = size.Max;
+
+            corners[0] = new Vector3(min.X, min.Y, min.Z);
+            corners[1] = new Vector3(max.X, min.Y, min.Z);
+            corners[2] = new Vector3(min.X, max.Y, min.Z);
+            corners[3] = new Vector3(max.X, max.Y, min.Z);
+            corners[4] = new Vector3(min.X, min.Y, max.Z);
+            corners[5] = new Vector3(max.X, min.Y, max.Z);
+            corners[6] = new Vector3(min.X, max.Y, max.Z);
+            corners[7] = new Vector3(max.X, max.Y, max.Z);
+
+            // Transformar las esquinas aplicando la matriz de transformación
+            for (int i = 0; i < corners.Length; i++)
+            {
+                corners[i] = Vector3.Transform(corners[i], transform);
             }
-            _frustum = new BoundingFrustum(view * projection * scale);
+
+            // Inicializar los valores para calcular los nuevos mínimos y máximos
+            Vector3 newMin = new Vector3(float.MaxValue);
+            Vector3 newMax = new Vector3(float.MinValue);
+
+            foreach (var corner in corners)
+            {
+                newMin = Vector3.Min(newMin, corner);
+                newMax = Vector3.Max(newMax, corner);
+            }
+
+            // Reducir el tamaño del BoundingBox en los ejes especificados
+            newMax.Y -= yDecrement; // Decrementar en el eje Y
+            newMax.X -= xDecrement; // Decrementar en el eje X
+
+            return new BoundingBox(newMin, newMax);
         }
     }
 }

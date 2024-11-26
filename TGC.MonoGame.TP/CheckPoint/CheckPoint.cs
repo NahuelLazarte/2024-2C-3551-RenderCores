@@ -243,6 +243,10 @@ namespace TGC.MonoGame.TP.CheckPoint{
 
 
         public void AgregarNuevoCheckPoint(float Rotacion, Vector3 Posicion) {
+
+            Posicion += Vector3.Transform(new Vector3(0, 0, -0.8f), Matrix.CreateRotationY(Rotacion));
+
+
             var transform = Matrix.CreateRotationY(Rotacion + MathHelper.ToRadians(-90)) * Matrix.CreateTranslation(Posicion) * Matrix.CreateScale(5f); 
             _checkPoints.Add(transform);
             Vector3 transformedMin = Vector3.Transform(size.Min, transform);

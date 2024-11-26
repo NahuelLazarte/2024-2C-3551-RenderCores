@@ -31,7 +31,7 @@ namespace TGC.MonoGame.TP.Modelos
 
         Vector3 posicionNueva;
         public bool isGodModeActive;
-
+        public bool rompeObjetos;
         private bool OnGround = false;
         private KeyboardState previousKeyboardState;
 
@@ -417,6 +417,16 @@ namespace TGC.MonoGame.TP.Modelos
         public void aumentarVelocidad(float aumento)
         {
             _velocity *= aumento;
+        }
+
+        public void romperObjetos()
+        {
+            rompeObjetos = true;
+        }
+
+        public void noRomperObjetos()
+        {
+            rompeObjetos = false;
         }
 
         private bool wasOnGround = false;

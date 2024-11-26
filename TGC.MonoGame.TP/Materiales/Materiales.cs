@@ -114,21 +114,21 @@ namespace TGC.MonoGame.TP.MaterialesJuego
         }
 
 
-        public void Update(GameTime gameTime, Level Game, Matrix view, Matrix projection, BoundingFrustum frustum)
+        public void Update(GameTime gameTime, Level Game, Matrix view, Matrix projection, BoundingFrustum frustum, Sphere esfera)
         {
 
             _pistasCurvasDerechas.Update(gameTime, view, projection);
             _pistasCurvasIzquierdas.Update(gameTime, view, projection);
             _pistasRectas.Update(gameTime, view, projection);
-            _espadas.Update(gameTime, Game, view, projection);
+            _espadas.Update(gameTime, Game, view, projection, esfera);
             _hamburguesas.Update(gameTime, Game, view, projection);
             _checkPoints.Update(gameTime, Game, view, projection);
             _checkPointFinal.Update(gameTime,Game, view, projection);
             _marcadoresCheckPoints.Update(gameTime, Game, view, projection, _checkPoints.getCheckPointActual());
-            _piedras.Update(gameTime, Game, view, projection);
+            _piedras.Update(gameTime, Game, view, projection, esfera);
             _pozos.Update(gameTime, Game, view, projection);
             _muros.Update(gameTime, Game, view, projection, frustum);
-            _carretillas.Update(gameTime, Game, view, projection);
+            _carretillas.Update(gameTime, Game, view, projection, esfera);
 
             Gizmos.UpdateViewProjection(view, projection);
         }
@@ -148,6 +148,7 @@ namespace TGC.MonoGame.TP.MaterialesJuego
             _pistasCurvasIzquierdas.ShadowMapRender(ShadowMapEffect, TargetLightCamera.View, TargetLightCamera.Projection);
             _pistasCurvasDerechas.ShadowMapRender(ShadowMapEffect, TargetLightCamera.View, TargetLightCamera.Projection);
             _hamburguesas.ShadowMapRender(ShadowMapEffect, TargetLightCamera.View, TargetLightCamera.Projection);
+            _espadas.ShadowMapRender(ShadowMapEffect, TargetLightCamera.View, TargetLightCamera.Projection);
             _muros.ShadowMapRender(ShadowMapEffect, TargetLightCamera.View, TargetLightCamera.Projection);
             _pozos.ShadowMapRender(ShadowMapEffect, TargetLightCamera.View, TargetLightCamera.Projection);
             _carretillas.ShadowMapRender(ShadowMapEffect, TargetLightCamera.View, TargetLightCamera.Projection);
@@ -223,10 +224,12 @@ namespace TGC.MonoGame.TP.MaterialesJuego
                 _marcadoresCheckPoints.Draw(gameTime, ShadowMapEffect, esfera.CubeMapCamera.View, esfera.CubeMapCamera.Projection);
                 _checkPointFinal.Draw(gameTime, ShadowMapEffect, esfera.CubeMapCamera.View, esfera.CubeMapCamera.Projection);
                 _hamburguesas.Draw(gameTime, ShadowMapEffect, esfera.CubeMapCamera.View, esfera.CubeMapCamera.Projection, graphicsDevice);
+                _espadas.Draw(gameTime, ShadowMapEffect, esfera.CubeMapCamera.View, esfera.CubeMapCamera.Projection, graphicsDevice);
 
-            }
 
-            #endregion
+                }
+
+                #endregion
             }
             
             #region Pass 7
@@ -251,6 +254,7 @@ namespace TGC.MonoGame.TP.MaterialesJuego
             _marcadoresCheckPoints.Draw(gameTime, ShadowMapEffect, view, projection);
             _checkPointFinal.Draw(gameTime, ShadowMapEffect, view, projection);
             _hamburguesas.Draw(gameTime, ShadowMapEffect, view, projection, graphicsDevice);
+            _espadas.Draw(gameTime, ShadowMapEffect, view, projection, graphicsDevice);
 
             #region Draw Sphere
             esfera.Draw(gameTime, ShadowMapEffectPelota, view, projection, graphicsDevice,position);
@@ -272,7 +276,6 @@ namespace TGC.MonoGame.TP.MaterialesJuego
 
 
 
-            _espadas.Draw(gameTime, view, projection, graphicsDevice);
             /*
             foreach (var boundingBoxPista in CollidersDibujo)
             {
@@ -307,7 +310,7 @@ namespace TGC.MonoGame.TP.MaterialesJuego
 
             List<BoundingBox> CollidersCheckpoints = _checkPoints.Colliders;
             List<BoundingBox> CollidersMarcadoresCheckpoints = _marcadoresCheckPoints.Colliders;
-            CollidersDibujo = _checkPointFinal.Colliders;
+            CollidersDibujo = CollidersPiedras;
 
             esfera.Colliders.AddRange(CollidersPistaRecta);
             esfera.Colliders.AddRange(CollidersPistaCurvaDerecha);

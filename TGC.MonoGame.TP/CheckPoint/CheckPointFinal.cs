@@ -40,6 +40,7 @@ namespace TGC.MonoGame.TP.CheckPoint{
 
         protected Texture TextureMadera { get; set; }
         protected Texture TexturePiedra { get; set; }
+        protected Texture NormalTextura { get; set; }
 
         public CheckPointFinal(Matrix view, Matrix projection)
         {
@@ -64,6 +65,8 @@ namespace TGC.MonoGame.TP.CheckPoint{
             Effect = Content.Load<Effect>("Effects/" + "BasicShader2");
             TexturePiedra = Content.Load<Texture2D>("Textures/texturaPiedra");
             TextureMadera = Content.Load<Texture2D>("Textures/texturaMadera");
+            NormalTextura = Content.Load<Texture2D>("Textures/NormalMapPiedra");
+
             //Effect.CurrentTechnique = Effect.Techniques["LightingTechnique"];
             puertaSize = BoundingVolumesExtensions.CreateAABBFrom(ModeloPuerta);
 
@@ -103,6 +106,7 @@ namespace TGC.MonoGame.TP.CheckPoint{
                         ShadowMapEffect.Parameters["baseTexture"].SetValue(TexturePiedra);
                         ShadowMapEffect.Parameters["WorldViewProjection"].SetValue(meshWorld * viewProjection);
                         ShadowMapEffect.Parameters["InverseTransposeWorld"].SetValue(Matrix.Transpose(Matrix.Invert(meshWorld)));
+                        ShadowMapEffect.Parameters["normalMap"].SetValue(NormalTextura);
 
                         mesh.Draw();
                     }
@@ -122,7 +126,7 @@ namespace TGC.MonoGame.TP.CheckPoint{
                         ShadowMapEffect.Parameters["baseTexture"].SetValue(TexturePiedra);
                         ShadowMapEffect.Parameters["WorldViewProjection"].SetValue(meshWorld * viewProjection);
                         ShadowMapEffect.Parameters["InverseTransposeWorld"].SetValue(Matrix.Transpose(Matrix.Invert(meshWorld)));
-
+                        ShadowMapEffect.Parameters["normalMap"].SetValue(NormalTextura);
                         mesh.Draw();
                     }
                 }

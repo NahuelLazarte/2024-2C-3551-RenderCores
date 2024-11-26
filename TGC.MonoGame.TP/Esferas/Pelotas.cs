@@ -200,7 +200,7 @@ namespace TGC.MonoGame.TP.Pelotas
             shininess = 64;
             soundEffectMovimiento = soundEffectMovimientoMetal.CreateInstance();
             soundEffectCaida = soundEffectCaidaMetal.CreateInstance();
-            esfera.isEnvironmentMapActive = false;
+            esfera.isEnvironmentMapActive = true;
         }
     }
 }

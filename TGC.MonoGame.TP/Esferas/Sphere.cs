@@ -71,7 +71,7 @@ namespace TGC.MonoGame.TP.Modelos
             pelota.Texture4 = content.Load<Texture2D>("Textures/texturaPlastico");
 
             pelota.NormalTexture1 = content.Load<Texture2D>("Textures/NormalMapGolf");
-            pelota.NormalTexture2 = content.Load<Texture2D>("Textures/NormalMapOro");
+            pelota.NormalTexture2 = content.Load<Texture2D>("Textures/NormalMapOro2");
             pelota.NormalTexture3 = content.Load<Texture2D>("Textures/NormalMapMaderaPelota");
             pelota.NormalTexture4 = content.Load<Texture2D>("Textures/NormalMapPlastico");
 

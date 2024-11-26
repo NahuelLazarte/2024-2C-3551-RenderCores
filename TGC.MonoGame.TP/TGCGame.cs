@@ -150,7 +150,11 @@ namespace TGC.MonoGame.TP
                 if (keyboardState.IsKeyDown(Keys.Escape) || nivelActual.reachedLastCheckpoint() )
                 {
                     isMenuActive = true;
-                    gameInProgress = true;
+                    if (!nivelActual.reachedLastCheckpoint()){
+                        gameInProgress = true;
+                    } else {
+                        gameInProgress = false;
+                    }
                     nivelActual.leveIsActive = false;
                 }
 

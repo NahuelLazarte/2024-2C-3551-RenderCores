@@ -104,12 +104,24 @@ namespace TGC.MonoGame.TP.Modelos
                 Effect.Parameters["eyePosition"].SetValue(cameraPosition);
 
                 Effect.Parameters["baseTexture"].SetValue(Texture);
+                Effect.Parameters["NormalTexture"].SetValue(NormalTexture);
+
                 // World is used to transform from model space to world space
                 Effect.Parameters["World"].SetValue(World);
                 // InverseTransposeWorld is used to rotate normals
-                Effect.Parameters["InverseTransposeWorld"]?.SetValue(Matrix.Transpose(Matrix.Invert(World)));
+                Effect.Parameters["InverseTransposeWorld"].SetValue(Matrix.Transpose(Matrix.Invert(World)));
                 // WorldViewProjection is used to transform from model space to clip space
                 Effect.Parameters["WorldViewProjection"].SetValue(World * viewProjection);
+
+                // Set lighting parameters
+                Effect.Parameters["ambientColor"].SetValue(new Vector3(1.0f, 1.0f, 1.0f));
+                Effect.Parameters["diffuseColor"].SetValue(new Vector3(1.0f, 1.0f, 1.0f));
+                Effect.Parameters["specularColor"].SetValue(new Vector3(1.0f, 1.0f, 1.0f));
+                Effect.Parameters["shininess"].SetValue(32.0f);
+                Effect.Parameters["KAmbient"].SetValue(1.0f);
+                Effect.Parameters["KDiffuse"].SetValue(1.0f);
+                Effect.Parameters["KSpecular"].SetValue(1.0f);
+                Effect.Parameters["Tiling"].SetValue(new Vector2(1.0f, 1.0f));
             }
             else
             {

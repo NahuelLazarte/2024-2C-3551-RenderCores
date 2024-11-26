@@ -112,7 +112,7 @@ namespace TGC.MonoGame.TP.Modelos
             pelota.soundEffectCaida = pelota.soundEffectCaidaGolf.CreateInstance();
             pelota.soundEffectMovimiento = pelota.soundEffectMovimientoGolf.CreateInstance();
 
-
+            pelota.setMetal(this);
         }
 
         public Sphere(Vector3 position, Matrix rotation, Vector3 color)
@@ -125,6 +125,8 @@ namespace TGC.MonoGame.TP.Modelos
             SetScale(Matrix.CreateScale(escala));
             World = Scale * rotation * Matrix.CreateTranslation(position);
             Colliders = new List<BoundingBox>();
+
+            
         }
 
         public override void Update(GameTime gameTime, ContentManager content)

@@ -43,25 +43,11 @@ namespace TGC.MonoGame.TP.Pelotas
         {
             var keyboardState = Keyboard.GetState();
 
-            
+
 
             if (keyboardState.IsKeyDown(Keys.D1)) // Metal
             {
-                primera = true;
-                rebota = false;
-                velocidadRotacion = 0.9f;
-                esfera.SetTexture(Texture2);
-                esfera.SetNormalTexture(NormalTexture2);
-                esfera.SetColor(new Vector3(0.75f, 0.75f, 0.75f));
-                LinearSpeed = 16f;
-                RotationSpeed = 20f;
-                ambientColor = new Vector3(0.8f, 0.7f, 0.2f);
-                diffuseColor = new Vector3(0.9f, 0.85f, 0.4f);
-                specularColor = new Vector3(1.0f, 0.95f, 0.7f);
-                shininess = 64;
-                soundEffectMovimiento = soundEffectMovimientoMetal.CreateInstance();
-                soundEffectCaida = soundEffectCaidaMetal.CreateInstance();
-                esfera.isEnvironmentMapActive = false;
+                setMetal(esfera);
             }
             if (keyboardState.IsKeyDown(Keys.D2)) // vidrio
             {
@@ -69,24 +55,61 @@ namespace TGC.MonoGame.TP.Pelotas
                 velocidadRotacion = 1f;
                 esfera.SetTexture(Texture1);
                 esfera.SetNormalTexture(NormalTexture1);
+
+                // Cambia el color base de la pelota a blanco
+                esfera.SetColor(new Vector3(1.0f, 1.0f, 1.0f));
+
                 ambientColor = new Vector3(0.5f, 0.5f, 0.5f);
                 diffuseColor = new Vector3(0.5f, 0.5f, 0.5f);
                 specularColor = new Vector3(0.5f, 0.5f, 0.5f);
+
+                
                 primera = false;
                 LinearSpeed = 15f;
                 RotationSpeed = 20f;
                 soundEffectMovimiento = soundEffectMovimientoMetal.CreateInstance();
                 soundEffectCaida = soundEffectCaidaMetal.CreateInstance();
                 esfera.isEnvironmentMapActive = true;
+
+
+
+                coeficienteRebote = 0.7f;
+                umbralVelocidadRebote = 3f;
+                shininess = 32;
+                soundEffectMovimiento = soundEffectMovimientoGolf.CreateInstance();
+                soundEffectCaida = soundEffectCaidaGolf.CreateInstance();
+                soundEffectCaida.Volume = 0.1f;
+                soundEffectMovimiento.Volume = 0.1f;
+
+                /*
+                
+                esfera.SetTexture(Texture1);
+                esfera.SetNormalTexture(NormalTexture1);
+
+                esfera.SetColor(new Vector3(0.9f, 0.9f, 0.9f));
+                LinearSpeed = 30f;
+                RotationSpeed = 30f;
+                rebota = true;
+                coeficienteRebote = 0.7f;
+                umbralVelocidadRebote = 3f;
+                ambientColor = new Vector3(0.5f, 0.5f, 0.5f);
+                diffuseColor = new Vector3(0.5f, 0.5f, 0.5f);
+                specularColor = new Vector3(0.5f, 0.5f, 0.5f);
+                shininess = 32;
+                soundEffectMovimiento = soundEffectMovimientoGolf.CreateInstance();
+                soundEffectCaida = soundEffectCaidaGolf.CreateInstance();
+                soundEffectCaida.Volume = 0.1f;
+                soundEffectMovimiento.Volume = 0.1f;
+                esfera.isEnvironmentMapActive = false;*/
             }
             if (keyboardState.IsKeyDown(Keys.D3)) // Madera
             {
                 primera = false;
                 esfera.SetTexture(Texture3);
                 esfera.SetNormalTexture(NormalTexture3);
-                
+
                 esfera.SetColor(new Vector3(0.54f, 0.27f, 0.07f));
-                
+
                 rebota = true;
                 coeficienteRebote = 0.6f;
                 umbralVelocidadRebote = 3f;
@@ -121,8 +144,8 @@ namespace TGC.MonoGame.TP.Pelotas
                 umbralVelocidadRebote = 3f;
                 ambientColor = new Vector3(0.5f, 0.5f, 0.5f);
                 diffuseColor = new Vector3(0.5f, 0.5f, 0.5f);
-                specularColor= new Vector3(0.5f, 0.5f, 0.5f);
-                shininess =32;
+                specularColor = new Vector3(0.5f, 0.5f, 0.5f);
+                shininess = 32;
                 soundEffectMovimiento = soundEffectMovimientoPlastico.CreateInstance();
                 soundEffectCaida = soundEffectCaidaPlastico.CreateInstance();
                 esfera.isEnvironmentMapActive = false;
@@ -160,6 +183,24 @@ namespace TGC.MonoGame.TP.Pelotas
                 spriteBatch.DrawString(font, options[i], new Vector2(100, 100 + i * 40), color);
             }
             spriteBatch.End();
+        }
+        public void setMetal(Modelos.Sphere esfera)
+        {
+            primera = true;
+            rebota = false;
+            velocidadRotacion = 0.9f;
+            esfera.SetTexture(Texture2);
+            esfera.SetNormalTexture(NormalTexture2);
+            esfera.SetColor(new Vector3(0.75f, 0.75f, 0.75f));
+            LinearSpeed = 16f;
+            RotationSpeed = 20f;
+            ambientColor = new Vector3(0.8f, 0.7f, 0.2f);
+            diffuseColor = new Vector3(0.9f, 0.85f, 0.4f);
+            specularColor = new Vector3(1.0f, 0.95f, 0.7f);
+            shininess = 64;
+            soundEffectMovimiento = soundEffectMovimientoMetal.CreateInstance();
+            soundEffectCaida = soundEffectCaidaMetal.CreateInstance();
+            esfera.isEnvironmentMapActive = false;
         }
     }
 }
